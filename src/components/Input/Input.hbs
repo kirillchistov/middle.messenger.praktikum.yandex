@@ -1,0 +1,25 @@
+<div class="form-group">
+    {{#if label}}
+        <label for="{{name}}" class="form-label">{{label}}</label>
+    {{/if}}
+    
+    <input
+        type="{{type}}"
+        id="{{name}}"
+        name="{{name}}"
+        class="form-input {{#if error}}form-input--error{{/if}}"
+        placeholder="{{placeholder}}"
+        value="{{value}}"
+        {{#if required}}required{{/if}}
+        {{#if disabled}}disabled{{/if}}
+        data-testid="{{testId}}"
+    />
+    
+    {{#if error}}
+        <span class="error-message">{{error}}</span>
+    {{/if}}
+    
+    {{#if helpText}}
+        <small class="help-text">{{helpText}}</small>
+    {{/if}}
+</div>

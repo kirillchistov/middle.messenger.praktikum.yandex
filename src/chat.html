@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{title}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/styles/base.css" />
+    <link rel="stylesheet" href="/styles/layout.css" />
+    <link rel="stylesheet" href="/styles/forms.css" />
+    <link rel="stylesheet" href="/styles/chat.css" />
+  </head>
+  <body class="app app--dark">
+    <div class="app-shell">
+      <main class="chat-layout">
+        {{> chat-sidebar}}
+
+        <section class="chat-main">
+          {{> chat-messages}}
+          {{> chat-input}}
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="/ts/main.ts"></script>
+  </body>
+</html>

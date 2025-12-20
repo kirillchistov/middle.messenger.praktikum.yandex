@@ -1,0 +1,105 @@
+{{!< layouts/default}}
+
+{{#content "styles"}}
+<link rel="stylesheet" href="./chat-list.css">
+{{/content}}
+
+{{#content "scripts"}}
+<script src="./chat-list.js" defer></script>
+{{/content}}
+
+<div class="chat-layout">
+    <!-- Сайдбар с чатами -->
+    <aside class="chat-sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-search">
+                <input 
+                    type="text" 
+                    placeholder="Поиск чатов..." 
+                    class="search-input"
+                    data-testid="chat-search"
+                >
+            </div>
+            
+            <button class="button button--small" data-testid="new-chat-btn">
+                Новый чат
+            </button>
+        </div>
+        
+        <div class="chat-list" data-testid="chat-list">
+            {{#each chats}}
+                {{> components/ChatItem
+                    id=id
+                    title=title
+                    avatar=avatar
+                    lastMessageText=lastMessageText
+                    lastMessageTime=lastMessageTime
+                    lastMessageAuthor=lastMessageAuthor
+                    unreadCount=unreadCount
+                    active=active
+                    isGroup=isGroup
+                }}
+            {{/each}}
+        </div>
+    </aside>
+    
+    <!-- Основная область с сообщениями -->
+    <main class="chat-main">
+        <div class="chat-header">
+            <div class="chat-info">
+                <div class="chat-avatar">
+                    <img src="{{currentChat.avatar}}" alt="{{currentChat.title}}" width="48" height="48">
+                    {{#if currentChat.isGroup}}
+                    <span class="chat-group-badge">Г</span>
+                    {{/if}}
+                </div>
+                <div class="chat-details">
+                    <h2 class="chat-title">{{currentChat.title}}</h2>
+                    <p class="chat-members">{{currentChat.memberCount}} участников</p>
+                </div>
+            </div>
+            
+            <div class="chat-actions">
+                <button class="button button--small button--secondary" data-testid="add-user-btn">
+                    Добавить
+                </button>
+                <button class="button button--small button--secondary" data-testid="remove-user-btn">
+                    Удалить
+                </button>
+            </div>
+        </div>
+        
+        <div class="messages-container" data-testid="messages-container">
+            {{#each messages}}
+                {{> components/Message
+                    id=id
+                    text=text
+                    authorName=authorName
+                    avatar=avatar
+                    time=time
+                    isOwn=isOwn
+                    withAvatar=withAvatar
+                    attachments=attachments
+                }}
+            {{/each}}
+        </div>
+        
+        <div class="message-input-area">
+            <button class="attachment-btn" data-testid="add-attachment-btn" title="Добавить файл">
+                📎
+            </button>
+            
+            <input 
+                type="text" 
+                name="message" 
+                class="message-input" 
+                placeholder="Введите сообщение..." 
+                data-testid="message-input"
+            >
+            
+            <button class="send-btn" data-testid="send-message-btn" title="Отправить">
+                Отправить
+            </button>
+        </div>
+    </main>
+</div>

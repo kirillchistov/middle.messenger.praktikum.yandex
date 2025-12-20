@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{title}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/styles/base.css" />
+    <link rel="stylesheet" href="/styles/layout.css" />
+    <link rel="stylesheet" href="/styles/forms.css" />
+    <link rel="stylesheet" href="/styles/chat.css" />
+  </head>
+  <body class="app app--dark">
+    <div class="app-shell">
+      <main class="error-page">
+        <section class="error-card">
+          <h1 class="error-card__code">5xx</h1>
+          <p class="error-card__title">Что‑то пошло не так</p>
+          <p class="error-card__text">
+            Сервер временно недоступен. Попробуйте обновить страницу или
+            вернуться чуть позже.
+          </p>
+          <a href="/chat.html" class="btn btn--ghost">
+            Обновить страницу
+          </a>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="/ts/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,92 @@
+{{!< layouts/default}}
+
+{{#content "styles"}}
+<link rel="stylesheet" href="./registration.css">
+{{/content}}
+
+{{#content "scripts"}}
+<script src="./registration.js" defer></script>
+{{/content}}
+
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-header">
+            <h1 class="auth-title">Регистрация</h1>
+            <p class="auth-subtitle">Создайте аккаунт для доступа к платформе</p>
+        </div>
+        
+        <form class="auth-form" id="registrationForm" data-testid="registration-form">
+            <div class="form-row">
+                {{> components/Input 
+                    name="first_name"
+                    label="Имя"
+                    placeholder="Введите ваше имя"
+                    required=true
+                    testId="first-name-field"
+                }}
+                
+                {{> components/Input 
+                    name="second_name"
+                    label="Фамилия"
+                    placeholder="Введите вашу фамилию"
+                    required=true
+                    testId="second-name-field"
+                }}
+            </div>
+            
+            {{> components/Input 
+                name="login"
+                label="Логин"
+                placeholder="Придумайте логин"
+                required=true
+                testId="login-field"
+            }}
+            
+            {{> components/Input 
+                name="email"
+                type="email"
+                label="Email"
+                placeholder="Введите ваш email"
+                required=true
+                testId="email-field"
+            }}
+            
+            {{> components/Input 
+                name="password"
+                type="password"
+                label="Пароль"
+                placeholder="Придумайте пароль"
+                required=true
+                testId="password-field"
+                helpText="Минимум 8 символов, должны быть буквы и цифры"
+            }}
+            
+            {{> components/Input 
+                name="phone"
+                type="tel"
+                label="Телефон"
+                placeholder="+7 (999) 123-45-67"
+                required=true
+                testId="phone-field"
+            }}
+            
+            <div class="form-group">
+                <label class="form-checkbox">
+                    <input type="checkbox" name="agreement" required>
+                    <span>Я согласен с <a href="/terms">условиями использования</a> и <a href="/privacy">политикой конфиденциальности</a></span>
+                </label>
+            </div>
+            
+            {{> components/Button 
+                text="Зарегистрироваться"
+                type="submit"
+                fullWidth=true
+                testId="registration-submit"
+            }}
+        </form>
+        
+        <div class="auth-footer">
+            <p>Уже есть аккаунт? <a href="/login">Войдите</a></p>
+        </div>
+    </div>
+</div>
