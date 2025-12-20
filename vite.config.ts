@@ -4,7 +4,7 @@ import handlebars from 'vite-plugin-handlebars';
 
 
 export default defineConfig({
-  base: '/',
+  base: '/middle.messenger.praktikum.yandex/',
   root: 'src',
   build: {
     outDir: '../dist',
@@ -19,7 +19,7 @@ export default defineConfig({
       context(pagePath: string) {
         // Можно подставлять заголовки/мета под конкретные страницы
         const titles: Record<string, string> = {
-          '/login.html': 'Вход — Chat SaaS',
+          '/login.html': 'Вход — Chat App',
           '/register.html': 'Регистрация — Chat App',
           '/chat.html': 'Чаты — Chat App',
           '/settings.html': 'Настройки — Chat App',
