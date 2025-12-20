@@ -31,14 +31,14 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 9         # или нужная версия
           run_install: false
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm build      # должен вызывать vite build и собрать dist/
+        run: pnpm build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
