@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Chat App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script type="module" crossorigin src="./assets/main-RQRiOMLu.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/main-BHOW_5P9.css">
+    <link rel="stylesheet" crossorigin href="./assets/chat-BTac842Z.css">
+  </head>
+  <body class="app">
+    <header class="landing-nav">
+        <div class="landing-nav__inner">
+            <div class="landing-nav__brand">
+            <span class="landing-nav__dot"></span>
+            <span>Chat App</span>
+            </div>
+
+            <button type="button" class="landing-nav__burger" id="nav-toggle" aria-label="Открыть меню">
+            ☰
+            </button>
+
+            <nav class="landing-nav__links" id="nav-links">
+            <button type="button" class="theme-toggle" id="theme-toggle">
+                Светлее
+            </button>
+            <a href="/login.html" class="link">Вход</a>
+            <a href="/register.html" class="link">Регистрация</a>
+            <a href="/chat.html" class="link">Чаты</a>
+            <a href="/profile-view.html" class="link">Профиль</a>
+            <!-- <a href="/settings.html" class="link">Настройки</a> -->
+            </nav>
+        </div>
+    </header>
+
+    <div class="app-shell">
+        <main class="landing">
+        <section class="landing-hero">
+            <div class="landing-hero__content">
+            <div class="landing-hero__badge">
+                <span class="landing-hero__badge-dot"></span>
+                <span>AI для маркетинг‑директоров</span>
+            </div>
+
+            <h1 class="landing-hero__title">
+                Чат с ИИ, который понимает ваши маркетинговые данные.
+            </h1>
+
+            <p class="landing-hero__subtitle">
+                Задавайте вопросы про Ozon, Wildberries и рекламные кампании на
+                понятном языке. Платформа сформулирует выводы, гипотезы и подсказки
+                для роста.
+            </p>
+
+            <div class="landing-hero__actions">
+                <a href="/chat.html" class="btn btn--primary">
+                Перейти к чатам
+                </a>
+                <a href="/login.html" class="btn btn--ghost">
+                Войти
+                </a>
+            </div>
+
+            <p class="landing-hero__hint">
+                Нет аккаунта?
+                <a href="/register.html" class="link">
+                Зарегистрируйтесь за 1 минуту
+                </a>
+            </p>
+            </div>
+
+            <div class="landing-hero__preview">
+            <section class="chat-preview" aria-label="Превью чата с ИИ">
+              <div class="chat-preview__window">
+                <header class="chat-preview__header">
+                  <div class="chat-preview__title">
+                    <span class="chat-preview__logo-dot"></span>
+                    <span>AI ассистент маркетинга</span>
+                  </div>
+                  <span class="chat-preview__status">Online</span>
+                </header>
+            
+                <div class="chat-preview__messages">
+                  <article class="chat-preview-message chat-preview-message--assistant">
+                    <div class="chat-preview-message__avatar chat-preview-message__avatar--assistant">
+                      AI
+                    </div>
+                    <div class="chat-preview-message__bubble">
+                      <p class="chat-preview-message__text">
+                        Привет! Я помогу разобрать эффективность кампаний и найти точки
+                        роста по каналам и маркетплейсам.
+                      </p>
+                    </div>
+                  </article>
+            
+                  <article class="chat-preview-message chat-preview-message--user">
+                    <div class="chat-preview-message__avatar chat-preview-message__avatar--user">
+                      MD
+                    </div>
+                    <div class="chat-preview-message__bubble">
+                      <p class="chat-preview-message__text">
+                        Покажи, где у нас максимальный перерасход бюджета по Ozon Ads
+                        за последние 7 дней.
+                      </p>
+                    </div>
+                  </article>
+            
+                  <article class="chat-preview-message chat-preview-message--assistant">
+                    <div class="chat-preview-message__avatar chat-preview-message__avatar--assistant">
+                      AI
+                    </div>
+                    <div class="chat-preview-message__bubble">
+                      <p class="chat-preview-message__text">
+                        Основной перерасход — в брендовой кампании «OZON_BRAND_SEARCH»:
+                        ACOS 36% при целевом 22%, около 42% бюджета тратится на запросы
+                        с низкой конверсией. Рекомендую ужесточить минус‑списки и
+                        перераспределить бюджет в кампании с ACOS &lt; 20%.
+                      </p>
+                    </div>
+                  </article>
+                </div>
+            
+                <footer class="chat-preview__input">
+                  <div class="chat-preview__input-bar">
+                    <span class="chat-preview__placeholder">
+                      Задайте вопрос про рекламу, продажи или конкурентов…
+                    </span>
+                    <span class="chat-preview__send-pill">▸</span>
+                  </div>
+                </footer>
+              </div>
+            </section>
+            </div>
+        </section>
+        </main>
+    </div>
+
+  </body>
+</html>
