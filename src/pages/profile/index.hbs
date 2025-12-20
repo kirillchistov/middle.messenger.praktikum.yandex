@@ -1,0 +1,141 @@
+{{!< layouts/default}}
+
+{{#content "styles"}}
+<link rel="stylesheet" href="./profile.css">
+{{/content}}
+
+{{#content "scripts"}}
+<script src="./profile.js" defer></script>
+{{/content}}
+
+<div class="profile-page">
+    <div class="profile-container">
+        <div class="profile-header">
+            <h1 class="profile-title">Настройки профиля</h1>
+        </div>
+        
+        <div class="profile-tabs">
+            <button class="tab-btn active" data-tab="profile">Профиль</button>
+            <button class="tab-btn" data-tab="password">Смена пароля</button>
+        </div>
+        
+        <div class="tab-content active" id="profile-tab">
+            <form class="profile-form" id="profileForm" data-testid="profile-form">
+                <div class="avatar-section">
+                    <div class="avatar-preview">
+                        <img src="{{user.avatar}}" alt="Аватар" id="avatarPreview" width="120" height="120">
+                    </div>
+                    <div class="avatar-controls">
+                        <input 
+                            type="file" 
+                            name="avatar" 
+                            id="avatarInput" 
+                            accept="image/*" 
+                            data-testid="avatar-field"
+                        >
+                        <button type="button" class="button button--small button--secondary" id="changeAvatarBtn">
+                            Изменить фото
+                        </button>
+                        <button type="button" class="button button--small" id="removeAvatarBtn">
+                            Удалить фото
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    {{> components/Input 
+                        name="first_name"
+                        label="Имя"
+                        value=user.first_name
+                        required=true
+                        testId="first-name-field"
+                    }}
+                    
+                    {{> components/Input 
+                        name="second_name"
+                        label="Фамилия"
+                        value=user.second_name
+                        required=true
+                        testId="second-name-field"
+                    }}
+                </div>
+                
+                {{> components/Input 
+                    name="display_name"
+                    label="Отображаемое имя"
+                    value=user.display_name
+                    placeholder="Как вас будут видеть другие пользователи"
+                    testId="display-name-field"
+                }}
+                
+                {{> components/Input 
+                    name="login"
+                    label="Логин"
+                    value=user.login
+                    required=true
+                    testId="login-field"
+                }}
+                
+                {{> components/Input 
+                    name="email"
+                    type="email"
+                    label="Email"
+                    value=user.email
+                    required=true
+                    testId="email-field"
+                }}
+                
+                {{> components/Input 
+                    name="phone"
+                    type="tel"
+                    label="Телефон"
+                    value=user.phone
+                    required=true
+                    testId="phone-field"
+                }}
+                
+                {{> components/Button 
+                    text="Сохранить изменения"
+                    type="submit"
+                    testId="profile-save-btn"
+                }}
+            </form>
+        </div>
+        
+        <div class="tab-content" id="password-tab">
+            <form class="profile-form" id="passwordForm" data-testid="password-form">
+                {{> components/Input 
+                    name="oldPassword"
+                    type="password"
+                    label="Текущий пароль"
+                    placeholder="Введите текущий пароль"
+                    required=true
+                    testId="old-password-field"
+                }}
+                
+                {{> components/Input 
+                    name="newPassword"
+                    type="password"
+                    label="Новый пароль"
+                    placeholder="Введите новый пароль"
+                    required=true
+                    testId="new-password-field"
+                    helpText="Минимум 8 символов, должны быть буквы и цифры"
+                }}
+                
+                <div class="form-group">
+                    <label class="form-checkbox">
+                        <input type="checkbox" name="logoutAll" id="logoutAll">
+                        <span>Завершить все другие сеансы</span>
+                    </label>
+                </div>
+                
+                {{> components/Button 
+                    text="Изменить пароль"
+                    type="submit"
+                    testId="password-save-btn"
+                }}
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,11 @@
+<button 
+    class="button {{class}} {{#if size}}button--{{size}}{{/if}} {{#if variant}}button--{{variant}}{{/if}} {{#if fullWidth}}button--full-width{{/if}}"
+    type="{{type}}"
+    data-testid="{{testId}}"
+    {{#if disabled}}disabled{{/if}}
+>
+    {{#if icon}}
+        <span class="button-icon">{{icon}}</span>
+    {{/if}}
+    {{text}}
+</button>

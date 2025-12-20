@@ -1,0 +1,48 @@
+{{! Используем общий layout }}
+{{#> layouts/main}}
+  <main class="auth auth--center">
+    <section class="auth-card">
+      <header class="auth-card__header">
+        <h1 class="auth-card__title">Вход в аккаунт</h1>
+        <p class="auth-card__subtitle">
+          SaaS-платформа с ИИ для маркетинг‑директоров.
+        </p>
+      </header>
+
+      <form class="form" id="login-form">
+        <div class="form__field">
+          <label for="login" class="form__label">Логин</label>
+          <input
+            id="login"
+            name="login"
+            type="text"
+            autocomplete="username"
+            class="form__input"
+            required
+          />
+        </div>
+
+        <div class="form__field">
+          <label for="password" class="form__label">Пароль</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            class="form__input"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn btn--primary btn--full">
+          Вход
+        </button>
+      </form>
+
+      <footer class="auth-card__footer">
+        <span class="auth-card__hint">Нет аккаунта?</span>
+        <a href="/register.html" class="link">Зарегистрироваться</a>
+      </footer>
+    </section>
+  </main>
+{{/layouts/main}}
