@@ -1,0 +1,43 @@
+<header class="chat-thread__header">
+  <div class="chat-thread__left">
+    <div class="chat-thread__avatar">
+      <span>
+        <a href="/profile-view.html" class="message__avatar-link">Г</a>
+      </span>
+    </div>
+    <div>
+      <h1 class="chat-thread__title">тет-а-теты</h1>
+      <p class="chat-thread__subtitle">
+        Групповой чат с мега-экспертами
+      </p>
+    </div>
+  </div>
+
+  <div class="chat-thread__right">
+    <div class="chat-thread__profile">
+      <span class="chat-thread__profile-name">
+        <a href="/profile-view.html" class="message__avatar-link">ivanivanov</a>
+      </span>
+    </div>
+
+    <div class="chat-thread__menu">
+      <button
+        type="button"
+        class="chat-thread__menu-btn"
+        id="chat-menu-toggle"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        ⋮
+      </button>
+      <div class="chat-thread__menu-dropdown" id="chat-menu">
+        <button type="button" class="chat-thread__menu-item" data-action="add-user">
+          Добавить пользователя
+        </button>
+        <button type="button" class="chat-thread__menu-item" data-action="remove-user">
+          Удалить пользователя
+        </button>
+      </div>
+    </div>
+  </div>
+</header>

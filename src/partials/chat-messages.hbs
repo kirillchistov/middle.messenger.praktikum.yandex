@@ -1,42 +1,55 @@
 <section class="chat-thread" aria-label="Лента сообщений">
-  <header class="chat-thread__header">
-    <div>
-      <h1 class="chat-thread__title">Общий чат</h1>
-      <p class="chat-thread__subtitle">
-        Обсуждение стратегии performance‑маркетинга и e‑commerce.
-      </p>
-    </div>
-
-    <div class="chat-thread__actions">
-      <button class="btn btn--ghost">Добавить пользователя</button>
-      <button class="btn btn--ghost">Удалить пользователя</button>
-    </div>
-  </header>
-
   <div class="chat-thread__messages" id="chat-messages">
     <article class="message message--assistant">
-      <div class="message__avatar message__avatar--assistant">AI</div>
+      <div class="message__avatar message__avatar--user">
+        <a href="/profile-view.html" class="message__avatar-link">Э</a>
+      </div>
       <div class="message__content">
         <div class="message__meta">
-          <span class="message__author">AI ассистент</span>
-          <span class="message__time">10:21</span>
+          <span class="message__author">Эксперт</span>
+          <span class="message__time">11:00</span>
         </div>
         <div class="message__bubble">
-          Чтобы снизить ACOS по Ozon Ads, можно начать с пересмотра неэффективных ключевых слов,
-          ограничения трафика с низкой конверсией и усиления позиций по брендовым запросам.
+          Привет! Смотри, тут всплыл интересный кусок лунной космической истории — НАСА в какой-то
+          момент попросила Хассельблад адаптировать модель SWC для полётов на Луну…
+        </div>
+      </div>
+    </article>
+
+    <article class="message message--assistant">
+      <div class="message__avatar message__avatar--user">
+        <a href="/profile-view.html" class="message__avatar-link">Э</a>
+      </div>
+      <div class="message__content">
+        <div class="message__meta">
+          <span class="message__author">Эксперт</span>
+          <span class="message__time">11:01</span>
+        </div>
+        <div class="message__bubble message__bubble--image">
+          <img
+            src="/assets/image-cam.png"
+            alt="Камера Hasselblad"
+            class="message__image"
+          />
+          <p class="message__text">
+            Всего было произведено 25 экземпляров этой модификации, одну из них недавно продали на
+            аукционе за 45&nbsp;000&nbsp;евро.
+          </p>
         </div>
       </div>
     </article>
 
     <article class="message message--user">
-      <div class="message__avatar message__avatar--user">MD</div>
+      <div class="message__avatar message__avatar--user">
+        <a href="/profile-view.html" class="message__avatar-link">И</a>
+      </div>
       <div class="message__content">
         <div class="message__meta">
-          <span class="message__author">Маркетинг‑директор</span>
-          <span class="message__time">10:23</span>
+          <span class="message__author">Вы</span>
+          <span class="message__time">11:12</span>
         </div>
         <div class="message__bubble">
-          Загрузил последние данные по кампаниям — посмотри, где максимальный перерасход бюджета.
+          Круто!
         </div>
       </div>
     </article>

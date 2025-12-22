@@ -1,21 +1,34 @@
 <form class="chat-input" id="chat-form">
   <div class="chat-input__inner">
-    <button type="button" class="chat-input__icon-btn" aria-label="Прикрепить файл">
-      📎
-      <input
-        class="chat-input__file"
-        type="file"
-        name="attachment"
-        accept="image/*"
-      />
-    </button>
+    <div class="chat-input__attach-wrapper">
+      <button
+        type="button"
+        class="chat-input__icon-btn"
+        id="attach-toggle"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        📎
+      </button>
+      <div class="chat-input__attach-menu" id="attach-menu">
+        <button type="button" class="chat-input__attach-item" data-type="photo">
+          Фото или видео
+        </button>
+        <button type="button" class="chat-input__attach-item" data-type="file">
+          Файл
+        </button>
+        <button type="button" class="chat-input__attach-item" data-type="location">
+          Локация
+        </button>
+      </div>
+    </div>
 
     <textarea
       class="chat-input__textarea"
       name="message"
       id="message"
       rows="1"
-      placeholder="Задайте вопрос по маркетингу, данным или стратегиям…"
+      placeholder="Задайте вопрос про маркетинг, данные или стратегии…"
     ></textarea>
 
     <button type="submit" class="btn btn--primary chat-input__send">
@@ -23,3 +36,23 @@
     </button>
   </div>
 </form>
+
+<!-- псевдо-модал, визуально как смена аватара -->
+<section class="avatar-modal chat-upload-modal" id="upload-modal" aria-hidden="true">
+  <h1 class="avatar-modal__title" id="upload-modal-title">Загрузите файл</h1>
+  <p class="avatar-modal__subtitle" id="upload-modal-subtitle">
+  </p>
+  <label class="avatar-modal__file-label">
+    <span id="upload-modal-label">Выбрать файл на устройстве</span>
+    <input
+      type="file"
+      name="attachment"
+      class="avatar-modal__file-input"
+      id="upload-modal-input"
+    />
+  </label>
+  <button type="button" class="btn btn--primary avatar-modal__btn" id="upload-modal-submit">
+    Поменять
+  </button>
+</section>
+<div class="chat-upload-backdrop" id="upload-backdrop" aria-hidden="true"></div>

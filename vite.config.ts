@@ -1,56 +1,81 @@
 import { defineConfig } from 'vite';
-import handlebars from 'vite-plugin-handlebars';
-import { fileURLToPath } from 'node:url';
 import { resolve } from 'path';
-
-const root = fileURLToPath(new URL('./src', import.meta.url));
+import handlebars from 'vite-plugin-handlebars';
 
 export default defineConfig({
+  server: {
+    port: 3000,
+    strictPort: true
+  },
+  preview: {
+    port: 3000,
+    strictPort: true
+  },
+
   base: '/middle.messenger.praktikum.yandex/',
   root: 'src',
   build: {
-    outDir: '../distr',
+    outDir: 'dist',
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        index: resolve(root, 'index.html'),
-        login: resolve(root, 'login.html'),
-        register: resolve(root, 'register.html'),
-        chat: resolve(root, 'chat.html'),
-        settings: resolve(root, 'settings.html'),
-        profileView: resolve(root, 'profile-view.html'),
-        profileEdit: resolve(root, 'profile-edit.html'),
-        profilePassword: resolve(root, 'profile-password.html'),
-        profileAvatar: resolve(root, 'profile-avatar.html'),
-        error404: resolve(root, 'error-404.html'),
-        error5xx: resolve(root, 'error-5xx.html'),
+        main: resolve(__dirname, 'index.html'),
+        register: resolve(__dirname, 'register.html'),
+        messenger: resolve(__dirname, 'messenger.html')
       }
     }
   },
-  server: {
-    port: 3000,
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, 'src'),
+      '@pages': resolve(__dirname, 'src/pages'),
+      '@components': resolve(__dirname, 'src/components'),
+      '@styles': resolve(__dirname, 'src/styles')
+    }
   },
   plugins: [
     handlebars({
-      partialDirectory: 'src/partials',
+      partialDirectory: [
+        resolve(__dirname, 'src/pages'),
+        resolve(__dirname, 'src/components')
+      ],
       context(pagePath: string) {
-        // Подставляем заголовки/мета в конкретные страницы
-        const titles: Record<string, string> = {
-          '/login.html': 'Вход — Chat App',
-          '/register.html': 'Регистрация — Chat App',
-          '/chat.html': 'Чаты — Chat App',
-          '/settings.html': 'Настройки — Chat App',
-          '/profile-view.html': 'Просмотр профиля — Chat App',
-          '/profile-edit.html': 'Изменение профиля — Chat App',
-          '/profile-avatar.html': 'Изменение аватара — Chat App',
-          '/profile-password.html': 'Изменение пароля — Chat App',          
-          '/error-404.html': 'Страница не найдена',
-          '/error-5xx.html': 'Ошибка сервера',
-        };
+        if (pagePath.endsWith('messenger.html')) {
+          return {
+            title: 'Чаты',
+            chats: [
+              {
+                initials: 'JD',
+                title: 'John Doe',
+                time: '12:30',
+                lastMessage: 'Привет!',
+                unread: 2
+              },
+              {
+                initials: 'AS',
+                title: 'Alice',
+                time: '10:05',
+                lastMessage: 'Созвонимся позже',
+                unread: 0
+              }
+            ],
+            messages: [
+              { type: 'incoming', text: 'Привет!', time: '12:20' },
+              { type: 'outgoing', text: 'Привет, как дела?', time: '12:21' }
+            ]
+          };
+        }
+
+        if (pagePath.endsWith('register.html')) {
+          return {
+            title: 'Регистрация'
+          };
+        }
+
         return {
-          title: titles[pagePath] ?? 'Chat App',
+          title: 'Messenger'
         };
-      },
-    }),
-  ],
+      }
+    })
+  ]
 });

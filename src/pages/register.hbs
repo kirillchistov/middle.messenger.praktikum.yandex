@@ -1,88 +1,25 @@
-{{#> layouts/main}}
-  <main class="auth auth--center">
-    <section class="auth-card">
-      <header class="auth-card__header">
-        <h1 class="auth-card__title">Регистрация</h1>
-        <p class="auth-card__subtitle">
-          Создайте аккаунт, чтобы подключить данные и запустить чат с ИИ.
-        </p>
-      </header>
+<section class="auth">
+  <div class="auth__theme">
+    <button class="theme-toggle" type="button" data-theme-toggle>
+      Тема
+    </button>
+  </div>
 
-      <form class="form" id="register-form">
-        <div class="form__field">
-          <label for="first_name" class="form__label">Имя</label>
-          <input
-            id="first_name"
-            name="first_name"
-            type="text"
-            class="form__input"
-            required
-          />
-        </div>
+  <div class="auth__card">
+    <h1 class="auth__title">Регистрация</h1>
 
-        <div class="form__field">
-          <label for="second_name" class="form__label">Фамилия</label>
-          <input
-            id="second_name"
-            name="second_name"
-            type="text"
-            class="form__input"
-            required
-          />
-        </div>
+    <form class="auth__form">
+      {{> input id="first_name" name="first_name" label="Имя" type="text"}}
+      {{> input id="second_name" name="second_name" label="Фамилия" type="text"}}
+      {{> input id="login" name="login" label="Логин" type="text"}}
+      {{> input id="email" name="email" label="Email" type="email"}}
+      {{> input id="password" name="password" label="Пароль" type="password"}}
+      {{> input id="phone" name="phone" label="Телефон" type="tel"}}
 
-        <div class="form__field">
-          <label for="login" class="form__label">Логин</label>
-          <input
-            id="login"
-            name="login"
-            type="text"
-            class="form__input"
-            required
-          />
-        </div>
-
-        <div class="form__field">
-          <label for="email" class="form__label">Email</label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            class="form__input"
-            required
-          />
-        </div>
-
-        <div class="form__field">
-          <label for="password" class="form__label">Пароль</label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            class="form__input"
-            required
-          />
-        </div>
-
-        <div class="form__field">
-          <label for="phone" class="form__label">Телефон</label>
-          <input
-            id="phone"
-            name="phone"
-            type="tel"
-            class="form__input"
-          />
-        </div>
-
-        <button type="submit" class="btn btn--primary btn--full">
-          Создать аккаунт
-        </button>
-      </form>
-
-      <footer class="auth-card__footer">
-        <span class="auth-card__hint">Уже есть аккаунт?</span>
-        <a href="/login.html" class="link">Войти</a>
-      </footer>
-    </section>
-  </main>
-{{/layouts/main}}
+      <div class="auth__actions">
+        {{> button type="submit" text="Зарегистрироваться"}}
+        <a class="auth__link" href="/login.html">Войти</a>
+      </div>
+    </form>
+  </div>
+</section>
