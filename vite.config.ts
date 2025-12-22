@@ -12,7 +12,7 @@ export default defineConfig({
     strictPort: true
   },
 
-  base: '/middle.messenger.praktikum.yandex/',
+  base: '/',
   root: 'src',
   build: {
     outDir: 'dist',

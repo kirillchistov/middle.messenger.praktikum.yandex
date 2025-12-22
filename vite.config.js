@@ -8,7 +8,7 @@ var root = fileURLToPath(new URL('./src', import.meta.url));
 export default defineConfig({
     root: 'src',
     build: {
-        outDir: '../distr',
+        outDir: '../dist',
         emptyOutDir: true,
         rollupOptions: {
             input: {
