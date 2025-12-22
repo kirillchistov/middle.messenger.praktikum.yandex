@@ -19,6 +19,8 @@ dist-ssr
 .idea
 .DS_Store
 screens
+dist
+dist-ssr
 *.suo
 *.ntvs*
 *.njsproj
