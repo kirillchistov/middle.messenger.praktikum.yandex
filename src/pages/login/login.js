@@ -8,16 +8,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const formData = new FormData(loginForm);
             const data = Object.fromEntries(formData.entries());
             
-            // Валидация
+            // Validate form data
             if (!data.login || !data.password) {
                 alert('Заполните все обязательные поля');
                 return;
             }
             
-            // Здесь будет API запрос
+            // Will call API later
             console.log('Отправка данных для входа:', data);
             
-            // Пример перенаправления после успешного входа
+            // Once authorized will redirect to chat list
             // window.location.href = '/chat-list';
         });
     }

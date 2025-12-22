@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const addUserBtn = document.querySelector('[data-testid="add-user-btn"]');
     const removeUserBtn = document.querySelector('[data-testid="remove-user-btn"]');
     
-    // Отправка сообщения
+    // Sending message
     if (sendButton && messageInput) {
         const sendMessage = () => {
             const message = messageInput.value.trim();
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     timestamp: new Date().toISOString()
                 });
                 
-                // Здесь будет API запрос
+                // Will make API call here in future sprints
                 messageInput.value = '';
             }
         };
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Добавление вложения
+    // Attach file or location
     if (addAttachmentBtn) {
         addAttachmentBtn.addEventListener('click', () => {
             const input = document.createElement('input');
@@ -43,8 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (file) {
                     console.log('Выбран файл:', file.name, file.type);
                     
-                    // Здесь будет логика загрузки файла
-                    // Можно отобразить превью или имя файла
+                    // File upload processing later
+                    // Show file name or description
                 }
             });
             
@@ -52,24 +52,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Добавление пользователя в чат
+    // Add a user to the chat
     if (addUserBtn) {
         addUserBtn.addEventListener('click', () => {
             const username = prompt('Введите логин пользователя для добавления:');
             if (username) {
                 console.log('Добавление пользователя:', username);
-                // Здесь будет API запрос
+                // Will call API later
             }
         });
     }
     
-    // Удаление пользователя из чата
+    // Remove a user from the chat
     if (removeUserBtn) {
         removeUserBtn.addEventListener('click', () => {
             const username = prompt('Введите логин пользователя для удаления:');
             if (username) {
                 console.log('Удаление пользователя:', username);
-                // Здесь будет API запрос
+                // Will call API later
             }
         });
     }

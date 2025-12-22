@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const formData = new FormData(registrationForm);
             const data = Object.fromEntries(formData.entries());
             
-            // Валидация
+            // Validate registration data entry
             const errors = [];
             
             if (!data.first_name || !data.second_name) {
@@ -48,10 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
-            // Здесь будет API запрос
+            // Will call API later
             console.log('Отправка данных для регистрации:', data);
             
-            // Пример перенаправления после успешной регистрации
+            // Once registered will redirect to login
             // window.location.href = '/login?registered=true';
         });
     }

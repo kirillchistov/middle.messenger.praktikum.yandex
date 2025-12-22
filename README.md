@@ -12,6 +12,8 @@
 - 📱 **Шаблонизаторы** — инструменты для переиспользования уже готовых компонентов.
 - ⚡ [**Chai**](https://www.chaijs.com/), [**Mocha**](https://mochajs.org/), **Jext** — инструменты для написания тестов.
 
+## 🎨 [Макеты Figma](https://www.figma.com/design/vej9avKCqY1MaWuYJ6GzSw/Practicum-Middle-Front?node-id=765-3303&t=Ek6sqUFctYSzv1LM-4)
+
 ## 📁 [Деплой на Netlify](https://profound-capybara-dfddcc.netlify.app/)
 
 ## 🚀 Быстрый старт

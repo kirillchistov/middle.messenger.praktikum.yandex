@@ -36,7 +36,7 @@ export const api = {
         }
     },
     
-    // Аутентификация
+    // Authentication
     login(data) {
         return this.request('/auth/login', {
             method: 'POST',
@@ -57,7 +57,7 @@ export const api = {
         });
     },
     
-    // Профиль
+    // Profile
     getProfile() {
         return this.request('/profile');
     },
@@ -84,7 +84,7 @@ export const api = {
         });
     },
     
-    // Чаты
+    // Chats
     getChats() {
         return this.request('/chats');
     },

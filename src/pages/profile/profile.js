@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Переключение табов
+    // Switch between tabs
     const tabBtns = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
     
@@ -7,17 +7,17 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', () => {
             const tabId = btn.getAttribute('data-tab');
             
-            // Убираем активный класс у всех кнопок и контента
+            // Remove active class from all selected tab elements
             tabBtns.forEach(b => b.classList.remove('active'));
             tabContents.forEach(c => c.classList.remove('active'));
             
-            // Добавляем активный класс выбранным элементам
+            // Add active class to all selected tab elements
             btn.classList.add('active');
             document.getElementById(`${tabId}-tab`).classList.add('active');
         });
     });
     
-    // Загрузка аватара
+    // Upload avatar
     const avatarInput = document.getElementById('avatarInput');
     const changeAvatarBtn = document.getElementById('changeAvatarBtn');
     const removeAvatarBtn = document.getElementById('removeAvatarBtn');
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 reader.onload = (e) => {
                     avatarPreview.src = e.target.result;
                     console.log('Аватар изменен:', file.name);
-                    // Здесь будет API запрос на обновление аватара
+                    // Will call API later
                 };
                 reader.readAsDataURL(file);
             }
@@ -59,12 +59,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (confirm('Удалить текущее фото профиля?')) {
                 avatarPreview.src = '/assets/default-avatar.png';
                 console.log('Аватар удален');
-                // Здесь будет API запрос на удаление аватара
+                // Will call API later
             }
         });
     }
     
-    // Сохранение профиля
+    // Save profile data
     const profileForm = document.getElementById('profileForm');
     if (profileForm) {
         profileForm.addEventListener('submit', async (e) => {
@@ -73,18 +73,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const formData = new FormData(profileForm);
             const data = Object.fromEntries(formData.entries());
             
-            // Валидация
+            // Validate inputs
             if (!data.first_name || !data.second_name || !data.login || !data.email || !data.phone) {
                 alert('Заполните все обязательные поля');
                 return;
             }
             
             console.log('Сохранение профиля:', data);
-            // Здесь будет API запрос
+            // Will call API later
         });
     }
     
-    // Смена пароля
+    // Change password
     const passwordForm = document.getElementById('passwordForm');
     if (passwordForm) {
         passwordForm.addEventListener('submit', async (e) => {
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const formData = new FormData(passwordForm);
             const data = Object.fromEntries(formData.entries());
             
-            // Валидация
+            // Validate password entry
             const validatePassword = (password) => {
                 const minLength = 8;
                 const hasLetter = /[a-zA-Z]/.test(password);
@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 logoutAll: data.logoutAll === 'on'
             });
             
-            // Здесь будет API запрос
+            // Will call API later
             alert('Пароль успешно изменен!');
             passwordForm.reset();
         });

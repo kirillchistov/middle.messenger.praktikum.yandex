@@ -34,7 +34,7 @@ export default defineConfig({
             partialDirectory: 'src/partials',
             context: function (pagePath) {
                 var _a;
-                // Можно подставлять заголовки/мета под конкретные страницы
+                // Add titles, meta-tags for specific pages here
                 var titles = {
                     '/login.html': 'Вход — Chat App',
                     '/register.html': 'Регистрация — Chat App',

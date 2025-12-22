@@ -60,13 +60,13 @@
 .btn--primary {
   background: radial-gradient(circle at top left, var(--color-accent-strong), var(--color-accent));
   border-color: var(--color-accent-strong);
-  color: var(--color-text-inverse);     /* ВСЕГДА светлый текст */
+  color: var(--color-text-inverse);
 }
 
 .btn--primary:hover {
   background: radial-gradient(circle at top left, var(--color-accent), var(--color-accent-strong));
   border-color: var(--color-accent-strong);
-  color: var(--color-text-inverse);     /* не меняем */
+  color: var(--color-text-inverse);
 }
 
 .btn--ghost {
@@ -78,7 +78,7 @@
 .btn--ghost:hover {
   border-color: var(--color-border-strong);
   background-color: var(--color-bg-elevated);
-  color: var(--color-text-primary);     /* чуть темнее, но всё ещё читаем */
+  color: var(--color-text-primary);
 }
 
 .btn--full {

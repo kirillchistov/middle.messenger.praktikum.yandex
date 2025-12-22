@@ -39,6 +39,7 @@
 }
 
 .auth-card {
+  min-width: 340px;
   background: var(--color-bg-elevated);
   border-radius: var(--radius-xl);
   padding: var(--space-6);
@@ -145,7 +146,7 @@
   background-color: var(--color-bg-elevated-soft);
   border: 1px solid var(--color-border-subtle);
   box-shadow: var(--shadow-soft);
-  text-align: center;              /* центрируем текст */
+  text-align: center;
 }
 
 .error-card__code {
@@ -461,11 +462,13 @@ html[data-theme="light"] .profile-card {
   height: 120px;
   border-radius: 999px;
   background-color: #e5e7eb;
+  /* background-image: url("/assets/avatar-transp.png"); */
 }
 
 .profile-avatar--button {
   border: none;
   background-color: #9ca3af;
+  background-image: url("/assets/avatar-transp.png");
   color: #ffffff;
   font-size: var(--font-size-sm);
   text-align: center;
@@ -501,7 +504,7 @@ html[data-theme="light"] .profile-card {
   color: var(--color-text-muted);
 }
 
-/* Profile / password form */
+/* Edit profile / change password form */
 
 .profile-form {
   max-width: 520px;

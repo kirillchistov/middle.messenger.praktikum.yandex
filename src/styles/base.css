@@ -27,10 +27,10 @@
   --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.16);
 }
 
-/* Светлая тема по умолчанию */
+/* Light theme by default */
 html[data-theme="light"] {
-  --color-bg: #f9fafb;              /* светлый фон */
-  --color-bg-elevated: #ffffff;     /* карточки, инпуты */
+  --color-bg: #f9fafb;
+  --color-bg-elevated: #ffffff;
   --color-bg-elevated-soft: #f3f4f6;
   --color-border-subtle: #e5e7eb;
   --color-border-strong: #9ca3af;
@@ -48,7 +48,7 @@ html[data-theme="light"] {
   --color-danger-soft: rgba(185, 28, 28, 0.08);
 }
 
-/* Тёмная тема */
+/* Dark theme */
 html[data-theme="dark"] {
   --color-bg: #050509;
   --color-bg-elevated: #111827;
