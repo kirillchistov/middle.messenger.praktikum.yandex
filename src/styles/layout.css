@@ -8,7 +8,7 @@
 .app-shell {
   max-width: 1120px;
   margin: 0 auto;
-  padding: var(--space-6) var(--space-4);  /* уже есть горизонтальный паддинг */
+  padding: var(--space-6) var(--space-4);
 }
 
 .theme-toggle {
@@ -138,10 +138,14 @@
 }
 
 .error-card {
-  background-color: var(--color-bg-elevated-soft);
+  max-width: 720px;
+  width: 100%;
+  padding: var(--space-6);
   border-radius: var(--radius-xl);
+  background-color: var(--color-bg-elevated-soft);
   border: 1px solid var(--color-border-subtle);
   box-shadow: var(--shadow-soft);
+  text-align: center;              /* центрируем текст */
 }
 
 .error-card__code {
@@ -155,11 +159,11 @@
 }
 
 .error-card__text {
-  margin: 0 0 var(--space-6);
+  margin: 0 0 var(--space-4);
   color: var(--color-text-secondary);
 }
 
-/* Адаптивность */
+/* Adaptive-responsive */
 
 @media (max-width: 960px) {
   .app-shell {
@@ -207,13 +211,13 @@
   font-size: var(--font-size-sm);
 }
 
-/* светлая тема — светлый фон, тёмный текст */
+/* light theme */
 html[data-theme="light"] .landing-hero__badge {
   background-color: #ffffff;
   color: #374151;
 }
 
-/* тёмная тема — тёмный фон, светлый текст */
+/* dark theme */
 html[data-theme="dark"] .landing-hero__badge {
   background-color: rgba(15, 23, 42, 0.9);
   color: #e5e7eb;
@@ -388,6 +392,33 @@ html[data-theme="dark"] .landing-hero__badge {
   background-color: rgba(15, 23, 42, 0.05);
 }
 
+.profile-layout {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  min-height: calc(100vh - 2 * var(--space-6));
+}
+
+.profile-sidebar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(15, 25, 45, 0.05);
+}
+
+.profile-sidebar__back {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border-subtle);
+  background-color: var(--color-bg-elevated-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent);
+  text-decoration: none;
+  font-size: 18px;
+}
+
 .profile-back-btn {
   position: absolute;
   left: 0;
@@ -446,7 +477,7 @@ html[data-theme="light"] .profile-card {
   font-weight: 500;
 }
 
-/* Просмотр профиля — таблица */
+/* View profile data table */
 
 .profile-table {
   margin: 0 0 var(--space-6);
@@ -470,7 +501,7 @@ html[data-theme="light"] .profile-card {
   color: var(--color-text-muted);
 }
 
-/* Форма профиля / пароля */
+/* Profile / password form */
 
 .profile-form {
   max-width: 520px;
@@ -528,7 +559,7 @@ html[data-theme="light"] .profile-card {
   cursor: pointer;
 }
 
-/* Мок-модал для аватара */
+/* Modal for changing the avatar */
 
 .avatar-modal {
   max-width: 420px;

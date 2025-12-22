@@ -10,59 +10,61 @@
   </head>
   <body class="app">
     <div class="app-shell">
-      <main class="profile-page">
-        <a href="/chat.html" class="profile-back-btn">←</a>
+      <main class="profile-layout">
+        {{> profile-sidebar}}
+          <!-- <a href="/chat.html" class="profile-back-btn">←</a> -->
+        <section class="profile-page">
+          <section class="profile-card">
+            <div class="profile-card__avatar-block">
+              <button
+                type="button"
+                class="profile-avatar profile-avatar--button"
+                onclick="location.href='/profile-avatar.html'"
+              >
+                Поменять<br />аватар
+              </button>
+              <div class="profile-card__name">Иван</div>
+            </div>
 
-        <section class="profile-card">
-          <div class="profile-card__avatar-block">
-            <button
-              type="button"
-              class="profile-avatar profile-avatar--button"
-              onclick="location.href='/profile-avatar.html'"
-            >
-              Поменять<br />аватар
-            </button>
-            <div class="profile-card__name">Иван</div>
-          </div>
+            <dl class="profile-table">
+              <div class="profile-table__row">
+                <dt>Почта</dt>
+                <dd>pochta@yandex.ru</dd>
+              </div>
+              <div class="profile-table__row">
+                <dt>Логин</dt>
+                <dd>ivanivanov</dd>
+              </div>
+              <div class="profile-table__row">
+                <dt>Имя</dt>
+                <dd>Иван</dd>
+              </div>
+              <div class="profile-table__row">
+                <dt>Фамилия</dt>
+                <dd>Иванов</dd>
+              </div>
+              <div class="profile-table__row">
+                <dt>Имя в чате</dt>
+                <dd>Иван</dd>
+              </div>
+              <div class="profile-table__row">
+                <dt>Телефон</dt>
+                <dd>+7 (909) 867 30 30</dd>
+              </div>
+            </dl>
 
-          <dl class="profile-table">
-            <div class="profile-table__row">
-              <dt>Почта</dt>
-              <dd>pochta@yandex.ru</dd>
+            <div class="profile-card__actions">
+              <a href="/profile-edit.html" class="link profile-link">
+                Изменить данные
+              </a>
+              <a href="/profile-password.html" class="link profile-link">
+                Изменить пароль
+              </a>
+              <button type="button" class="profile-link profile-link--danger">
+                Выйти
+              </button>
             </div>
-            <div class="profile-table__row">
-              <dt>Логин</dt>
-              <dd>ivanivanov</dd>
-            </div>
-            <div class="profile-table__row">
-              <dt>Имя</dt>
-              <dd>Иван</dd>
-            </div>
-            <div class="profile-table__row">
-              <dt>Фамилия</dt>
-              <dd>Иванов</dd>
-            </div>
-            <div class="profile-table__row">
-              <dt>Имя в чате</dt>
-              <dd>Иван</dd>
-            </div>
-            <div class="profile-table__row">
-              <dt>Телефон</dt>
-              <dd>+7 (909) 867 30 30</dd>
-            </div>
-          </dl>
-
-          <div class="profile-card__actions">
-            <a href="/profile-edit.html" class="link profile-link">
-              Изменить данные
-            </a>
-            <a href="/profile-password.html" class="link profile-link">
-              Изменить пароль
-            </a>
-            <button type="button" class="profile-link profile-link--danger">
-              Выйти
-            </button>
-          </div>
+          </section>
         </section>
       </main>
     </div>

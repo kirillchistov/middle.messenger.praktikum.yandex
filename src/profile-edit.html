@@ -10,77 +10,81 @@
   </head>
   <body class="app">
     <div class="app-shell">
-      <main class="profile-page">
-        <a href="/profile-view.html" class="profile-back-btn">←</a>
+      <main class="profile-layout">
+        {{> profile-sidebar}}
 
-        <section class="profile-card">
-          <div class="profile-card__avatar-block">
-            <div class="profile-avatar"></div>
-            <div class="profile-card__name">Иван</div>
-          </div>
+        <section class="profile-page">
+          <!-- <a href="/profile-view.html" class="profile-back-btn">←</a> -->
 
-          <form class="profile-form" id="profile-form">
-            <div class="profile-form__row">
-              <label>Почта</label>
-              <input
-                class="profile-form__input"
-                type="email"
-                name="email"
-                value="pochta@yandex.ru"
-              />
-            </div>
-            <div class="profile-form__row">
-              <label>Логин</label>
-              <input
-                class="profile-form__input"
-                type="text"
-                name="login"
-                value="ivanivanov"
-              />
-            </div>
-            <div class="profile-form__row">
-              <label>Имя</label>
-              <input
-                class="profile-form__input"
-                type="text"
-                name="first_name"
-                value="Иван"
-              />
-            </div>
-            <div class="profile-form__row">
-              <label>Фамилия</label>
-              <input
-                class="profile-form__input"
-                type="text"
-                name="second_name"
-                value="Иванов"
-              />
-            </div>
-            <div class="profile-form__row">
-              <label>Имя в чате</label>
-              <input
-                class="profile-form__input"
-                type="text"
-                name="display_name"
-                value="Иван"
-              />
-            </div>
-            <div class="profile-form__row">
-              <label>Телефон</label>
-              <input
-                class="profile-form__input"
-                type="tel"
-                name="phone"
-                value="+7 (909) 867 30 30"
-              />
+          <section class="profile-card">
+            <div class="profile-card__avatar-block">
+              <div class="profile-avatar"></div>
+              <div class="profile-card__name">Иван</div>
             </div>
 
-            <div class="profile-form__actions">
-              <button type="submit" class="btn btn--primary">
-                Сохранить
-              </button>
-            </div>
-          </form>
+            <form class="profile-form" id="profile-form">
+              <div class="profile-form__row">
+                <label>Почта</label>
+                <input
+                  class="profile-form__input"
+                  type="email"
+                  name="email"
+                  value="pochta@yandex.ru"
+                />
+              </div>
+              <div class="profile-form__row">
+                <label>Логин</label>
+                <input
+                  class="profile-form__input"
+                  type="text"
+                  name="login"
+                  value="ivanivanov"
+                />
+              </div>
+              <div class="profile-form__row">
+                <label>Имя</label>
+                <input
+                  class="profile-form__input"
+                  type="text"
+                  name="first_name"
+                  value="Иван"
+                />
+              </div>
+              <div class="profile-form__row">
+                <label>Фамилия</label>
+                <input
+                  class="profile-form__input"
+                  type="text"
+                  name="second_name"
+                  value="Иванов"
+                />
+              </div>
+              <div class="profile-form__row">
+                <label>Имя в чате</label>
+                <input
+                  class="profile-form__input"
+                  type="text"
+                  name="display_name"
+                  value="Иван"
+                />
+              </div>
+              <div class="profile-form__row">
+                <label>Телефон</label>
+                <input
+                  class="profile-form__input"
+                  type="tel"
+                  name="phone"
+                  value="+7 (909) 867 30 30"
+                />
+              </div>
+
+              <div class="profile-form__actions">
+                <button type="submit" class="btn btn--primary">
+                  Сохранить
+                </button>
+              </div>
+            </form>
+          </section>
         </section>
       </main>
     </div>

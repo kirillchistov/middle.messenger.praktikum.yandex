@@ -10,23 +10,25 @@
   </head>
   <body class="app">
     <div class="app-shell">
-      <main class="profile-page profile-page--overlay">
-        <a href="/profile-view.html" class="profile-back-btn">←</a>
+      <main class="profile-layout profile-page--overlay">
+        {{> profile-sidebar}}
 
-        <section class="avatar-modal">
-          <h1 class="avatar-modal__title">Загрузите файл</h1>
-          <label class="avatar-modal__file-label">
-            <span>Выбрать файл на устройстве</span>
-            <input
-              type="file"
-              name="avatar"
-              accept="image/*"
-              class="avatar-modal__file-input"
-            />
-          </label>
-          <button type="button" class="btn btn--primary avatar-modal__btn">
-            Поменять
-          </button>
+        <section class="profile-page">
+          <section class="avatar-modal">
+            <h1 class="avatar-modal__title">Загрузите файл</h1>
+            <label class="avatar-modal__file-label">
+              <span>Выбрать файл на устройстве</span>
+              <input
+                type="file"
+                name="avatar"
+                accept="image/*"
+                class="avatar-modal__file-input"
+              />
+            </label>
+            <button type="button" class="btn btn--primary avatar-modal__btn">
+              Поменять
+            </button>
+          </section>
         </section>
       </main>
     </div>
