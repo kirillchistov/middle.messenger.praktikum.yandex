@@ -8,13 +8,15 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "useDefineForClassFields": true,
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "useDefineForClassFields": true,
+    "moduleResolution": "bundler",
     "strict": true,
     "jsx": "preserve",
+    "typeRoots": ["./src/types", "./node_modules/@types"],
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "lib": ["ESNext", "DOM"],
     "baseUrl": "./src",

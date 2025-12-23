@@ -1,9 +1,9 @@
-// Type declarations for global app types
 declare module 'vite-plugin-handlebars' {
   import type { Plugin } from 'vite';
 
   export interface HandlebarsOptions {
-    partialDirectory?: string;
+    // partialDirectory?: string;
+    partialDirectory?: string | string[];
     context?: (pagePath: string) => Record<string, unknown>;
   }
 
