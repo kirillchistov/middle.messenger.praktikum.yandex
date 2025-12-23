@@ -20,9 +20,9 @@ dist-ssr
 .DS_Store
 screens
 dist
-dist-ssr
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+dist/
