@@ -1,0 +1,25 @@
+<section class="auth">
+  <div class="auth__theme">
+    <button class="theme-toggle" type="button" data-theme-toggle>
+      Тема
+    </button>
+  </div>
+
+  <div class="auth__card">
+    <h1 class="auth__title">Регистрация</h1>
+
+    <form class="auth__form">
+      {{> input id="first_name" name="first_name" label="Имя" type="text"}}
+      {{> input id="second_name" name="second_name" label="Фамилия" type="text"}}
+      {{> input id="login" name="login" label="Логин" type="text"}}
+      {{> input id="email" name="email" label="Email" type="email"}}
+      {{> input id="password" name="password" label="Пароль" type="password"}}
+      {{> input id="phone" name="phone" label="Телефон" type="tel"}}
+
+      <div class="auth__actions">
+        {{> button type="submit" text="Зарегистрироваться"}}
+        <a class="auth__link" href="/login.html">Войти</a>
+      </div>
+    </form>
+  </div>
+</section>

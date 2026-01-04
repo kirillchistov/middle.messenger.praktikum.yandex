@@ -1,0 +1,12 @@
+<aside class="messenger__sidebar">
+  <header class="messenger__sidebar-header">
+    <a class="messenger__profile-link" href="/settings">Профиль ></a>
+    <input class="messenger__search" type="text" placeholder="Поиск 🔎" />
+  </header>
+
+  <ul class="messenger__chat-list">
+    {{#each chats}}
+      {{> chat-item}}
+    {{/each}}
+  </ul>
+</aside>

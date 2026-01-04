@@ -1,0 +1,42 @@
+{{#> layouts/main}}
+  <main class="landing">
+    <section class="landing-hero">
+      <div class="landing-hero__content">
+        <div class="landing-hero__badge">
+          <span class="landing-hero__badge-dot"></span>
+          <span>ИИ + живые эксперты</span>
+        </div>
+
+        <h1 class="landing-hero__title">
+          Чаты, в которых вас понимают.
+        </h1>
+
+        <p class="landing-hero__subtitle">
+          Задавайте важным вопросы на естественном языке. 
+          Эксперты сразу ответят или помогут
+          найти ответ самостоятельно.
+        </p>
+
+        <div class="landing-hero__actions">
+          <a href="/chat.html" class="btn btn--primary">
+            Перейти к чатам
+          </a>
+          <a href="/login.html" class="btn btn--ghost">
+            Войти
+          </a>
+        </div>
+
+        <p class="landing-hero__hint">
+          Нет аккаунта?
+          <a href="/register.html" class="link">
+            Зарегистрируйтесь за минуту
+          </a>
+        </p>
+      </div>
+
+      <div class="landing-hero__preview">
+        {{> chat-preview}}
+      </div>
+    </section>
+  </main>
+{{/layouts/main}}

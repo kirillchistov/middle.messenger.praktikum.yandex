@@ -1,0 +1,15 @@
+<li class="chat-item">
+  <div class="chat-item__avatar">{{initials}}</div>
+  <div class="chat-item__content">
+    <div class="chat-item__top">
+      <span class="chat-item__title">{{title}}</span>
+      <span class="chat-item__time">{{time}}</span>
+    </div>
+    <div class="chat-item__bottom">
+      <span class="chat-item__last">{{lastMessage}}</span>
+      {{#if unread}}
+        <span class="chat-item__badge">{{unread}}</span>
+      {{/if}}
+    </div>
+  </div>
+</li>

@@ -1,0 +1,64 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: var(--deepseek-primary);
+  color: white;
+  text-decoration: none;
+}
+
+.button:hover {
+  background-color: var(--deepseek-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.button--secondary {
+  background-color: white;
+  color: var(--deepseek-primary);
+  border: 2px solid var(--deepseek-primary);
+}
+
+.button--secondary:hover {
+  background-color: var(--deepseek-bg);
+}
+
+.button--danger {
+  background-color: var(--deepseek-error);
+}
+
+.button--danger:hover {
+  background-color: #e0352b;
+}
+
+.button--small {
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.button--large {
+  padding: 16px 32px;
+  font-size: 18px;
+}
+
+.button--full-width {
+  width: 100%;
+}
