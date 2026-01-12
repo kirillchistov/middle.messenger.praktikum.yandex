@@ -1,0 +1,30 @@
+<section class="profile">
+  <aside class="profile__back">
+    <a href="/profile" class="profile__back-link">← Назад</a>
+  </aside>
+
+  <div class="profile__card">
+    <h1 class="profile__title">Изменить аватар</h1>
+
+    <div class="profile__avatar profile__avatar--large">
+      <img src="{{avatar}}" alt="Аватар" class="profile__avatar-img" />
+    </div>
+
+    <form class="profile__form" id="profile-avatar-form">
+      <div class="form-field">
+        <label class="form-field__label" for="avatar">Новый аватар</label>
+        <input
+          id="avatar"
+          name="avatar"
+          type="file"
+          class="form-field__input"
+          accept="image/*"
+        />
+      </div>
+
+      <div class="profile__actions">
+        {{> Button type="submit" text="Сохранить"}}
+      </div>
+    </form>
+  </div>
+</section>

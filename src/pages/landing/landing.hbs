@@ -1,0 +1,42 @@
+<section class="landing">
+  <header class="landing__header">
+    <div class="landing__brand">
+      <span class="landing__logo">ИИ + живые эксперты</span>
+    </div>
+
+    <nav class="landing-nav">
+      <button
+        class="theme-toggle"
+        type="button"
+        data-theme-toggle
+        id="nav-theme-toggle"
+      >
+        Тема
+      </button>
+
+      <a href="/login" class="landing-nav__link">Вход</a>
+      <a href="/register" class="landing-nav__link landing-nav__link--primary">
+        Регистрация
+      </a>
+    </nav>
+  </header>
+
+  <main class="landing__main">
+    <section class="landing__hero">
+      <h1 class="landing__title">Чаты, в которых вас понимают.</h1>
+      <p class="landing__subtitle">
+        Задавайте важным вопросы на естественном языке. Эксперты сразу ответят
+        или помогут найти ответ самостоятельно.
+      </p>
+
+      <div class="landing__cta">
+        <p class="landing__hint">Нет аккаунта? Зарегистрируйтесь за минуту</p>
+        <a href="/register" class="landing__button">Зарегистрироваться</a>
+      </div>
+    </section>
+
+    <section class="landing__preview">
+      {{> chat-preview}}
+    </section>
+  </main>
+</section>

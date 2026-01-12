@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc && vite build",
     "typecheck": "tsc -b",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "vite dev --port 3000"
+    "start": "vite build && vite preview --port 3000",
+    "format": "prettier --write ."
   },
   "engines": {
     "node": ">=18.x"
@@ -17,7 +18,8 @@
   "dependencies": {
     "handlebars": "^4.7.8",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "nanoid": "^5.1.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
@@ -32,6 +34,10 @@
     "globals": "^16.5.0",
     "postcss": "^8.4.32",
     "postcss-nested": "^6.0.1",
+    "prettier": "^3.6.2",
+    "prettier-plugin-handlebars": "^0.0.1",
+    "stylelint": "^16.25.0",
+    "stylelint-config-standard": "^39.0.1",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
     "vite": "^7.2.4",

@@ -14,19 +14,24 @@
     "strict": true,
     "jsx": "preserve",
     "typeRoots": ["./src/types", "./node_modules/@types"],
+    "skipLibCheck": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "lib": ["ESNext", "DOM"],
-    "ignoreDeprecations": "6.0",
-    "baseUrl": "./src",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    // "ignoreDeprecations": "6.0",
+    "noEmit": true,
+    // "baseUrl": ".",
+    "sourceMap": true,
     "paths": {
-      "@/*": ["*"],
-      "@pages/*": ["pages/*"],
-      "@components/*": ["components/*"],
-      "@styles/*": ["styles/*"]
+      "@/*": ["./src/*"],
+      "@pages/*": ["./src/pages/*"],
+      "@components/*": ["./src/components/*"],
+      "@styles/*": ["./src/styles/*"],
+      "@core/*": ["./src/core/*"],
+      "@utils/*": ["./src/utils/*"]
     }
   },
-  "include": ["src/**/*", "vite.config.ts"]
+  "include": ["./src/**/*", "vite.config.ts"]
 }

@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import handlebars from 'vite-plugin-handlebars';
+import { handlebarsPartialsDirectories } from './src/types/vite-plugin-handlebars';
 
 export default defineConfig({
   server: {
@@ -13,14 +14,14 @@ export default defineConfig({
   },
 
   base: '/',
-  root: 'src',
+  // root: 'src',
   build: {
     outDir: 'dist',
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'src/index.html'),
-        register: resolve(__dirname, 'src/register.html'),
+        main: resolve(__dirname, 'index.html'),
+        // register: resolve(__dirname, 'src/register.html'),
         // messenger: resolve(__dirname, 'messenger.html')
       }
     }
@@ -35,47 +36,22 @@ export default defineConfig({
   },
   plugins: [
     handlebars({
-      partialDirectory: [
-        resolve(__dirname, 'src/pages'),
-        resolve(__dirname, 'src/components')
-      ],
+      partialDirectory: handlebarsPartialsDirectories as unknown as string,
       context(pagePath: string) {
-        if (pagePath.endsWith('messenger.html')) {
-          return {
-            title: 'Чаты',
-            chats: [
-              {
-                initials: 'JD',
-                title: 'John Doe',
-                time: '12:30',
-                lastMessage: 'Привет!',
-                unread: 2
-              },
-              {
-                initials: 'AS',
-                title: 'Alice',
-                time: '10:05',
-                lastMessage: 'Созвонимся позже',
-                unread: 0
-              }
-            ],
-            messages: [
-              { type: 'incoming', text: 'Привет!', time: '12:20' },
-              { type: 'outgoing', text: 'Привет, как дела?', time: '12:21' }
-            ]
-          };
+        if (pagePath.endsWith('index.html')) {
+          return { title: 'Чаты, в которых вас понимают.' };
         }
-
         if (pagePath.endsWith('register.html')) {
-          return {
-            title: 'Регистрация'
-          };
+          return { title: 'Регистрация' };
         }
-
-        return {
-          title: 'Messenger'
-        };
-      }
-    })
-  ]
+        if (pagePath.endsWith('login.html')) {
+          return { title: 'Вход' };
+        }
+        if (pagePath.endsWith('profile.html')) {
+          return { title: 'Профиль' };
+        }
+        return { title: 'Messenger' };
+      },
+    }),
+  ],
 });
