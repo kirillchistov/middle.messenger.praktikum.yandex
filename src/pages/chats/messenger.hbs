@@ -1,53 +1,108 @@
-<section class="messenger">
-  <aside class="messenger__sidebar">
-    <header class="messenger__sidebar-header">
-      <a class="messenger__profile-link" href="/profile">Профиль ></a>
+{{!-- src/pages/chats.hbs или messenger.hbs --}}
+<section class="chat-layout">
+  <aside class="chat-sidebar">
+    <header class="chat-sidebar__header">
+      <div class="chat-sidebar__title">
+        <span class="chat-sidebar__logo-dot"></span>
+        <span>Чаты</span>
+      </div>
 
-      <button class="theme-toggle theme-toggle--small" type="button" data-theme-toggle>
-        Тема
+      <div class="chat-sidebar__user">
+        <a href="/profile" class="btn btn--ghost">
+          Профиль
+        </a>
+      </div>
+    </header>
+
+    <div class="chat-sidebar__search">
+      <input
+        class="chat-sidebar__search-input"
+        type="text"
+        name="search"
+        placeholder="Поиск"
+      />
+    </div>
+
+    <div class="chat-sidebar__body">
+      <button class="btn btn--primary chat-sidebar__new-chat" type="button">
+        Новый чат
       </button>
 
-      <input
-        class="messenger__search"
-        type="text"
-        placeholder="Поиск"
-        name="search"
-      />
-    </header>
-
-    <ul class="messenger__chat-list">
-      {{#each chats}}
-        {{> chat-item}}
-      {{/each}}
-    </ul>
-  </aside>
-
-  <div class="messenger__content">
-    <header class="messenger__header">
-      <div class="messenger__chat-title">
-        <div class="messenger__chat-avatar">JD</div>
-        <span class="messenger__chat-name">John Doe</span>
-      </div>
-      <button class="messenger__options" type="button">⋮</button>
-    </header>
-
-    <div class="messenger__body">
-      <ul class="messenger__messages">
-        {{#each messages}}
-          {{> message-item}}
+      <ul class="chat-sidebar__list">
+        {{#each chats}}
+          {{> chat-preview}}
         {{/each}}
       </ul>
     </div>
+  </aside>
 
-    <form class="messenger__input-row" id="chat-message-form">
-      <button class="messenger__attach" type="button">📎</button>
-      <input
-        class="messenger__input"
-        type="text"
-        name="message"
-        placeholder="Сообщение"
-      />
-      <button class="messenger__send" type="submit">➤</button>
+  <div class="chat-main">
+    <header class="chat-thread__header">
+      <div class="chat-thread__left">
+        <div class="chat-thread__avatar">JD</div>
+        <div>
+          <h2 class="chat-thread__title">Чат‑эксперт</h2>
+          <p class="chat-thread__subtitle">Онлайн</p>
+        </div>
+      </div>
+
+      <div class="chat-thread__right">
+        <button
+          id="chat-menu-toggle"
+          class="chat-thread__menu-btn"
+          type="button"
+        >
+          ⋮
+        </button>
+
+        <div id="chat-menu" class="chat-thread__menu-dropdown">
+          <button class="chat-thread__menu-item" type="button">
+            Добавить пользователя
+          </button>
+          <button class="chat-thread__menu-item" type="button">
+            Удалить пользователя
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="chat-thread__messages">
+      {{#each messages}}
+        {{> message-item}}
+      {{/each}}
+    </div>
+
+    <form class="chat-input" id="chat-message-form">
+      <div class="chat-input__inner">
+        <div class="chat-input__attach-wrapper">
+          <button
+            id="attach-toggle"
+            class="chat-input__icon-btn"
+            type="button"
+          >
+            📎
+          </button>
+
+          <div id="attach-menu" class="chat-input__attach-menu">
+            <button class="chat-input__attach-item" type="button">
+              Фото или видео
+            </button>
+            <button class="chat-input__attach-item" type="button">
+              Файл
+            </button>
+          </div>
+        </div>
+
+        <textarea
+          class="chat-input__textarea"
+          name="message"
+          placeholder="Сообщение"
+        ></textarea>
+
+        <button class="btn btn--primary chat-input__send" type="submit">
+          ➤
+        </button>
+      </div>
     </form>
   </div>
 </section>

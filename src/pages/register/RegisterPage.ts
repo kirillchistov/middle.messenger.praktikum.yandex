@@ -1,7 +1,7 @@
-import { Block } from '../../core/block';
+import { Block } from '@core/block';
 import template from './register.hbs?raw';
-import { attachFormValidation } from '../../utils/formValidation';
-import { renderTemplate } from '../../utils/renderTemplate';
+import { attachFormValidation } from '@utils/formValidation';
+import { renderTemplate } from '@utils/renderTemplate';
 
 type RegisterProps = Record<string, never>;
 
@@ -11,15 +11,16 @@ export class RegisterPage extends Block<RegisterProps> {
   }
 
   protected componentDidMount(): void {
-    console.log('[RegisterPage] componentDidMount');
     const root = this.getContent();
     console.log('[RegisterPage] content exists?', !!root);
     if (!root) return;
     
-    const form = root.querySelector<HTMLFormElement>('#register-form');
-    console.log('[RegisterPage] form found?', !!form);
+    const form = document.getElementById('register-form') as HTMLFormElement | null;
+    
     if (form) {
+      console.log('[RegisterPage] form found?', !!form);
       attachFormValidation(form, { logOnSuccess: true });
+      console.log('form data must be here');
     }
   }
 

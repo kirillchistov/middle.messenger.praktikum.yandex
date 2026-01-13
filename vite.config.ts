@@ -31,7 +31,13 @@ export default defineConfig({
       '@': resolve(__dirname, 'src'),
       '@pages': resolve(__dirname, 'src/pages'),
       '@components': resolve(__dirname, 'src/components'),
-      '@styles': resolve(__dirname, 'src/styles')
+      '@partials': resolve(__dirname, 'src/partials'),
+      '@styles': resolve(__dirname, 'src/styles'),
+      '@layouts': resolve(__dirname, 'src/layouts'),
+      '@core': resolve(__dirname, 'src/core'),
+      '@types': resolve(__dirname, 'src/types'),
+      '@ts': resolve(__dirname, 'src/ts'),
+      '@utils': resolve(__dirname, 'src/utils')
     }
   },
   plugins: [

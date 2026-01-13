@@ -1,8 +1,8 @@
 .app {
   min-height: 100vh;
-  background-color: var(--color-bg);
+  background-color: var(--bg);
   background-image: radial-gradient(circle at top, rgba(15, 23, 42, 0.06) 0, transparent 55%);
-  color: var(--color-text-primary);
+  color: var(--text);
 }
 
 .app-shell {
@@ -11,26 +11,26 @@
   padding: var(--space-6) var(--space-4);
 }
 
+/* переключатель темы */
 .theme-toggle {
   border-radius: var(--radius-pill);
   padding: var(--space-1) var(--space-3);
   margin-right: var(--space-2);
-  border: 1px solid var(--color-border-subtle);
-  background-color: var(--color-bg-elevated-soft);
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
+  border: 1px solid var(--border-subtle);
+  background-color: var(--bg-elevated);
+  color: var(--muted);
+  font-size: 0.875rem;
   cursor: pointer;
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .theme-toggle:hover {
-  border-color: var(--color-border-strong);
-  background-color: var(--color-bg-elevated);
-  color: var(--color-text-primary);
+  border-color: rgba(0,0,0,0.15);
+  background-color: var(--bg-elevated);
+  color: var(--text);
 }
 
-/* Auth layouts */
-
+/* Auth */
 .auth {
   display: flex;
   align-items: center;
@@ -40,13 +40,12 @@
 
 .auth-card {
   min-width: 340px;
-  background: var(--color-bg-elevated);
+  background: var(--bg-elevated);
   border-radius: var(--radius-xl);
   padding: var(--space-6);
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid var(--border-subtle);
   box-shadow: var(--shadow-soft);
 }
-
 
 .auth-card__header {
   margin-bottom: var(--space-6);
@@ -54,12 +53,12 @@
 
 .auth-card__title {
   margin: 0 0 var(--space-2);
-  font-size: var(--font-size-xl);
+  font-size: 1.5rem;
 }
 
 .auth-card__subtitle {
   margin: 0;
-  color: var(--color-text-secondary);
+  color: var(--muted);
 }
 
 .auth-card__footer {
@@ -67,12 +66,11 @@
   display: flex;
   justify-content: center;
   gap: var(--space-2);
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  color: var(--muted);
 }
 
 /* Chat layout */
-
 .chat-layout {
   display: grid;
   grid-template-columns: 280px minmax(0, 1fr);
@@ -81,9 +79,9 @@
 }
 
 .chat-main {
-  background-color: var(--color-bg-elevated-soft);
+  background-color: #f3f4f6;
   border-radius: var(--radius-xl);
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
   padding: var(--space-4);
@@ -593,4 +591,24 @@ html[data-theme="light"] .profile-card {
 .avatar-modal__btn {
   width: 100%;
   justify-content: center;
+}
+
+.app-footer {
+  margin-top: var(--space-6);
+  padding: var(--space-4) var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+  font-size: 0.875rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+.app-footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: center;
+}
+
+.app-footer__link {
+  color: var(--primary);
 }

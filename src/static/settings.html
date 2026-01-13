@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{title}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/styles/base.css" />
+    <link rel="stylesheet" href="/styles/layout.css" />
+    <link rel="stylesheet" href="/styles/forms.css" />
+    <link rel="stylesheet" href="/styles/chat.css" />
+  </head>
+  <body class="app app--dark">
+    <div class="app-shell">
+      <main class="settings-layout">
+        <section class="settings-panel">
+          <header class="settings-panel__header">
+            <h1 class="settings-panel__title">Настройки пользователя</h1>
+            <p class="settings-panel__subtitle">
+              Обновите данные профиля, аватар и пароль.
+            </p>
+          </header>
+
+          <div class="settings-panel__grid">
+            <section class="settings-card">
+              <h2 class="settings-card__title">Профиль</h2>
+              <form class="form" id="profile-form">
+                <div class="form__field">
+                  <label for="first_name" class="form__label">Имя</label>
+                  <input id="first_name" name="first_name" class="form__input" />
+                </div>
+
+                <div class="form__field">
+                  <label for="second_name" class="form__label">Фамилия</label>
+                  <input id="second_name" name="second_name" class="form__input" />
+                </div>
+
+                <div class="form__field">
+                  <label for="display_name" class="form__label">
+                    Отображаемое имя
+                  </label>
+                  <input
+                    id="display_name"
+                    name="display_name"
+                    class="form__input"
+                  />
+                </div>
+
+                <div class="form__field">
+                  <label for="login" class="form__label">Логин</label>
+                  <input id="login" name="login" class="form__input" />
+                </div>
+
+                <div class="form__field">
+                  <label for="email" class="form__label">Email</label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    class="form__input"
+                  />
+                </div>
+
+                <div class="form__field">
+                  <label for="phone" class="form__label">Телефон</label>
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    class="form__input"
+                  />
+                </div>
+
+                <button type="submit" class="btn btn--primary">
+                  Сохранить профиль
+                </button>
+              </form>
+            </section>
+
+            <section class="settings-card">
+              <h2 class="settings-card__title">Аватар</h2>
+              <form class="form" id="avatar-form">
+                <div class="form__field">
+                  <label for="avatar" class="form__label">
+                    Загрузить новый аватар
+                  </label>
+                  <input
+                    id="avatar"
+                    name="avatar"
+                    type="file"
+                    accept="image/*"
+                    class="form__input form__input--file"
+                  />
+                </div>
+                <button type="submit" class="btn btn--ghost">
+                  Обновить аватар
+                </button>
+              </form>
+            </section>
+
+            <section class="settings-card">
+              <h2 class="settings-card__title">Пароль</h2>
+              <form class="form" id="password-form">
+                <div class="form__field">
+                  <label for="oldPassword" class="form__label">
+                    Текущий пароль
+                  </label>
+                  <input
+                    id="oldPassword"
+                    name="oldPassword"
+                    type="password"
+                    class="form__input"
+                  />
+                </div>
+
+                <div class="form__field">
+                  <label for="newPassword" class="form__label">
+                    Новый пароль
+                  </label>
+                  <input
+                    id="newPassword"
+                    name="newPassword"
+                    type="password"
+                    class="form__input"
+                  />
+                </div>
+
+                <button type="submit" class="btn btn--ghost">
+                  Изменить пароль
+                </button>
+              </form>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

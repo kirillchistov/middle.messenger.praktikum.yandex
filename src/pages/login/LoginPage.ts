@@ -1,6 +1,6 @@
-import { Block } from '../../core/block';
+import { Block } from '@core/block';
 import template from './login.hbs?raw';
-import { attachFormValidation } from '../../utils/formValidation';
+import { attachFormValidation } from '@utils/formValidation';
 
 type LoginProps = Record<string, never>;
 

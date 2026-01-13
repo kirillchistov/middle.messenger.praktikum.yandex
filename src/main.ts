@@ -1,19 +1,30 @@
-import '@styles/base.pcss';
+import './styles/base.pcss';
+import './styles/layout.pcss';
+import './styles/forms.pcss';
+import './styles/chat.pcss';
+import './styles/components/input.pcss';
+import './styles/components/button.pcss';
 
-import { RegisterPage } from '@pages/register';
-import { LoginPage } from '@pages/login';
-import { ChatsPage } from '@pages/chats';
+import { Block } from './core/block';
+import Handlebars from 'handlebars';
+import { registerHandlebarsPartials } from './utils/registerPartials';
+
+import { RegisterPage } from './pages/register';
+import { LoginPage } from './pages/login';
+import { ChatsPage } from './pages/chats';
 
 import {
   ProfileViewPage,
   ProfileEditPage,
   ProfileAvatarPage,
   ProfilePasswordPage,
-} from '@pages/profile';
+} from './pages/profile';
 
-import { LandingPage } from '@pages/landing';
+import { LandingPage } from './pages/landing';
 
 // ---------- Общий UI (тема, меню, модалки) ----------
+
+window.Handlebars = Handlebars;
 
 const setupThemeToggle = (): void => {
   const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
@@ -128,6 +139,7 @@ const injectFooter = (): void => {
 // ---------- Инициализация страницы по pathname ----------
 
 const initApp = (): void => {
+  registerHandlebarsPartials();
   setupCommonUI();
 
   const rootSelector = '#app';
@@ -136,15 +148,15 @@ const initApp = (): void => {
 
   const path = window.location.pathname;
 
-  let pageInstance:
-    | LandingPage
-    | RegisterPage
-    | LoginPage
-    | ChatsPage
-    | ProfileViewPage
-    | ProfileEditPage
-    | ProfileAvatarPage
-    | ProfilePasswordPage;
+  let pageInstance: Block;
+    // | LandingPage
+    // | RegisterPage
+    // | LoginPage
+    // | ChatsPage
+    // | ProfileViewPage
+    // | ProfileEditPage
+    // | ProfileAvatarPage
+    // | ProfilePasswordPage;
 
   if (path === '/' || path === '/index.html') {
     pageInstance = new LandingPage();
@@ -163,13 +175,12 @@ const initApp = (): void => {
   } else if (path === '/profile/password' || path === '/profile-password.html') {
     pageInstance = new ProfilePasswordPage();
   } else {
-    // fallback — чаты
     pageInstance = new ChatsPage();
   }
 
   root.innerHTML = '';
   pageInstance.mount(rootSelector);
-  injectFooter();
+    injectFooter();
 };
 
 document.addEventListener('DOMContentLoaded', initApp);

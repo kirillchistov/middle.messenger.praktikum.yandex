@@ -1,1 +1,1 @@
-export { Block } from '../../core/block';
+export { Block } from '@core/block';

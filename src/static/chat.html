@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{title}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/styles/base.css" />
+    <link rel="stylesheet" href="/styles/layout.css" />
+    <link rel="stylesheet" href="/styles/forms.css" />
+    <link rel="stylesheet" href="/styles/chat.css" />
+  </head>
+  <body class="app">
+    <div class="app-shell">
+      <main class="chat-layout">
+        {{> chat-sidebar}}
+
+        <section class="chat-main">
+          {{> chat-header}}
+          {{> chat-messages}}
+          {{> chat-input}}
+        </section>
+
+        <section
+          class="avatar-modal chat-user-modal"
+          id="user-modal"
+          aria-hidden="true"
+        >
+          <h1 class="avatar-modal__title" id="user-modal-title">
+            Добавить пользователя
+          </h1>
+
+          <div class="chat-user-modal__field">
+            <label for="user-modal-login" class="form__label">Логин</label>
+            <input
+              id="user-modal-login"
+              name="login"
+              type="text"
+              class="form__input"
+              value="ivanivanov"
+            />
+          </div>
+
+          <button
+            type="button"
+            class="btn btn--primary avatar-modal__btn"
+            id="user-modal-submit"
+          >
+            Добавить в чат
+          </button>
+        </section>
+
+        <div class="chat-upload-backdrop" id="user-modal-backdrop" aria-hidden="true"></div>
+      </main>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

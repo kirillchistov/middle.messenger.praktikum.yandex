@@ -1,52 +1,47 @@
 .form-group {
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--space-4);
 }
 
 .form-label {
   display: block;
-  margin-bottom: var(--spacing-xs);
+  margin-bottom: var(--space-1);
   font-weight: 500;
-  color: var(--deepseek-text);
-  font-size: 14px;
+  color: var(--text);
+  font-size: 0.875rem;
 }
 
 .form-input {
   width: 100%;
   padding: 12px 16px;
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 1.5;
-  color: var(--deepseek-text);
-  background-color: white;
-  border: 2px solid var(--deepseek-border);
+  color: var(--text);
+  background-color: #fff;
+  border: 2px solid var(--border-subtle);
   border-radius: var(--radius-md);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: var(--deepseek-primary);
-  box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 10%, transparent);
 }
 
 .form-input::placeholder {
-  color: var(--deepseek-text-light);
+  color: var(--muted);
   opacity: 0.7;
 }
 
 .form-input--error {
-  border-color: var(--deepseek-error);
-}
-
-.form-input--error:focus {
-  border-color: var(--deepseek-error);
-  box-shadow: 0 0 0 3px rgba(255, 59, 48, 0.1);
+  border-color: var(--danger);
 }
 
 .error-message {
   display: block;
-  margin-top: var(--spacing-xs);
-  color: var(--deepseek-error);
-  font-size: 14px;
+  margin-top: var(--space-1);
+  color: var(--danger);
+  font-size: 0.875rem;
 }
 
 .form-checkbox {

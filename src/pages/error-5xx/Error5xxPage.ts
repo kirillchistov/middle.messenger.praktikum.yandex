@@ -1,4 +1,4 @@
-import { Block } from '../../core/block';
+import { Block } from '@core/block';
 import template from './error-5xx.hbs?raw';
 
 type ErrorProps = Record<string, never>;

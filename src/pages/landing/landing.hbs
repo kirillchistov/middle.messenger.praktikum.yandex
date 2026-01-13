@@ -1,42 +1,54 @@
-<section class="landing">
-  <header class="landing__header">
-    <div class="landing__brand">
-      <span class="landing__logo">ИИ + живые эксперты</span>
-    </div>
+<div class="app">
+  <div class="app-shell">
+    <header class="landing-nav">
+      <div class="landing-nav__inner">
+        <div class="landing-nav__brand">
+          <span class="landing-nav__dot"></span>
+          <span>Chat App</span>
+        </div>
 
-    <nav class="landing-nav">
-      <button
-        class="theme-toggle"
-        type="button"
-        data-theme-toggle
-        id="nav-theme-toggle"
-      >
-        Тема
-      </button>
+        <div class="landing-nav__links" id="nav-links">
+          <a href="/login" class="landing-nav__link">Вход</a>
+          <a href="/register" class="landing-nav__link landing-nav__link--primary">Регистрация</a>
+        </div>
 
-      <a href="/login" class="landing-nav__link">Вход</a>
-      <a href="/register" class="landing-nav__link landing-nav__link--primary">
-        Регистрация
-      </a>
-    </nav>
-  </header>
-
-  <main class="landing__main">
-    <section class="landing__hero">
-      <h1 class="landing__title">Чаты, в которых вас понимают.</h1>
-      <p class="landing__subtitle">
-        Задавайте важным вопросы на естественном языке. Эксперты сразу ответят
-        или помогут найти ответ самостоятельно.
-      </p>
-
-      <div class="landing__cta">
-        <p class="landing__hint">Нет аккаунта? Зарегистрируйтесь за минуту</p>
-        <a href="/register" class="landing__button">Зарегистрироваться</a>
+        <button
+          class="theme-toggle"
+          type="button"
+          data-theme-toggle
+          id="nav-theme-toggle"
+        >
+          Тема
+        </button>
       </div>
-    </section>
+    </header>
 
-    <section class="landing__preview">
-      {{> chat-preview}}
-    </section>
-  </main>
-</section>
+    <main class="landing">
+      <section class="landing-hero">
+        <div>
+          <div class="landing-hero__badge">
+            <span class="landing-hero__badge-dot"></span>
+            <span>ИИ + живые эксперты</span>
+          </div>
+
+          <h1 class="landing-hero__title">Чаты, в которых вас понимают.</h1>
+          <p class="landing-hero__subtitle">
+            Задавайте важным вопросы на естественном языке. Эксперты сразу ответят
+            или помогут найти ответ самостоятельно.
+          </p>
+
+          <div class="landing-hero__actions">
+            <a href="/register" class="btn btn--primary">Зарегистрироваться</a>
+            <p class="landing-hero__hint">
+              Нет аккаунта? Зарегистрируйтесь за минуту
+            </p>
+          </div>
+        </div>
+
+        <div class="landing-hero__preview">
+          {{> chat-preview}}
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
