@@ -1,5 +1,7 @@
+// LoginPage.ts
 import { Block } from '@core/block';
 import template from './login.hbs?raw';
+import { renderTemplate } from '@utils/renderTemplate';
 import { attachFormValidation } from '@utils/formValidation';
 
 type LoginProps = Record<string, never>;
@@ -10,14 +12,20 @@ export class LoginPage extends Block<LoginProps> {
   }
 
   protected componentDidMount(): void {
-    const form = this.getContent()?.querySelector<HTMLFormElement>('.auth__form');
-    if (form) {
-      attachFormValidation(form, { logOnSuccess: true });
-    }
+    // даём блоку дорисовать DOM
+    setTimeout(() => {
+      const root = this.getContent();
+      if (!root) return;
+
+      const form = root.querySelector<HTMLFormElement>('#login-form');
+      console.log('[LoginPage] form found?', !!form);
+      if (form) {
+        attachFormValidation(form, { logOnSuccess: true });
+      }
+    });
   }
 
   protected render(): string {
-    // template — содержимое login.hbs
-    return template;
+    return renderTemplate(template, this.props);
   }
 }
