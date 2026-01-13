@@ -1,43 +1,54 @@
-<section class="profile">
-  <aside class="profile__back">
-    <a href="/chats" class="profile__back-link">← К чатам</a>
+<section class="profile-layout">
+  <aside class="profile-sidebar">
+    <a href="/chats" class="profile-sidebar__back">←</a>
   </aside>
 
-  <div class="profile__card">
-    <div class="profile__avatar">
-      <img src="{{avatar}}" alt="Аватар" class="profile__avatar-img" />
+  <div class="profile-card">
+    <div class="profile-card__avatar-block">
+      <div class="profile-avatar">
+        {{!-- здесь можно подставить {{avatar}} если есть URL --}}
+      </div>
+      <div class="profile-card__name">
+        {{display_name}}
+      </div>
+      <a href="/profile/avatar" class="profile-link">
+        Поменять аватар
+      </a>
     </div>
 
-    <h1 class="profile__name">{{display_name}}</h1>
+    <dl class="profile-table">
+      <div class="profile-table__row">
+        <dt>Почта</dt>
+        <dd>{{email}}</dd>
+      </div>
+      <div class="profile-table__row">
+        <dt>Логин</dt>
+        <dd>{{login}}</dd>
+      </div>
+      <div class="profile-table__row">
+        <dt>Имя</dt>
+        <dd>{{first_name}}</dd>
+      </div>
+      <div class="profile-table__row">
+        <dt>Фамилия</dt>
+        <dd>{{second_name}}</dd>
+      </div>
+      <div class="profile-table__row">
+        <dt>Имя в чате</dt>
+        <dd>{{display_name}}</dd>
+      </div>
+      <div class="profile-table__row">
+        <dt>Телефон</dt>
+        <dd>{{phone}}</dd>
+      </div>
+    </dl>
 
-    <ul class="profile__info">
-      <li class="profile__info-row">
-        <span class="profile__label">Email</span>
-        <span class="profile__value">{{email}}</span>
-      </li>
-      <li class="profile__info-row">
-        <span class="profile__label">Логин</span>
-        <span class="profile__value">{{login}}</span>
-      </li>
-      <li class="profile__info-row">
-        <span class="profile__label">Имя</span>
-        <span class="profile__value">{{first_name}}</span>
-      </li>
-      <li class="profile__info-row">
-        <span class="profile__label">Фамилия</span>
-        <span class="profile__value">{{second_name}}</span>
-      </li>
-      <li class="profile__info-row">
-        <span class="profile__label">Телефон</span>
-        <span class="profile__value">{{phone}}</span>
-      </li>
-    </ul>
-
-    <nav class="profile__actions">
-      <a href="/profile/edit" class="profile__action">Изменить данные</a>
-      <a href="/profile/password" class="profile__action">Изменить пароль</a>
-      <a href="/profile/avatar" class="profile__action">Изменить аватар</a>
-      <a href="/login" class="profile__action profile__action--danger">Выйти</a>
-    </nav>
+    <div class="profile-card__actions">
+      <a href="/profile/edit" class="profile-link">Изменить данные</a>
+      <a href="/profile/password" class="profile-link">Изменить пароль</a>
+      <button class="profile-link profile-link--danger" type="button">
+        Выйти
+      </button>
+    </div>
   </div>
 </section>

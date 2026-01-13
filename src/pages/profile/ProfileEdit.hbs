@@ -1,21 +1,76 @@
-<section class="profile">
-  <aside class="profile__back">
-    <a href="/profile" class="profile__back-link">← Назад</a>
+<section class="profile-layout">
+  <aside class="profile-sidebar">
+    <a href="/profile" class="profile-sidebar__back">←</a>
   </aside>
 
-  <div class="profile__card">
-    <h1 class="profile__title">Изменить данные</h1>
+  <div class="profile-card">
+    <h1 class="settings-card__title">Изменить данные</h1>
 
-    <form class="profile__form" id="profile-edit-form">
-      {{> Input id="email" name="email" label="Email" type="email"}}
-      {{> Input id="login" name="login" label="Логин" type="text"}}
-      {{> Input id="first_name" name="first_name" label="Имя" type="text"}}
-      {{> Input id="second_name" name="second_name" label="Фамилия" type="text"}}
-      {{> Input id="display_name" name="display_name" label="Имя в чате" type="text"}}
-      {{> Input id="phone" name="phone" label="Телефон" type="tel"}}
+    <form class="profile-form" id="profile-edit-form">
+      <div class="profile-form__row">
+        <label for="email">Почта</label>
+        <input
+          id="email"
+          name="email"
+          class="profile-form__input"
+          type="email"
+        />
+      </div>
 
-      <div class="profile__actions">
-        {{> Button type="submit" text="Сохранить"}}
+      <div class="profile-form__row">
+        <label for="login">Логин</label>
+        <input
+          id="login"
+          name="login"
+          class="profile-form__input"
+          type="text"
+        />
+      </div>
+
+      <div class="profile-form__row">
+        <label for="first_name">Имя</label>
+        <input
+          id="first_name"
+          name="first_name"
+          class="profile-form__input"
+          type="text"
+        />
+      </div>
+
+      <div class="profile-form__row">
+        <label for="second_name">Фамилия</label>
+        <input
+          id="second_name"
+          name="second_name"
+          class="profile-form__input"
+          type="text"
+        />
+      </div>
+
+      <div class="profile-form__row">
+        <label for="display_name">Имя в чате</label>
+        <input
+          id="display_name"
+          name="display_name"
+          class="profile-form__input"
+          type="text"
+        />
+      </div>
+
+      <div class="profile-form__row">
+        <label for="phone">Телефон</label>
+        <input
+          id="phone"
+          name="phone"
+          class="profile-form__input"
+          type="tel"
+        />
+      </div>
+
+      <div class="profile-form__actions">
+        <button class="btn btn--primary" type="submit">
+          Сохранить
+        </button>
       </div>
     </form>
   </div>
