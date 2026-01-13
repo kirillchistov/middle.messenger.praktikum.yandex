@@ -11,20 +11,23 @@ export class RegisterPage extends Block<RegisterProps> {
   }
 
   protected componentDidMount(): void {
-    const root = this.getContent();
-    console.log('[RegisterPage] content exists?', !!root);
-    if (!root) return;
-    
-    const form = document.getElementById('register-form') as HTMLFormElement | null;
-    
-    if (form) {
+    console.log('[RegisterPage] componentDidMount');
+    // даём блоку дорисовать шаблон
+    setTimeout(() => {
+      const root = this.getContent();
+      console.log('[RegisterPage] content exists?', !!root);
+      if (!root) return;
+
+      const form = root.querySelector<HTMLFormElement>('#register-form');
       console.log('[RegisterPage] form found?', !!form);
-      attachFormValidation(form, { logOnSuccess: true });
-      console.log('form data must be here');
-    }
+      if (form) {
+        attachFormValidation(form, { logOnSuccess: true });
+      }
+    });
   }
 
   protected render(): string {
+    // renderTemplate компилирует сырой hbs
     return renderTemplate(template, this.props);
   }
 }
