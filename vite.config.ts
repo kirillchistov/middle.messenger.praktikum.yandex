@@ -44,19 +44,22 @@ export default defineConfig({
     handlebars({
       partialDirectory: handlebarsPartialsDirectories as unknown as string,
       context(pagePath: string) {
-        if (pagePath.endsWith('index.html')) {
+        if (pagePath.endsWith('/') || pagePath.endsWith('index.html')) {
           return { title: 'Чаты, в которых вас понимают.' };
         }
-        if (pagePath.endsWith('register.html')) {
+        if (pagePath.endsWith('register') || pagePath.endsWith('register.html')) {
           return { title: 'Регистрация' };
         }
-        if (pagePath.endsWith('login.html')) {
+        if (pagePath.endsWith('login') || pagePath.endsWith('login.html')) {
           return { title: 'Вход' };
         }
-        if (pagePath.endsWith('profile.html')) {
+        if (pagePath.endsWith('profile') || pagePath.endsWith('profile.html')) {
           return { title: 'Профиль' };
         }
-        return { title: 'Messenger' };
+        if (pagePath.endsWith('error-404') || pagePath.endsWith('error-404.html')) {
+          return { title: 'Ошибка: страница не найдена' };
+        }
+        return { title: 'Диалоги' };
       },
     }),
   ],

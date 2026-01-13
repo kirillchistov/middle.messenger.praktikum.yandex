@@ -1,0 +1,91 @@
+<div class="app-shell">
+    <section class="chat-layout">
+        {{> chat-sidebar}}
+
+        <div class="chat-main">
+            {{!-- Хедер открытого чата "тет-а-теты" --}}
+            <header class="chat-thread__header">
+            <div class="chat-thread__left">
+                <div class="chat-thread__avatar">Г</div>
+                <div>
+                <h2 class="chat-thread__title">тет-а-теты</h2>
+                <p class="chat-thread__subtitle">Групповой чат с мега‑экспертами</p>
+                </div>
+            </div>
+
+            <div class="chat-thread__right">
+                <a href="/profile" class="link">ivanivanov</a>
+
+                <div class="chat-thread__menu">
+                <button
+                    id="chat-menu-toggle"
+                    class="chat-thread__menu-btn"
+                    type="button"
+                >
+                    ⋮
+                </button>
+
+                <div id="chat-menu" class="chat-thread__menu-dropdown">
+                    <button
+                        class="chat-thread__menu-item"
+                        type="button"
+                        data-modal-open="add-user"
+                    >
+                        Добавить пользователя
+                    </button>
+                    <button
+                        class="chat-thread__menu-item"
+                        type="button"
+                        data-modal-open="remove-user"
+                    >
+                        Удалить пользователя
+                    </button>
+                </div>
+                </div>
+            </div>
+            </header>
+
+            {{!-- Сообщения чата, одно из них с картинкой --}}
+            <div class="chat-thread__messages">
+                {{> chat-messages}}
+            </div>
+
+            {{!-- Инпут отправки сообщения --}}
+            <form class="chat-input" id="chat-message-form">
+            <div class="chat-input__inner">
+                <div class="chat-input__attach-wrapper">
+                    <button
+                        id="attach-toggle"
+                        class="chat-input__icon-btn"
+                        type="button"
+                    >
+                        📎
+                    </button>
+
+                    <div id="attach-menu" class="chat-input__attach-menu">
+                        <button class="chat-input__attach-item" type="button">
+                            Фото или видео
+                        </button>
+                        <button class="chat-input__attach-item" type="button">
+                            Файл
+                        </button>
+                        <button class="chat-input__attach-item" type="button">
+                            Локация
+                        </button>
+                    </div>
+                </div>
+
+                <textarea
+                    class="chat-input__textarea"
+                    name="message"
+                    placeholder="Задайте вопрос про учебу, работу или отношения…"
+                ></textarea>
+
+                <button class="btn btn--primary chat-input__send" type="submit">
+                    Отправить
+                </button>
+            </div>
+            </form>
+        </div>
+    </section>
+</div>

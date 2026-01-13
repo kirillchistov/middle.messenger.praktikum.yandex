@@ -12,6 +12,8 @@ import { registerHandlebarsPartials } from './utils/registerPartials';
 import { RegisterPage } from './pages/register';
 import { LoginPage } from './pages/login';
 import { ChatsPage } from './pages/chats';
+import { Error404Page } from './pages/error-404';
+import { Error5xxPage } from './pages/error-5xx';
 
 import {
   ProfileViewPage,
@@ -25,6 +27,7 @@ import { LandingPage } from './pages/landing';
 // ---------- Общий UI (тема, меню, модалки) ----------
 
 window.Handlebars = Handlebars;
+
 
 const setupThemeToggle = (): void => {
   const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
@@ -50,7 +53,7 @@ const setupNavToggle = (): void => {
   });
 };
 
-const setupChatMenu = (): void => {
+export const setupChatMenu = (): void => {
   const toggle = document.getElementById('chat-menu-toggle');
   const menu = document.getElementById('chat-menu');
 
@@ -69,7 +72,7 @@ const setupChatMenu = (): void => {
   });
 };
 
-const setupAttachMenu = (): void => {
+export const setupAttachMenu = (): void => {
   const toggle = document.getElementById('attach-toggle');
   const menu = document.getElementById('attach-menu');
   const modal = document.getElementById('upload-modal');
@@ -111,8 +114,8 @@ const setupCommonUI = (): void => {
 
   setupThemeToggle();
   setupNavToggle();
-  setupChatMenu();
-  setupAttachMenu();
+  // setupChatMenu();
+  // setupAttachMenu();
 };
 
 // ---------- Общий футер на всех страницах ----------
@@ -126,14 +129,22 @@ const injectFooter = (): void => {
   footer.innerHTML = `
     <div class="app-footer__inner">
       <a href="/" class="app-footer__link">Лендинг</a>
+      <a href="/register" class="app-footer__link">Регистрация</a>
+      <a href="/login" class="app-footer__link">Вход</a>
       <a href="/chats" class="app-footer__link">Чаты</a>
       <a href="/profile" class="app-footer__link">Профиль</a>
-      <a href="/login" class="app-footer__link">Вход</a>
-      <a href="/register" class="app-footer__link">Регистрация</a>
+      <a href="/error-404" class="app-footer__link">404</a>
+      <a href="/error-5xx" class="app-footer__link">5xx</a>
     </div>
   `;
 
-  document.body.appendChild(footer);
+  const appShell = document.querySelector('.app-shell');
+
+  if (appShell?.parentElement) {
+    appShell.parentElement.appendChild(footer);
+  } else {
+    document.body.appendChild(footer);
+  }
 };
 
 // ---------- Инициализация страницы по pathname ----------
@@ -156,8 +167,10 @@ const initApp = (): void => {
     // | ProfileViewPage
     // | ProfileEditPage
     // | ProfileAvatarPage
-    // | ProfilePasswordPage;
-
+    // | ProfilePasswordPage
+    // | Error404Page
+    // | Error5xxPage;
+    
   if (path === '/' || path === '/index.html') {
     pageInstance = new LandingPage();
   } else if (path.startsWith('/chats')) {
@@ -174,13 +187,20 @@ const initApp = (): void => {
     pageInstance = new ProfileAvatarPage();
   } else if (path === '/profile/password' || path === '/profile-password.html') {
     pageInstance = new ProfilePasswordPage();
+  } else if (path === '/error-404' || path === '/error-404.html') {
+    pageInstance = new Error404Page();    
+  } else if (path === '/error-5xx' || path === '/error-5xx.html') {
+    pageInstance = new Error5xxPage();    
   } else {
     pageInstance = new ChatsPage();
   }
 
   root.innerHTML = '';
   pageInstance.mount(rootSelector);
-    injectFooter();
+  setupChatMenu();
+  setupAttachMenu();
+
+  injectFooter();
 };
 
 document.addEventListener('DOMContentLoaded', initApp);
