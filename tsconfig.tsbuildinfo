@@ -1,1 +1,1 @@
-{"root":["./global.d.ts","./vite.config.ts","./src/app.d.ts","./src/main.d.ts","./src/ts/main.ts"],"errors":true,"version":"5.9.3"}
+{"root":["./global.d.ts","./vite.config.ts","./src/main.d.ts","./src/ts/main.ts"],"errors":true,"version":"5.9.3"}
