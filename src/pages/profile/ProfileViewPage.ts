@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 import { Block } from '@/core/block';
 import template from './ProfileView.hbs?raw';
 import { renderTemplate } from '@/utils/renderTemplate';

@@ -6,11 +6,11 @@ import { handlebarsPartialsDirectories } from './src/types/vite-plugin-handlebar
 export default defineConfig({
   server: {
     port: 3000,
-    strictPort: true
+    strictPort: true,
   },
   preview: {
     port: 3000,
-    strictPort: true
+    strictPort: true,
   },
 
   base: '/',
@@ -23,8 +23,8 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         // register: resolve(__dirname, 'src/register.html'),
         // messenger: resolve(__dirname, 'messenger.html')
-      }
-    }
+      },
+    },
   },
   resolve: {
     alias: {
@@ -37,8 +37,8 @@ export default defineConfig({
       '@core': resolve(__dirname, 'src/core'),
       '@types': resolve(__dirname, 'src/types'),
       '@ts': resolve(__dirname, 'src/ts'),
-      '@utils': resolve(__dirname, 'src/utils')
-    }
+      '@utils': resolve(__dirname, 'src/utils'),
+    },
   },
   plugins: [
     handlebars({
