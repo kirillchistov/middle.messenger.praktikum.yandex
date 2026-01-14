@@ -14,6 +14,9 @@ export abstract class Block<P extends BlockProps = BlockProps> {
 
   protected props: P;
 
+  // Для отписки от слушателей
+  private _unsubscribeListeners: Array<() => void> = [];
+
   constructor(tagName: keyof HTMLElementTagNameMap = 'div', props = {} as P) {
     this.eventBus = new EventBus<BlockEventMap>();
 
@@ -95,12 +98,14 @@ export abstract class Block<P extends BlockProps = BlockProps> {
   }
 
   private _componentDidMount(): void {
+    console.log('[Block] componentDidMount', this.constructor.name); // NEW: лог
     this.componentDidMount();
   }
 
+  // Для очистки слушателей в Block
   protected componentDidMount(): void {}
 
-  public dispatchComponentDidMoun(): void {
+  public dispatchComponentDidMount(): void {
     this.eventBus.emit(Block.EVENTS.FLOW_CDM);
   }
 
@@ -154,5 +159,34 @@ export abstract class Block<P extends BlockProps = BlockProps> {
     if (this._element) {
       this._element.style.display = 'none';
     }
+  }
+
+  // Для регистрации слушателей через Block
+  protected addDOMListener<K extends keyof HTMLElementEventMap>(
+    element: HTMLElement,
+    type: K,
+    handler: (event: HTMLElementEventMap[K]) => void,
+  ): void {
+    element.addEventListener(type, handler as EventListener);
+    console.log(
+      `[Block] addDOMListener: ${type} on`,
+      element,
+      'for',
+      this.constructor.name,
+    );
+    this._unsubscribeListeners.push(() => {
+      element.removeEventListener(type, handler as EventListener);
+      console.log(
+        `[Block] removeDOMListener: ${type} from`,
+        element,
+        'for',
+        this.constructor.name,
+      );
+    });
+  }
+
+  protected removeAllDOMListeners(): void {
+    this._unsubscribeListeners.forEach((unsubscribe) => unsubscribe());
+    this._unsubscribeListeners = [];
   }
 }
