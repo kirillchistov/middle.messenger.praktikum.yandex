@@ -9,7 +9,6 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
-    // без project
   },
   plugins: ['@typescript-eslint', 'import'],
   extends: [
@@ -20,7 +19,8 @@ module.exports = {
     'no-console': 'warn',
     'import/prefer-default-export': 'off',
 
-    // чтобы не требовались parserServices
+    // off правила, требующие parserServices
     '@typescript-eslint/dot-notation': 'off',
+    '@typescript-eslint/no-implied-eval': 'off',
   },
 };
