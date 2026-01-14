@@ -1,6 +1,6 @@
 import { Block } from '@core/block';
-import template from './landing.hbs?raw';
 import { renderTemplate } from '@utils/renderTemplate';
+import template from './landing.hbs?raw';
 
 type LandingProps = Record<string, never>;
 

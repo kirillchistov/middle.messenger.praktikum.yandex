@@ -1,7 +1,8 @@
+/* eslint-disable import/extensions */
 import { Block } from '@/core/block';
-import template from './chats.hbs?raw';
-import { attachFormValidation } from '@/utils/formValidation';
 import { renderTemplate } from '@/utils/renderTemplate';
+import { attachFormValidation } from '@/utils/formValidation';
+import template from './chats.hbs?raw';
 
 type Chat = {
   id: number;
@@ -46,8 +47,12 @@ export class ChatsPage extends Block<ChatsPageProps> {
         },
       ],
       messages: [
-        { id: 1, type: 'incoming', text: 'Привет!', time: '12:20' },
-        { id: 2, type: 'outgoing', text: 'Привет, как дела?', time: '12:21' },
+        {
+          id: 1, type: 'incoming', text: 'Привет!', time: '12:20',
+        },
+        {
+          id: 2, type: 'outgoing', text: 'Привет, как дела?', time: '12:21',
+        },
       ],
     };
 

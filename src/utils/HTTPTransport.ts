@@ -19,8 +19,9 @@ export interface HTTPRequestOptions {
  * {a: 1, b: 2, c: {d: 123}, k: [1, 2, 3]}
  * -> "?a=1&b=2&c=%5Bobject%20Object%5D&k=1%2C2%2C3"
  */
+
 export function queryStringify(
-  data: Record<string, unknown> | undefined | null
+  data: Record<string, unknown> | undefined | null,
 ): string {
   if (!data || typeof data !== 'object') {
     return '';
@@ -69,36 +70,35 @@ export class HTTPTransport {
    *  - headers?: Record<string,string>
    *  - timeout?: number (мс)
    */
-    public request(
-        url: string,
-        options: HTTPRequestOptions = { method: METHOD.GET }
-    ): Promise<XMLHttpRequest> {
-        const {
-        method = METHOD.GET,
-        data,
-        headers = {},
-        timeout = 5000,
-        } = options;
+  public request(
+    url: string,
+    options: HTTPRequestOptions = { method: METHOD.GET },
+  ): Promise<XMLHttpRequest> {
+    const {
+      method = METHOD.GET,
+      data,
+      headers = {},
+      timeout = 5000,
+    } = options;
 
-        const fullUrl = `${this.baseUrl}${url}`;
+    const fullUrl = `${this.baseUrl}${url}`;
 
-        return new Promise<XMLHttpRequest>((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
+    return new Promise<XMLHttpRequest>((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
 
-            let finalUrl = fullUrl;
+      let finalUrl = fullUrl;
 
-            if (method === METHOD.GET && data && typeof data === 'object') {
-                finalUrl += queryStringify(data as Record<string, unknown>);
-            }
+      if (method === METHOD.GET && data && typeof data === 'object') {
+        finalUrl += queryStringify(data as Record<string, unknown>);
+      }
 
-            xhr.open(method, finalUrl);
-            xhr.timeout = timeout;
+      xhr.open(method, finalUrl);
+      xhr.timeout = timeout;
 
-            Object.keys(headers).forEach((key) => {
-                xhr.setRequestHeader(String(key), String(headers[key]));
-            });
+      Object.keys(headers).forEach((key) => {
+        xhr.setRequestHeader(String(key), String(headers[key]));
+      });
 
-            
       // Обработчики
       xhr.onload = function onload() {
         // По ТЗ — просто резолвим XHR (статус можно проверять в вызывающем коде)
@@ -123,17 +123,16 @@ export class HTTPTransport {
         return;
       }
 
-      const isPlainObject =
-        typeof data === 'object' &&
-        !(data instanceof FormData) &&
-        !(data instanceof Blob) &&
-        !(data instanceof ArrayBuffer);
+      const isPlainObject = typeof data === 'object'
+        && !(data instanceof FormData)
+        && !(data instanceof Blob)
+        && !(data instanceof ArrayBuffer);
 
       let bodyToSend: Document | XMLHttpRequestBodyInit | null | undefined;
 
       if (isPlainObject) {
         const hasContentType = Object.keys(headers).some(
-          (h) => h.toLowerCase() === 'content-type'
+          (h) => h.toLowerCase() === 'content-type',
         );
 
         if (!hasContentType) {
@@ -141,11 +140,11 @@ export class HTTPTransport {
         }
 
         bodyToSend = JSON.stringify(data);
-              } else if (
-        data instanceof FormData ||
-        data instanceof Blob ||
-        data instanceof ArrayBuffer ||
-        typeof data === 'string'
+      } else if (
+        data instanceof FormData
+        || data instanceof Blob
+        || data instanceof ArrayBuffer
+        || typeof data === 'string'
       ) {
         bodyToSend = data as XMLHttpRequestBodyInit;
       } else {

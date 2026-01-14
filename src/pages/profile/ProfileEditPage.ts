@@ -1,7 +1,8 @@
+/* eslint-disable import/extensions */
 import { Block } from '@/core/block';
-import template from './ProfileEdit.hbs?raw';
 import { attachFormValidation } from '@/utils/formValidation';
 import { renderTemplate } from '@/utils/renderTemplate';
+import template from './ProfileEdit.hbs?raw';
 
 type ProfileEditProps = Record<string, never>;
 

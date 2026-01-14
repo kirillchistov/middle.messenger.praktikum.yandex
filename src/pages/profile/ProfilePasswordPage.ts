@@ -1,7 +1,8 @@
+/* eslint-disable import/extensions */
 import { Block } from '@/core/block';
-import template from './ProfilePassword.hbs?raw';
-import { attachFormValidation } from '@/utils/formValidation';
 import { renderTemplate } from '@/utils/renderTemplate';
+import { attachFormValidation } from '@/utils/formValidation';
+import template from './ProfilePassword.hbs?raw';
 
 type ProfilePasswordProps = Record<string, never>;
 

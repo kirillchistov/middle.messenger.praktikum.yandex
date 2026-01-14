@@ -1,7 +1,7 @@
 import { Block } from '@core/block';
-import template from './register.hbs?raw';
-import { attachFormValidation } from '@utils/formValidation';
 import { renderTemplate } from '@utils/renderTemplate';
+import { attachFormValidation } from '@utils/formValidation';
+import template from './register.hbs?raw';
 
 type RegisterProps = Record<string, never>;
 

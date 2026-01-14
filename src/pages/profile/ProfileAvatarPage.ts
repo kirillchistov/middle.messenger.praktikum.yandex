@@ -1,6 +1,7 @@
+/* eslint-disable import/extensions */
 import { Block } from '@/core/block';
-import template from './ProfileAvatar.hbs?raw';
 import { renderTemplate } from '@/utils/renderTemplate';
+import template from './ProfileAvatar.hbs?raw';
 
 type ProfileAvatarProps = {
   avatar: string;

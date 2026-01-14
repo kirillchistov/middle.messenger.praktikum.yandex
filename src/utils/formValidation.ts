@@ -9,6 +9,7 @@ export function validateInputElement(
   input: HTMLInputElement | HTMLTextAreaElement,
 ): boolean {
   const name = input.name as FieldName;
+  // eslint-disable-next-line prefer-destructuring
   const value = input.value;
 
   const { valid, message } = validateField(name, value);
@@ -39,8 +40,8 @@ export function attachFormValidation(
     (event) => {
       const target = event.target as HTMLElement;
       if (
-        target instanceof HTMLInputElement ||
-        target instanceof HTMLTextAreaElement
+        target instanceof HTMLInputElement
+        || target instanceof HTMLTextAreaElement
       ) {
         if (target.name) validateInputElement(target);
       }
@@ -53,7 +54,7 @@ export function attachFormValidation(
     event.preventDefault();
 
     const inputs = form.querySelectorAll<
-      HTMLInputElement | HTMLTextAreaElement
+    HTMLInputElement | HTMLTextAreaElement
     >('input[name], textarea[name]');
 
     let isFormValid = true;
@@ -76,10 +77,8 @@ export function attachFormValidation(
     });
 
     if (logOnSuccess) {
-      // здесь будет реализация отправки даных или disable-eslint
       console.log('Form submit payload:', data);
     }
-
     // здесь буду вызвать HTTPTransport/AuthService
   });
 }

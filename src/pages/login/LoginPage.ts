@@ -1,8 +1,8 @@
 // LoginPage.ts
 import { Block } from '@core/block';
-import template from './login.hbs?raw';
 import { renderTemplate } from '@utils/renderTemplate';
 import { attachFormValidation } from '@utils/formValidation';
+import template from './login.hbs?raw';
 
 type LoginProps = Record<string, never>;
 

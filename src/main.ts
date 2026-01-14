@@ -1,4 +1,3 @@
-
 import Handlebars from 'handlebars';
 import { registerHandlebarsPartials } from './utils/registerPartials';
 import { Block } from './core/block';
@@ -171,8 +170,8 @@ export const setupAttachMenu = (): void => {
 
 const setupCommonUI = (): void => {
   if (
-    !document.body.classList.contains('theme-light') &&
-    !document.body.classList.contains('theme-dark')
+    !document.body.classList.contains('theme-light')
+    && !document.body.classList.contains('theme-dark')
   ) {
     document.body.classList.add('theme-light');
   }
@@ -223,16 +222,16 @@ const initApp = (): void => {
   const path = window.location.pathname;
 
   let pageInstance: Block;
-    // | LandingPage
-    // | RegisterPage
-    // | LoginPage
-    // | ChatsPage
-    // | ProfileViewPage
-    // | ProfileEditPage
-    // | ProfileAvatarPage
-    // | ProfilePasswordPage
-    // | Error404Page
-    // | Error5xxPage;
+  // | LandingPage
+  // | RegisterPage
+  // | LoginPage
+  // | ChatsPage
+  // | ProfileViewPage
+  // | ProfileEditPage
+  // | ProfileAvatarPage
+  // | ProfilePasswordPage
+  // | Error404Page
+  // | Error5xxPage;
 
   if (path === '/' || path === '/index.html') {
     pageInstance = new LandingPage();
