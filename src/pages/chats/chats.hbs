@@ -45,12 +45,10 @@
             </div>
             </header>
 
-            {{!-- Сообщения чата, одно из них с картинкой --}}
             <div class="chat-thread__messages">
                 {{> chat-messages}}
             </div>
 
-            {{!-- Инпут отправки сообщения --}}
             <form class="chat-input" id="chat-message-form">
             <div class="chat-input__inner">
                 <div class="chat-input__attach-wrapper">
@@ -89,3 +87,54 @@
         </div>
     </section>
 </div>
+
+{{!-- Модалки добавления и удаления пользователя из чата --}}
+<div id="user-modal-add" class="chat-user-modal">
+  <div class="modal">
+    <h2 class="modal__title">Добавить пользователя</h2>
+    <div class="chat-user-modal__field">
+      <label class="form__label" for="add-login">Логин</label>
+      <input id="add-login" class="form__input" type="text" />
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--primary" type="button">Добавить в чат</button>
+    </div>
+  </div>
+</div>
+
+<div id="user-modal-remove" class="chat-user-modal">
+  <div class="modal">
+    <h2 class="modal__title">Удалить пользователя</h2>
+    <div class="chat-user-modal__field">
+      <label class="form__label" for="remove-login">Логин</label>
+      <input id="remove-login" class="form__input" type="text" />
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--primary" type="button">Удалить из чата</button>
+    </div>
+  </div>
+</div>
+
+<div id="user-modal-backdrop" class="chat-user-backdrop"></div>
+
+<div id="upload-modal" class="chat-upload-modal">
+  <div class="modal">
+    <h2 class="modal__title">Загрузка файла</h2>
+    <input
+        id="upload-file"
+        name="avatar"
+        class="profile-form__input"
+        type="file"
+        accept="image/*"
+    />
+    {{!-- <p class="modal__text">Выберите файл.</p> --}}
+    <div class="modal__actions">
+      <button id="upload-close" class="btn btn--ghost" type="button">
+        Закрыть
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="upload-backdrop" class="chat-upload-backdrop"></div>
+

@@ -2,7 +2,6 @@ import { Block } from '@/core/block';
 import template from './chats.hbs?raw';
 import { attachFormValidation } from '@/utils/formValidation';
 import { renderTemplate } from '@/utils/renderTemplate';
-// import { setupChatMenu, setupAttachMenu } from '../../main';
 
 type Chat = {
   id: number;
@@ -58,9 +57,6 @@ export class ChatsPage extends Block<ChatsPageProps> {
   protected componentDidMount(): void {
     const root = this.getContent();
     if (!root) return;
-
-    // setupChatMenu();
-    // setupAttachMenu();
 
     const form = root.querySelector<HTMLFormElement>('#chat-message-form');
     if (form) {

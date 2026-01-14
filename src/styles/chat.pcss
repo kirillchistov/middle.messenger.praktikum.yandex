@@ -596,7 +596,8 @@ html[data-theme="light"] .chat-input__textarea::placeholder {
   position: fixed;
   inset: 50% auto auto 50%;
   transform: translate(-50%, -50%);
-  z-index: 40;
+  background-color: #fff;
+  z-index: 1000;
   display: none;
 }
 
@@ -608,7 +609,7 @@ html[data-theme="light"] .chat-input__textarea::placeholder {
   position: fixed;
   inset: 0;
   background-color: rgba(15, 23, 42, 0.5);
-  z-index: 30;
+  z-index: 900;
   display: none;
 }
 
@@ -657,7 +658,7 @@ html[data-theme="light"] .chat-input__textarea::placeholder {
   position: fixed;
   inset: 50% auto auto 50%;
   transform: translate(-50%, -50%);
-  z-index: 50;
+  z-index: 1000;
   display: none;
   max-width: 420px;
 }
@@ -670,7 +671,8 @@ html[data-theme="light"] .chat-input__textarea::placeholder {
   position: fixed;
   inset: 0;
   background-color: rgba(15, 23, 42, 0.5);
-  z-index: 40;
+  background-color: #fff;
+  z-index: 900;
   display: none;
 }
 
@@ -693,6 +695,43 @@ html[data-theme="light"] .chat-input__textarea::placeholder {
 .chat-user-modal__field .form__input {
   width: 100%;
   text-align: left;
+}
+
+.chat-user-backdrop,
+.chat-upload-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.50); /* полупрозрачная тёмная подложка */
+  z-index: 900;
+  display: none;
+}
+
+.chat-user-backdrop--open,
+.chat-upload-backdrop--open {
+  display: block;
+}
+
+.chat-user-modal,
+.chat-upload-modal {
+  position: fixed;
+  inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  display: none;
+}
+
+.chat-user-modal--open,
+.chat-upload-modal--open {
+  display: block;
+}
+
+/* Внутренняя карточка, если используешь .modal */
+.chat-user-modal .modal,
+.chat-upload-modal .modal {
+  background-color: var(--color-bg-elevated-soft); /* или #fff для светлой темы */
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-soft);
 }
 
 

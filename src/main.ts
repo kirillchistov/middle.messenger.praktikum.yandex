@@ -72,11 +72,58 @@ export const setupChatMenu = (): void => {
   });
 };
 
+const setupUserModals = (): void => {
+  const addTrigger = document.querySelector<HTMLElement>('[data-modal-open="add-user"]');
+  const removeTrigger = document.querySelector<HTMLElement>('[data-modal-open="remove-user"]');
+
+  const addModal = document.getElementById('user-modal-add');
+  const removeModal = document.getElementById('user-modal-remove');
+  const backdrop = document.getElementById('user-modal-backdrop');
+
+  if (!addTrigger || !removeTrigger || !addModal || !removeModal || !backdrop) return;
+
+  const open = (modal: HTMLElement) => {
+    modal.classList.add('chat-user-modal--open');
+    backdrop.classList.add('chat-user-backdrop--open');
+  };
+
+  const closeAll = () => {
+    addModal.classList.remove('chat-user-modal--open');
+    removeModal.classList.remove('chat-user-modal--open');
+    backdrop.classList.remove('chat-user-backdrop--open');
+  };
+
+  addTrigger.addEventListener('click', () => open(addModal));
+  removeTrigger.addEventListener('click', () => open(removeModal));
+  
+  // клик по затемнению
+  backdrop.addEventListener('click', closeAll);
+
+  // клик вне «.modal»
+  addModal.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (!target.closest('.modal')) closeAll();
+  });
+
+  removeModal.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (!target.closest('.modal')) closeAll();
+  });
+
+  // Esc
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeAll();
+    }
+  });
+};
+
 export const setupAttachMenu = (): void => {
   const toggle = document.getElementById('attach-toggle');
   const menu = document.getElementById('attach-menu');
   const modal = document.getElementById('upload-modal');
   const backdrop = document.getElementById('upload-backdrop');
+  const closeBtn = document.getElementById('upload-close');
 
   if (!toggle || !menu || !modal || !backdrop) return;
 
@@ -90,6 +137,7 @@ export const setupAttachMenu = (): void => {
     backdrop.classList.remove('chat-upload-backdrop--open');
   };
 
+
   toggle.addEventListener('click', () => {
     menu.classList.toggle('chat-input__attach-menu--open');
   });
@@ -101,7 +149,26 @@ export const setupAttachMenu = (): void => {
     openModal();
   });
 
+  // клик по затемнению
   backdrop.addEventListener('click', closeModal);
+
+  // клик по крестику / кнопке
+  closeBtn?.addEventListener('click', closeModal);
+
+  // клик вне содержимого модалки
+  modal.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (!target.closest('.modal')) {
+      closeModal();
+    }
+  });
+
+  // Esc
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeModal();
+    }
+  });
 };
 
 const setupCommonUI = (): void => {
@@ -199,6 +266,7 @@ const initApp = (): void => {
   pageInstance.mount(rootSelector);
   setupChatMenu();
   setupAttachMenu();
+  setupUserModals();
 
   injectFooter();
 };
