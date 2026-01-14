@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "typecheck": "tsc -b",
-    "lint": "eslint .",
+    "lint": "eslint \"src/**/*.{ts,tsx,js,jsx}\"",
     "preview": "vite preview",
     "start": "vite build && vite preview --port 3000",
     "format": "prettier --write ."
