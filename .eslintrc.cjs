@@ -1,3 +1,4 @@
+// .eslintrc.cjs
 module.exports = {
   root: true,
   env: {
@@ -8,6 +9,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
+    // без project
   },
   plugins: ['@typescript-eslint', 'import'],
   extends: [
@@ -17,5 +19,8 @@ module.exports = {
   rules: {
     'no-console': 'warn',
     'import/prefer-default-export': 'off',
+
+    // чтобы не требовались parserServices
+    '@typescript-eslint/dot-notation': 'off',
   },
 };
