@@ -1,10 +1,3 @@
-// {
-//   "references": [
-//     { "path": "./tsconfig.app.json" },
-//     { "path": "./tsconfig.node.json" }
-//   ]
-// }
-
 {
   "compilerOptions": {
     "target": "ESNext",
@@ -20,9 +13,7 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    // "ignoreDeprecations": "6.0",
     "noEmit": true,
-    // "baseUrl": ".",
     "sourceMap": true,
     "paths": {
       "@/*": ["./src/*"],
