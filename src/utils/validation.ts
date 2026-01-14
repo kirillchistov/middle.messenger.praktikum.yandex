@@ -13,7 +13,7 @@ type ValidationResult = {
   message?: string;
 };
 
-const nameRegex = /^[A-ZА-Я][A-Za-zА-Яа-я-]*$/;
+const nameRegex = /^[A-ZА-ЯЁ][A-Za-zА-ЯЁа-яё-]*$/;
 const loginRegex = /^(?=[A-Za-z0-9_-]{3,20}$)(?=.*[A-Za-z])[A-Za-z0-9_-]+$/;
 const emailRegex = /^[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]+$/;
 const passwordRegex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d!#$%&'*+\-./:;<=>?@^_`{|}~]{8,40}$/;

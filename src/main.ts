@@ -189,7 +189,7 @@ const injectFooter = (): void => {
   const footer = document.createElement('footer');
   footer.className = 'app-footer';
   footer.innerHTML = `
-    <div class="app-footer__inner">
+    <nav class="app-footer__inner">
       <a href="/" class="app-footer__link">Лендинг</a>
       <a href="/register" class="app-footer__link">Регистрация</a>
       <a href="/login" class="app-footer__link">Вход</a>
@@ -197,7 +197,7 @@ const injectFooter = (): void => {
       <a href="/profile" class="app-footer__link">Профиль</a>
       <a href="/error-404" class="app-footer__link">404</a>
       <a href="/error-5xx" class="app-footer__link">5xx</a>
-    </div>
+    </nav>
   `;
 
   const appShell = document.querySelector('.app-shell');
