@@ -95,7 +95,7 @@ export abstract class Block<P extends BlockProps = BlockProps> {
   }
 
   private _componentDidMount(): void {
-    console.log('[Block] componentDidMount', this.constructor.name);    
+    console.log('[Block] componentDidMount', this.constructor.name);
     this.componentDidMount();
   }
 
