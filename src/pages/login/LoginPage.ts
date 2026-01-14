@@ -12,13 +12,12 @@ export class LoginPage extends Block<LoginProps> {
   }
 
   protected componentDidMount(): void {
-    // даём блоку дорисовать DOM
+    // дождаться монтажа DOM
     setTimeout(() => {
       const root = this.getContent();
       if (!root) return;
 
       const form = root.querySelector<HTMLFormElement>('#login-form');
-      console.log('[LoginPage] form found?', !!form);
       if (form) {
         attachFormValidation(form, { logOnSuccess: true });
       }

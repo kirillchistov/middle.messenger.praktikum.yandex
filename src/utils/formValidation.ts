@@ -33,8 +33,7 @@ export function attachFormValidation(
   options: AttachOptions = {},
 ): void {
   const { logOnSuccess = false } = options;
-  console.log('attach register')
-  // blur
+
   form.addEventListener(
     'blur',
     (event) => {

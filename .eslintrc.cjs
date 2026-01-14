@@ -16,16 +16,20 @@ module.exports = {
     'airbnb-typescript/base',
   ],
   rules: {
-    'no-console': 'warn',
-    'import/prefer-default-export': 'off',
     'class-methods-use-this': 'off',
     'no-restricted-exports': 'off',
     'no-param-reassign': 'off',
     'import/no-absolute-path': 'off',
+    'max-len': 'off',
+    'no-underscore-dangle': [2, { allowAfterThis: true }],
     'consistent-return': 'off',
     'import/no-cycle': 'off',
+    'import/no-absolute-path': 'off',
+    'import/prefer-default-export': 'off',
+    'no-restricted-exports': 'off',
     'prefer-promise-reject-errors': 'off',
     'no-alert': 'off',
+    'no-console': 'off',
 
     // off правила, требующие parserServices и др.
     '@typescript-eslint/dot-notation': 'off',

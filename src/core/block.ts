@@ -95,7 +95,6 @@ export abstract class Block<P extends BlockProps = BlockProps> {
   }
 
   private _componentDidMount(): void {
-    console.log('[Block] componentDidMount', this.constructor.name);
     this.componentDidMount();
   }
 
@@ -123,12 +122,7 @@ export abstract class Block<P extends BlockProps = BlockProps> {
     const html = this.render();
     if (!this._element) return;
     this._element.innerHTML = html;
-    console.log('[Block] rendered', this.constructor.name);
   }
-
-  // protected render(): string {
-  //   return '';
-  // }
 
   protected abstract render(): string;
 
@@ -137,7 +131,6 @@ export abstract class Block<P extends BlockProps = BlockProps> {
     if (!root) return;
     root.innerHTML = '';
     const content = this.getContent();
-    console.log('[Block] mount', this.constructor.name, 'content:', !!content);
     if (content) {
       root.appendChild(content);
     }

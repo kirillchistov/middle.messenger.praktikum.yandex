@@ -11,15 +11,12 @@ export class RegisterPage extends Block<RegisterProps> {
   }
 
   protected componentDidMount(): void {
-    console.log('[RegisterPage] componentDidMount');
-    // даём блоку дорисовать шаблон
+    // даём блоку смонтировать шаблон
     setTimeout(() => {
       const root = this.getContent();
-      console.log('[RegisterPage] content exists?', !!root);
       if (!root) return;
 
       const form = root.querySelector<HTMLFormElement>('#register-form');
-      console.log('[RegisterPage] form found?', !!form);
       if (form) {
         attachFormValidation(form, { logOnSuccess: true });
       }
@@ -27,7 +24,6 @@ export class RegisterPage extends Block<RegisterProps> {
   }
 
   protected render(): string {
-    // renderTemplate компилирует сырой hbs
     return renderTemplate(template, this.props);
   }
 }

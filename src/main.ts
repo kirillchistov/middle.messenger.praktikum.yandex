@@ -1,19 +1,14 @@
-import './styles/base.pcss';
-import './styles/layout.pcss';
-import './styles/forms.pcss';
-import './styles/chat.pcss';
-import './styles/components/input.pcss';
-import './styles/components/button.pcss';
 
-import { Block } from './core/block';
 import Handlebars from 'handlebars';
 import { registerHandlebarsPartials } from './utils/registerPartials';
+import { Block } from './core/block';
 
 import { RegisterPage } from './pages/register';
 import { LoginPage } from './pages/login';
 import { ChatsPage } from './pages/chats';
 import { Error404Page } from './pages/error-404';
 import { Error5xxPage } from './pages/error-5xx';
+import { LandingPage } from './pages/landing';
 
 import {
   ProfileViewPage,
@@ -22,12 +17,16 @@ import {
   ProfilePasswordPage,
 } from './pages/profile';
 
-import { LandingPage } from './pages/landing';
+import './styles/base.pcss';
+import './styles/layout.pcss';
+import './styles/forms.pcss';
+import './styles/chat.pcss';
+import './styles/components/input.pcss';
+import './styles/components/button.pcss';
 
 // ---------- Общий UI (тема, меню, модалки) ----------
 
 window.Handlebars = Handlebars;
-
 
 const setupThemeToggle = (): void => {
   const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
@@ -95,7 +94,7 @@ const setupUserModals = (): void => {
 
   addTrigger.addEventListener('click', () => open(addModal));
   removeTrigger.addEventListener('click', () => open(removeModal));
-  
+
   // клик по затемнению
   backdrop.addEventListener('click', closeAll);
 
@@ -136,7 +135,6 @@ export const setupAttachMenu = (): void => {
     modal.classList.remove('chat-upload-modal--open');
     backdrop.classList.remove('chat-upload-backdrop--open');
   };
-
 
   toggle.addEventListener('click', () => {
     menu.classList.toggle('chat-input__attach-menu--open');
@@ -181,8 +179,6 @@ const setupCommonUI = (): void => {
 
   setupThemeToggle();
   setupNavToggle();
-  // setupChatMenu();
-  // setupAttachMenu();
 };
 
 // ---------- Общий футер на всех страницах ----------
@@ -237,7 +233,7 @@ const initApp = (): void => {
     // | ProfilePasswordPage
     // | Error404Page
     // | Error5xxPage;
-    
+
   if (path === '/' || path === '/index.html') {
     pageInstance = new LandingPage();
   } else if (path.startsWith('/chats')) {
@@ -255,9 +251,9 @@ const initApp = (): void => {
   } else if (path === '/profile/password' || path === '/profile-password.html') {
     pageInstance = new ProfilePasswordPage();
   } else if (path === '/error-404' || path === '/error-404.html') {
-    pageInstance = new Error404Page();    
+    pageInstance = new Error404Page();
   } else if (path === '/error-5xx' || path === '/error-5xx.html') {
-    pageInstance = new Error5xxPage();    
+    pageInstance = new Error5xxPage();
   } else {
     pageInstance = new ChatsPage();
   }
