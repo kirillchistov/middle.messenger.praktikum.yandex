@@ -63,6 +63,7 @@ export const setupChatMenu = (): void => {
 
   document.addEventListener('click', (e) => {
     if (!menu.classList.contains('chat-thread__menu-dropdown--open')) return;
+    if (!(e.target instanceof HTMLElement)) return;
     const target = e.target as HTMLElement;
     if (!target.closest('.chat-thread__menu')) {
       menu.classList.remove('chat-thread__menu-dropdown--open');
@@ -99,11 +100,13 @@ const setupUserModals = (): void => {
 
   // клик вне «.modal»
   addModal.addEventListener('click', (e) => {
+    if (!(e.target instanceof HTMLElement)) return;
     const target = e.target as HTMLElement;
     if (!target.closest('.modal')) closeAll();
   });
 
   removeModal.addEventListener('click', (e) => {
+    if (!(e.target instanceof HTMLElement)) return;
     const target = e.target as HTMLElement;
     if (!target.closest('.modal')) closeAll();
   });
@@ -140,6 +143,7 @@ export const setupAttachMenu = (): void => {
   });
 
   menu.addEventListener('click', (e) => {
+    if (!(e.target instanceof HTMLElement)) return;
     const target = e.target as HTMLElement;
     if (!target.matches('.chat-input__attach-item')) return;
     menu.classList.remove('chat-input__attach-menu--open');
@@ -154,6 +158,7 @@ export const setupAttachMenu = (): void => {
 
   // клик вне содержимого модалки
   modal.addEventListener('click', (e) => {
+    if (!(e.target instanceof HTMLElement)) return;
     const target = e.target as HTMLElement;
     if (!target.closest('.modal')) {
       closeModal();

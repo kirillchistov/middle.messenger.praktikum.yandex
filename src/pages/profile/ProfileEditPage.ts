@@ -18,6 +18,7 @@ export class ProfileEditPage extends Block<ProfileEditProps> {
     const form = root.querySelector<HTMLFormElement>('#profile-edit-form');
     if (form) {
       attachFormValidation(form, { logOnSuccess: true });
+      console.log('[ProfileEditPage] Валидация формы инициализирована');
     }
   }
 

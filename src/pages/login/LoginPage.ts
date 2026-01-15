@@ -1,4 +1,3 @@
-// LoginPage.ts
 import { Block } from '@core/block';
 import { renderTemplate } from '@utils/renderTemplate';
 import { attachFormValidation } from '@utils/formValidation';
@@ -20,6 +19,7 @@ export class LoginPage extends Block<LoginProps> {
       const form = root.querySelector<HTMLFormElement>('#login-form');
       if (form) {
         attachFormValidation(form, { logOnSuccess: true });
+        console.log('[LoginPage] Валидация формы инициализирована');
       }
     });
   }

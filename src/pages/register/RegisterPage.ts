@@ -19,6 +19,7 @@ export class RegisterPage extends Block<RegisterProps> {
       const form = root.querySelector<HTMLFormElement>('#register-form');
       if (form) {
         attachFormValidation(form, { logOnSuccess: true });
+        console.log('[RegisterPage] Валидация формы инициализирована');
       }
     });
   }

@@ -6,13 +6,11 @@
           <span class="landing-nav__dot"></span>
           <span>Chat App</span>
         </div>
-        <nav>
-          <div class="landing-nav__links" id="nav-links">
-              <a href="/login" class="landing-nav__link">Вход</a>
-              <a href="/register" class="landing-nav__link landing-nav__link--primary">Регистрация</a>
-              <a href="/chat" class="landing-nav__link landing-nav__link--primary">Диалоги</a>
-              <a href="/profile" class="landing-nav__link landing-nav__link--primary">Профиль</a>
-          </div>
+        <nav class="landing-nav__links" id="nav-links">
+            <a href="/login" class="landing-nav__link">Вход</a>
+            <a href="/register" class="landing-nav__link landing-nav__link--primary">Регистрация</a>
+            <a href="/chat" class="landing-nav__link landing-nav__link--primary">Диалоги</a>
+            <a href="/profile" class="landing-nav__link landing-nav__link--primary">Профиль</a>
           {{!-- <button
             class="theme-toggle"
             type="button"
@@ -40,11 +38,12 @@
           </p>
 
           <div class="landing-hero__actions">
-            <a href="/register" class="btn btn--primary">Зарегистрироваться</a>
-            <p class="landing-hero__hint">
-              Нет аккаунта? Зарегистрируйтесь за минуту
-            </p>
+            <a href="/login" class="btn btn--primary">Войдите</a>
           </div>
+          <p class="landing-hero__hint">
+            Нет аккаунта?
+            <a href="/regster" class="landing-nav__link landing-nav__link--primary">Зарегистрируйтесь</a>
+          </p>
         </div>
 
         <div class="landing-hero__preview">
