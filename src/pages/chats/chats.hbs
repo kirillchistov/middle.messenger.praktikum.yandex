@@ -28,35 +28,38 @@
         <div class="chat-main">
             {{!-- Хедер открытого чата "тет-а-теты" --}}
             <header class="chat-thread__header">
-            <div class="chat-thread__left">
-              <button
-                class="chat-thread__hamburger"
-                type="button"
-                aria-label="Все чаты"
-              >
-                ☰
-              <span class="chat-thread__hamburger-text">Все чаты</span>
-              </button>
+              <div class="chat-thread__left">
                 <div class="chat-thread__avatar">Г</div>
                 <div>
-                <h2 class="chat-thread__title">тет-а-теты</h2>
-                <p class="chat-thread__subtitle">Групповой чат с мега‑экспертами</p>
+                  <h2 class="chat-thread__title">тет-а-теты</h2>
+                  <p class="chat-thread__subtitle">Групповой чат с мега‑экспертами</p>
                 </div>
-            </div>
+                <div class="chat-thread__all">
+                  <button
+                    class="chat-thread__hamburger"
+                    type="button"
+                    aria-label="Все чаты"
+                  >
+                    ☰
+                    <span class="chat-thread__hamburger-text">Все чаты</span>
+                  </button>
+                </div>
 
-            <div class="chat-thread__right">
+              </div>
+
+              <div class="chat-thread__right">
                 <a href="/profile" class="link">ivanivanov</a>
 
                 <div class="chat-thread__menu">
-                <button
-                    id="chat-menu-toggle"
-                    class="chat-thread__menu-btn"
-                    type="button"
-                >
-                    ⋮
-                </button>
+                  <button
+                      id="chat-menu-toggle"
+                      class="chat-thread__menu-btn"
+                      type="button"
+                  >
+                      ⋮
+                  </button>
 
-                <div id="chat-menu" class="chat-thread__menu-dropdown">
+                  <div id="chat-menu" class="chat-thread__menu-dropdown">
                     <button
                         class="chat-thread__menu-item"
                         type="button"
@@ -71,9 +74,9 @@
                     >
                         Удалить пользователя
                     </button>
+                  </div>
                 </div>
-                </div>
-            </div>
+              </div>
             </header>
 
             <div class="chat-thread__messages">
