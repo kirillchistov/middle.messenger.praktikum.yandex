@@ -163,6 +163,36 @@ export class ChatsPage extends Block<ChatsPageProps> {
         // Здесь надо добавить открытие модалки загрузки
       });
     }
+
+    // Гамбургер "Все чаты"
+    const hamburger = root.querySelector<HTMLButtonElement>(
+      '.chat-thread__hamburger',
+    );
+    const sidebar = root.querySelector<HTMLElement>('[data-chat-sidebar]');
+    const backdrop = root.querySelector<HTMLElement>('[data-chat-sidebar-backdrop]');
+
+    if (hamburger && sidebar && backdrop) {
+      const openSidebar = () => {
+        sidebar.classList.add('chat-sidebar--open');
+        backdrop.classList.add('chat-sidebar-backdrop--open');
+        console.log('[ChatsPage] Открыт сайдбар чатов');
+      };
+
+      const closeSidebar = () => {
+        sidebar.classList.remove('chat-sidebar--open');
+        backdrop.classList.remove('chat-sidebar-backdrop--open');
+        console.log('[ChatsPage] Закрыт сайдбар чатов');
+      };
+
+      this.addDOMListener(hamburger, 'click', openSidebar);
+      this.addDOMListener(backdrop, 'click', closeSidebar);
+
+      this.addDOMListener(root, 'keydown', (event: KeyboardEvent) => {
+        if (event.key === 'Escape') {
+          closeSidebar();
+        }
+      });
+    }
   }
 
   protected render(): string {

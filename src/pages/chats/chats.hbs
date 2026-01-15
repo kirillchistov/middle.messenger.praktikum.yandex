@@ -1,11 +1,42 @@
 <div class="app-shell">
-    <section class="chat-layout">
-        {{> chat-sidebar}}
+  <header class="landing-nav">
+    <div class="landing-nav__inner">
+      <div class="landing-nav__brand">
+        <span class="landing-nav__dot"></span>
+        <a href="/login" class="landing-nav__link">
+          <span>Chat App</span>
+        </a>
+      </div>
+      <nav class="landing-nav__links" id="nav-links">
+           <a href="/profile" class="landing-nav__link landing-nav__link--primary">Профиль</a>
+          <a href="/login" class="landing-nav__link">Выход</a>
+        {{!-- <button
+          class="theme-toggle"
+          type="button"
+          data-theme-toggle
+          id="nav-theme-toggle"
+        >
+          Тема
+        </button> --}}
+      </nav>
+    </div>
+  </header>
+
+  <section class="chat-layout">
+    {{> chat-sidebar}}
 
         <div class="chat-main">
             {{!-- Хедер открытого чата "тет-а-теты" --}}
             <header class="chat-thread__header">
             <div class="chat-thread__left">
+              <button
+                class="chat-thread__hamburger"
+                type="button"
+                aria-label="Все чаты"
+              >
+                ☰
+              <span class="chat-thread__hamburger-text">Все чаты</span>
+              </button>
                 <div class="chat-thread__avatar">Г</div>
                 <div>
                 <h2 class="chat-thread__title">тет-а-теты</h2>
@@ -88,6 +119,8 @@
     </section>
 </div>
 
+<div class="chat-sidebar-backdrop" data-chat-sidebar-backdrop></div>
+
 {{!-- Модалки добавления и удаления пользователя из чата --}}
 <div id="user-modal-add" class="chat-user-modal">
   <div class="modal">
@@ -129,7 +162,7 @@
       />
     {{!-- <p class="modal__text">Выберите файл.</p> --}}
     <div class="modal__actions">
-      <button id="upload-close" class="btn btn--ghost" type="button">
+      <button id="upload-close" class="btn btn--primary" type="button">
         Закрыть
       </button>
     </div>

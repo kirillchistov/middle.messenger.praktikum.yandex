@@ -268,7 +268,9 @@ const initApp = (): void => {
   setupAttachMenu();
   setupUserModals();
 
-  injectFooter();
+  if (!path.startsWith('/chats')) {
+    injectFooter();
+  }
 };
 
 document.addEventListener('DOMContentLoaded', initApp);
