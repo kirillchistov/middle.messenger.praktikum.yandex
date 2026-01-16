@@ -1,6 +1,6 @@
 /* eslint-disable import/extensions */
 import { Block } from '@/core/block';
-import { attachFormValidation } from '@/utils/formValidation';
+import { createFormValidation } from '@/utils/formValidation';
 import { renderTemplate } from '@/utils/renderTemplate';
 import template from './ProfileEdit.hbs?raw';
 
@@ -16,11 +16,38 @@ export class ProfileEditPage extends Block<ProfileEditProps> {
     if (!root) return;
 
     const form = root.querySelector<HTMLFormElement>('#profile-edit-form');
-    if (form) {
-      attachFormValidation(form, { logOnSuccess: true });
-      console.log('[ProfileEditPage] Валидация формы инициализирована');
-    }
+
+    if (!form) {
+      console.warn('[ProfileEditPage] форма потерялась');
+    return;
   }
+  const { validateField, validateForm } = createFormValidation(form, {
+    logOnSuccess: true,
+  });
+
+  const inputs = Array.from(
+    form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input, textarea'),
+  );
+
+  inputs.forEach((input) => {
+    this.addDOMListener(input, 'blur', (event: FocusEvent) => {
+      const target = event.target;
+      if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
+        validateField(target);
+      }
+    });
+  });
+
+  this.addDOMListener(form, 'submit', (event: SubmitEvent) => {
+    event.preventDefault();
+    const { valid } = validateForm();
+    if (!valid) {
+      console.warn('[ProfileEditPage] форма невалидна — отправка отменена');
+      return;
+    }
+    // Вывод данных в консоль по submit вынес внутрь createFormValidation
+  });
+}
 
   protected render(): string {
     return renderTemplate(template, this.props);

@@ -1,84 +1,152 @@
-// Работа с валидацией форм: навешивание обработчиков и проверка полей
-import { validateField, type FieldName } from './validation';
-
-type AttachOptions = {
-  logOnSuccess?: boolean;
+export type ValidationResult = {
+  valid: boolean;
+  errors: Record<string, string>;
 };
 
-export function validateInputElement(
-  input: HTMLInputElement | HTMLTextAreaElement,
-): boolean {
-  const name = input.name as FieldName;
-  // eslint-disable-next-line prefer-destructuring
-  const value = input.value;
+export type ValidationHandlers = {
+  validateField: (input: HTMLInputElement | HTMLTextAreaElement) => void;
+  validateForm: () => ValidationResult;
+};
 
-  const { valid, message } = validateField(name, value);
+const namePattern = /^[A-ZА-ЯЁ][A-Za-zА-ЯЁа-яё-]*$/; // имя/фамилия
+const loginPattern = /^(?!\d+$)[A-Za-z0-9_-]{3,20}$/;
+const emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+const phonePattern = /^\+?\d{10,15}$/;
+const passwordUppercasePattern = /[A-Z]/;
+const passwordDigitPattern = /\d/;
 
-  const errorElement = input
-    .closest('.form-field, .auth__form')
-    ?.querySelector<HTMLElement>(`.error-${name}`);
-
-  if (!valid) {
-    input.classList.add('input_error');
-    if (errorElement) errorElement.textContent = message ?? 'Некорректное значение';
-  } else {
-    input.classList.remove('input_error');
-    if (errorElement) errorElement.textContent = '';
+const getFieldName = (name: string): string => {
+  switch (name) {
+    case 'first_name':
+      return 'Имя';
+    case 'second_name':
+      return 'Фамилия';
+    case 'display_name':
+      return 'Имя в чате';
+    case 'login':
+      return 'Логин';
+    case 'email':
+      return 'Почта';
+    case 'phone':
+      return 'Телефон';
+    case 'password':
+    case 'oldPassword':
+    case 'newPassword':
+    case 'repeatPassword':
+      return 'Пароль';
+    default:
+      return 'Поле';
   }
+};
 
-  return valid;
-}
+export const createFormValidation = (
+  formElement: HTMLFormElement,
+  options?: { logOnSuccess?: boolean },
+): ValidationHandlers => {
+  const validateField = (input: HTMLInputElement | HTMLTextAreaElement): void => {
+    const { name } = input;
+    const value = input.value.trim();
+    const fieldLabel = getFieldName(name);
 
-export function attachFormValidation(
-  form: HTMLFormElement,
-  options: AttachOptions = {},
-): void {
-  const { logOnSuccess = false } = options;
+    let error = '';
 
-  form.addEventListener(
-    'blur',
-    (event) => {
-      const target = event.target as HTMLElement;
-      if (
-        target instanceof HTMLInputElement
-        || target instanceof HTMLTextAreaElement
-      ) {
-        if (target.name) validateInputElement(target);
+    // Базовая проверка на пустоту для всех обязательных полей
+    if (!value) {
+      error = `${fieldLabel} обязательно для заполнения`;
+    } else {
+      // 2. Специализированные правила по имени поля
+      if (['first_name', 'second_name', 'display_name'].includes(name)) {
+        if (!namePattern.test(value)) {
+          error = `${fieldLabel} должно начинаться с заглавной буквы и содержать только буквы или дефис`;
+        }
       }
-    },
-    true,
-  );
 
-  // submit
-  form.addEventListener('submit', (event) => {
-    event.preventDefault();
+      if (name === 'login') {
+        if (!loginPattern.test(value)) {
+          error = 'Логин от 3 до 20 символов, латиница, цифры, "-" и "_", не только цифры';
+        }
+      }
 
-    const inputs = form.querySelectorAll<
-    HTMLInputElement | HTMLTextAreaElement
-    >('input[name], textarea[name]');
+      if (name === 'email') {
+        if (!emailPattern.test(value)) {
+          error = 'Некорректный формат почты';
+        }
+      }
 
-    let isFormValid = true;
+      if (name === 'phone') {
+        if (!phonePattern.test(value)) {
+          error = 'Телефон должен содержать от 10 до 15 цифр и может начинаться с "+"';
+        }
+      }
+
+      if (
+        name === 'password'
+        || name === 'oldPassword'
+        || name === 'newPassword'
+        || name === 'repeatPassword'
+      ) {
+        if (value.length < 8 || value.length > 40) {
+          error = 'Пароль должен быть от 8 до 40 символов';
+        } else if (!passwordUppercasePattern.test(value)) {
+          error = 'Пароль должен содержать хотя бы одну заглавную латинскую букву';
+        } else if (!passwordDigitPattern.test(value)) {
+          error = 'Пароль должен содержать хотя бы одну цифру';
+        }
+      }
+
+      if (name === 'repeatPassword') {
+        const newPasswordInput =
+          formElement.querySelector<HTMLInputElement>('input[name="newPassword"]')
+          || formElement.querySelector<HTMLInputElement>('input[name="password"]');
+
+        if (newPasswordInput && newPasswordInput.value) {
+          if (newPasswordInput.value !== value) {
+            error = 'Пароли не совпадают';
+          }
+        }
+      }
+    }
+
+    const field = input.closest('.form__field');
+    const errorEl = field?.querySelector<HTMLElement>('.form__error');
+
+    if (errorEl) {
+      errorEl.textContent = error;
+    }
+
+    if (error) {
+      // eslint-disable-next-line no-console
+      console.error(`[validateField] ${name}: ${error}`);
+    }
+  };
+
+  const validateForm = (): ValidationResult => {
+    const inputs = Array.from(
+      formElement.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input, textarea'),
+    );
+
+    const errors: Record<string, string> = {};
 
     inputs.forEach((input) => {
-      const ok = validateInputElement(input);
-      if (!ok) isFormValid = false;
+      validateField(input);
+      const field = input.closest('.form__field');
+      const errorEl = field?.querySelector<HTMLElement>('.form__error');
+      const message = errorEl?.textContent ?? '';
+      if (message) {
+        errors[input.name] = message;
+      }
     });
 
-    if (!isFormValid) return;
+    const valid = Object.keys(errors).length === 0;
 
-    const formData = new FormData(form);
-    const raw = Object.fromEntries(
-      formData.entries(),
-    ) as Record<string, FormDataEntryValue>;
-
-    const data: Record<string, string> = {};
-    Object.entries(raw).forEach(([key, value]) => {
-      data[key] = typeof value === 'string' ? value : '';
-    });
-
-    if (logOnSuccess) {
-      console.log('Form submit payload:', data);
+    if (valid && options?.logOnSuccess) {
+      const data = Object.fromEntries(new FormData(formElement).entries());
+      // eslint-disable-next-line no-console
+      console.log('[formValidation] успешно', data);
     }
-    // здесь буду вызвать HTTPTransport/AuthService
-  });
-}
+
+    return { valid, errors };
+  };
+
+  return { validateField, validateForm };
+};

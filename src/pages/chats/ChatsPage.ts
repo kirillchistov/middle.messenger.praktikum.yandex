@@ -1,7 +1,7 @@
 /* eslint-disable import/extensions */
 import { Block } from '@/core/block';
 import { renderTemplate } from '@/utils/renderTemplate';
-import { attachFormValidation } from '@/utils/formValidation';
+import { createFormValidation } from '@/utils/formValidation';
 import template from './chats.hbs?raw';
 
 type Chat = {
@@ -78,51 +78,59 @@ export class ChatsPage extends Block<ChatsPageProps> {
     const textarea = form.querySelector<HTMLTextAreaElement>('.chat-input__textarea');
     if (!textarea) return;
 
+    const { validateForm } = createFormValidation(form, { logOnSuccess: true });
+
     const value = textarea.value.trim();
     if (!value) {
-      console.log('[ChatsPage] Пустое сообщение, отправка отменена');
-      // здесь можно дополнительно добавить блок для показа ошибки
+      // eslint-disable-next-line no-console
+      console.warn('[ChatsPage] Пустое сообщение — отправка запрещена');
       return;
     }
 
-    console.log('[ChatsPage] Отправка сообщения:', value);
+    const { valid } = validateForm();
+    if (!valid) {
+      // eslint-disable-next-line no-console
+      console.warn('[ChatsPage] ошибка валидации — отправка отменена');
+      return;
+    }
 
-    //  позже будем добавлять сообщение в список
-    const nextId = this.props.messages.length + 1;
-    this.setProps({
-      messages: [
-        ...this.props.messages,
-        {
-          id: nextId,
-          type: 'outgoing',
-          text: value,
-          time: new Date().toLocaleTimeString('ru-RU', {
-            hour: '2-digit',
-            minute: '2-digit',
-          }),
-        },
-      ],
-    });
+    // eslint-disable-next-line no-console
+    console.log('[ChatsPage] отправка сообщения', value);
 
-    textarea.value = '';
+    // здесь будем обновлять список сообщений this.props.messages
   }
-  // ---------------------------------------
 
   protected componentDidMount(): void {
     const root = this.getContent();
     if (!root) return;
 
-    console.log('[ChatsPage] componentDidMount');
-
     const form = root.querySelector<HTMLFormElement>('#chat-message-form');
-    if (form) {
-      // Валидация формы через утилиту
-      attachFormValidation(form, { logOnSuccess: true });
-      console.log('[ChatsPage] Валидация формы инициализирована');
-
-      // Подключаю submit через обработчик в Block
-      this.addDOMListener(form, 'submit', this.handleMessageSubmit);
+    if (!form) {
+      // eslint-disable-next-line no-console
+      console.warn('[ChatsPage] форма потерялась');
+      return;
     }
+
+    const textarea = form.querySelector<HTMLTextAreaElement>('.chat-input__textarea');
+    if (!textarea) {
+      // eslint-disable-next-line no-console
+      console.warn('[ChatsPage] textarea потерялась');
+      return;
+    }
+
+    const { validateField } = createFormValidation(form, { logOnSuccess: true });
+
+    this.addDOMListener(textarea, 'blur', (e: FocusEvent) => {
+      const target = e.target;
+      if (
+        target instanceof HTMLTextAreaElement
+        || target instanceof HTMLInputElement
+      ) {
+        validateField(target);
+      }
+    });
+
+    this.addDOMListener(form, 'submit', this.handleMessageSubmit);
 
     // Инициализирую контекстное меню
     const chatMenuToggle = root.querySelector<HTMLButtonElement>('#chat-menu-toggle');

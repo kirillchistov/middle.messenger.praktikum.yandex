@@ -410,8 +410,8 @@ html[data-theme="light"] .chat-preview-message__bubble {
   flex: 1;
   resize: none;
   border: none;
-  background: transparent;
-  color: var(--color-text-primary);
+  background: var(--bg);
+  color: var(--ds-card-bg);
   padding: var(--space-2) 0;
   max-height: 160px;
   min-height: 44px;
@@ -459,6 +459,7 @@ html[data-theme="light"] .chat-input__inner {
 
 html[data-theme="light"] .chat-input__textarea {
   color: var(--color-text-primary);
+  background: var(--color-bg-elevated);
 }
 
 html[data-theme="light"] .chat-input__textarea::placeholder {
