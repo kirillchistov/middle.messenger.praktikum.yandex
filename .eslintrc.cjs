@@ -20,7 +20,7 @@ module.exports = {
     'no-restricted-exports': 'off',
     'no-param-reassign': 'off',
     'import/no-absolute-path': 'off',
-    'color-function-notation': 'legacy',
+    'color-function-notation': ['warn', 'legacy'],
     'import/prefer-default-export': 'off',
     'import/no-extraneous-dependencies': 'off',
     'max-len': 'off',
