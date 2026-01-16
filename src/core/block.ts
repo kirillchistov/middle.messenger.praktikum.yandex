@@ -43,10 +43,11 @@ export abstract class Block<P extends BlockProps = BlockProps> {
     );
   }
 
+  // Сначала Render, потом CDM
   protected init(): void {
     this._createResources();
-    this.eventBus.emit(Block.EVENTS.FLOW_CDM);
     this.eventBus.emit(Block.EVENTS.FLOW_RENDER);
+    this.eventBus.emit(Block.EVENTS.FLOW_CDM);
   }
 
   private _createResources(): void {
@@ -98,7 +99,7 @@ export abstract class Block<P extends BlockProps = BlockProps> {
   }
 
   private _componentDidMount(): void {
-    console.log('[Block] componentDidMount', this.constructor.name);
+    // console.log('[Block] componentDidMount', this.constructor.name);
     this.componentDidMount();
   }
 
@@ -168,20 +169,20 @@ export abstract class Block<P extends BlockProps = BlockProps> {
     handler: (event: HTMLElementEventMap[K]) => void,
   ): void {
     element.addEventListener(type, handler as EventListener);
-    console.log(
-      `[Block] addDOMListener: ${type} on`,
-      element,
-      'for',
-      this.constructor.name,
-    );
+    // console.log(
+    //   `[Block] addDOMListener: ${type} on`,
+    //   element,
+    //   'for',
+    //   this.constructor.name,
+    // );
     this._unsubscribeListeners.push(() => {
       element.removeEventListener(type, handler as EventListener);
-      console.log(
-        `[Block] removeDOMListener: ${type} from`,
-        element,
-        'for',
-        this.constructor.name,
-      );
+      // console.log(
+      //   `[Block] removeDOMListener: ${type} from`,
+      //   element,
+      //   'for',
+      //   this.constructor.name,
+      // );
     });
   }
 

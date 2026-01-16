@@ -375,7 +375,7 @@ html[data-theme="light"] .chat-preview-message__bubble {
 
 .chat-input__inner {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: var(--space-3);
   background-color: var(--color-bg-elevated-soft);
   border-radius: var(--radius-xl);
@@ -385,14 +385,14 @@ html[data-theme="light"] .chat-preview-message__bubble {
 
 .chat-input__icon-btn {
   position: relative;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 999px;
   background-color: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.7;
+  opacity: 0.9;
 }
 
 .chat-input__icon-btn:hover {
@@ -412,9 +412,10 @@ html[data-theme="light"] .chat-preview-message__bubble {
   border: none;
   background: var(--bg);
   color: var(--ds-card-bg);
-  padding: var(--space-2) 0;
+  padding: var(--space-2);
+  border-radius: .8rem;
   max-height: 160px;
-  min-height: 44px;
+  min-height: 1rem;
   line-height: 1.5;
   font-size: var(--font-size-sm);
 }

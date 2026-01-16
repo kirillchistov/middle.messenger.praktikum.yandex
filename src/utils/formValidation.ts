@@ -142,7 +142,7 @@ export const createFormValidation = (
     if (valid && options?.logOnSuccess) {
       const data = Object.fromEntries(new FormData(formElement).entries());
       // eslint-disable-next-line no-console
-      console.log('[formValidation] успешно', data);
+      console.log('[formValidation] Данные успешно отправлены', data);
     }
 
     return { valid, errors };

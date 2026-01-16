@@ -1,8 +1,5 @@
 <div class="form-group">
-    {{!-- {{#if label}}
-        <label class="form__label" for="{{id}}">{{label}}</label>
-    {{/if}} --}}
-  <div class="form-field">    
+  <div class="form-field">
     <label class="form-field__label" for="{{id}}">{{label}}</label>
     <input
         type="{{type}}"
@@ -19,7 +16,7 @@
         {{#if error}}
             <span class="error-message">{{error}}</span>
         {{/if}}
-        
+
         {{#if helpText}}
             <small class="help-text">{{helpText}}</small>
         {{/if}}

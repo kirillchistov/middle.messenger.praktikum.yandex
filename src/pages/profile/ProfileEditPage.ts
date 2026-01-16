@@ -16,38 +16,45 @@ export class ProfileEditPage extends Block<ProfileEditProps> {
     if (!root) return;
 
     const form = root.querySelector<HTMLFormElement>('#profile-edit-form');
-
     if (!form) {
+      // eslint-disable-next-line no-console
       console.warn('[ProfileEditPage] форма потерялась');
-    return;
-  }
-  const { validateField, validateForm } = createFormValidation(form, {
-    logOnSuccess: true,
-  });
-
-  const inputs = Array.from(
-    form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input, textarea'),
-  );
-
-  inputs.forEach((input) => {
-    this.addDOMListener(input, 'blur', (event: FocusEvent) => {
-      const target = event.target;
-      if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
-        validateField(target);
-      }
-    });
-  });
-
-  this.addDOMListener(form, 'submit', (event: SubmitEvent) => {
-    event.preventDefault();
-    const { valid } = validateForm();
-    if (!valid) {
-      console.warn('[ProfileEditPage] форма невалидна — отправка отменена');
       return;
     }
-    // Вывод данных в консоль по submit вынес внутрь createFormValidation
-  });
-}
+
+    const { validateField, validateForm } = createFormValidation(form, {
+      logOnSuccess: true,
+    });
+
+    const inputs = Array.from(
+      form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input, textarea'),
+    );
+
+    inputs.forEach((input) => {
+      this.addDOMListener(input, 'blur', (event: FocusEvent) => {
+        const target = event.target;
+        if (
+          target instanceof HTMLInputElement
+          || target instanceof HTMLTextAreaElement
+        ) {
+          validateField(target);
+        }
+      });
+    });
+
+    this.addDOMListener(form, 'submit', (event: SubmitEvent) => {
+      event.preventDefault();
+      const { valid } = validateForm();
+      if (!valid) {
+        // eslint-disable-next-line no-console
+        console.warn('[ProfileEditPage] форма невалидна — отправка отменена');
+        return;
+      }
+      // объект с данными логируется внутри createFormValidation
+      // eslint-disable-next-line no-console
+      console.log('[ProfileEditPage] форма успешно отправлена');
+    });
+  }
 
   protected render(): string {
     return renderTemplate(template, this.props);

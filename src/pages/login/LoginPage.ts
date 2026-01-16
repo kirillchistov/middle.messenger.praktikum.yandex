@@ -5,33 +5,9 @@ import template from './login.hbs?raw';
 
 type LoginProps = Record<string, never>;
 
-type SubmitHandler = (event: SubmitEvent) => void;
-
 export class LoginPage extends Block<LoginProps> {
-  private handleSubmit: SubmitHandler;
-
   constructor(props: LoginProps = {}) {
     super('div', props);
-    this.handleSubmit = this.onSubmit.bind(this);
-  }
-
-  private onSubmit(event: SubmitEvent): void {
-    event.preventDefault();
-
-    const form = event.currentTarget;
-    if (!(form instanceof HTMLFormElement)) return;
-
-    const { validateForm } = createFormValidation(form, { logOnSuccess: true });
-    const { valid } = validateForm();
-
-    if (!valid) {
-      // eslint-disable-next-line no-console
-      console.warn('[LoginPage] данные формы невалидны — отправка отменена');
-      return;
-    }
-
-    // eslint-disable-next-line no-console
-    console.log('[LoginPage] успешно');
   }
 
   protected componentDidMount(): void {
@@ -45,15 +21,17 @@ export class LoginPage extends Block<LoginProps> {
       return;
     }
 
-    const { validateField } = createFormValidation(form, { logOnSuccess: true });
+    const { validateField, validateForm } = createFormValidation(form, {
+      logOnSuccess: true,
+    });
 
     const inputs = Array.from(
       form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input, textarea'),
     );
 
     inputs.forEach((input) => {
-      this.addDOMListener(input, 'blur', (e: FocusEvent) => {
-        const target = e.target;
+      this.addDOMListener(input, 'blur', (event: FocusEvent) => {
+        const target = event.target;
         if (
           target instanceof HTMLInputElement
           || target instanceof HTMLTextAreaElement
@@ -63,7 +41,19 @@ export class LoginPage extends Block<LoginProps> {
       });
     });
 
-    this.addDOMListener(form, 'submit', this.handleSubmit);
+    this.addDOMListener(form, 'submit', (event: SubmitEvent) => {
+      event.preventDefault();
+
+      const { valid } = validateForm();
+      if (!valid) {
+        // eslint-disable-next-line no-console
+        console.warn('[LoginPage] Данные формы невалидны — отправка отменена');
+        return;
+      }
+
+      // eslint-disable-next-line no-console
+      console.log('[LoginPage] Данные успешно отправлены');
+    });
   }
 
   protected render(): string {

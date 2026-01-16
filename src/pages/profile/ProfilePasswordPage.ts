@@ -26,12 +26,12 @@ export class ProfilePasswordPage extends Block<ProfilePasswordProps> {
 
     if (!valid) {
       // eslint-disable-next-line no-console
-      console.warn('[ProfilePasswordPage] данные формы невалидны — отправка отменена');
+      console.warn('[ProfilePasswordPage] Данные формы невалидны — отправка отменена');
       return;
     }
 
     // eslint-disable-next-line no-console
-    console.log('[ProfilePasswordPage] успешно');
+    console.log('[ProfilePasswordPage] Данные успешно отправлены');
   }
 
   protected componentDidMount(): void {
