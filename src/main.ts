@@ -51,127 +51,127 @@ const setupNavToggle = (): void => {
   });
 };
 
-export const setupChatMenu = (): void => {
-  const toggle = document.getElementById('chat-menu-toggle');
-  const menu = document.getElementById('chat-menu');
+// export const setupChatMenu = (): void => {
+//   const toggle = document.getElementById('chat-menu-toggle');
+//   const menu = document.getElementById('chat-menu');
 
-  if (!toggle || !menu) return;
+//   if (!toggle || !menu) return;
 
-  toggle.addEventListener('click', () => {
-    menu.classList.toggle('chat-thread__menu-dropdown--open');
-  });
+//   toggle.addEventListener('click', () => {
+//     menu.classList.toggle('chat-thread__menu-dropdown--open');
+//   });
 
-  document.addEventListener('click', (e) => {
-    if (!menu.classList.contains('chat-thread__menu-dropdown--open')) return;
-    if (!(e.target instanceof HTMLElement)) return;
-    const target = e.target as HTMLElement;
-    if (!target.closest('.chat-thread__menu')) {
-      menu.classList.remove('chat-thread__menu-dropdown--open');
-    }
-  });
-};
+//   document.addEventListener('click', (e) => {
+//     if (!menu.classList.contains('chat-thread__menu-dropdown--open')) return;
+//     if (!(e.target instanceof HTMLElement)) return;
+//     const target = e.target as HTMLElement;
+//     if (!target.closest('.chat-thread__menu')) {
+//       menu.classList.remove('chat-thread__menu-dropdown--open');
+//     }
+//   });
+// };
 
-const setupUserModals = (): void => {
-  const addTrigger = document.querySelector<HTMLElement>('[data-modal-open="add-user"]');
-  const removeTrigger = document.querySelector<HTMLElement>('[data-modal-open="remove-user"]');
+// const setupUserModals = (): void => {
+//   const addTrigger = document.querySelector<HTMLElement>('[data-modal-open="add-user"]');
+//   const removeTrigger = document.querySelector<HTMLElement>('[data-modal-open="remove-user"]');
 
-  const addModal = document.getElementById('user-modal-add');
-  const removeModal = document.getElementById('user-modal-remove');
-  const backdrop = document.getElementById('user-modal-backdrop');
+//   const addModal = document.getElementById('user-modal-add');
+//   const removeModal = document.getElementById('user-modal-remove');
+//   const backdrop = document.getElementById('user-modal-backdrop');
 
-  if (!addTrigger || !removeTrigger || !addModal || !removeModal || !backdrop) return;
+//   if (!addTrigger || !removeTrigger || !addModal || !removeModal || !backdrop) return;
 
-  const open = (modal: HTMLElement) => {
-    modal.classList.add('chat-user-modal--open');
-    backdrop.classList.add('chat-user-backdrop--open');
-  };
+//   const open = (modal: HTMLElement) => {
+//     modal.classList.add('chat-user-modal--open');
+//     backdrop.classList.add('chat-user-backdrop--open');
+//   };
 
-  const closeAll = () => {
-    addModal.classList.remove('chat-user-modal--open');
-    removeModal.classList.remove('chat-user-modal--open');
-    backdrop.classList.remove('chat-user-backdrop--open');
-  };
+//   const closeAll = () => {
+//     addModal.classList.remove('chat-user-modal--open');
+//     removeModal.classList.remove('chat-user-modal--open');
+//     backdrop.classList.remove('chat-user-backdrop--open');
+//   };
 
-  addTrigger.addEventListener('click', () => open(addModal));
-  removeTrigger.addEventListener('click', () => open(removeModal));
+//   addTrigger.addEventListener('click', () => open(addModal));
+//   removeTrigger.addEventListener('click', () => open(removeModal));
 
-  // клик по затемнению
-  backdrop.addEventListener('click', closeAll);
+//   // клик по затемнению
+//   backdrop.addEventListener('click', closeAll);
 
-  // клик вне «.modal»
-  addModal.addEventListener('click', (e) => {
-    if (!(e.target instanceof HTMLElement)) return;
-    const target = e.target as HTMLElement;
-    if (!target.closest('.modal')) closeAll();
-  });
+//   // клик вне «.modal»
+//   addModal.addEventListener('click', (e) => {
+//     if (!(e.target instanceof HTMLElement)) return;
+//     const target = e.target as HTMLElement;
+//     if (!target.closest('.modal')) closeAll();
+//   });
 
-  removeModal.addEventListener('click', (e) => {
-    if (!(e.target instanceof HTMLElement)) return;
-    const target = e.target as HTMLElement;
-    if (!target.closest('.modal')) closeAll();
-  });
+//   removeModal.addEventListener('click', (e) => {
+//     if (!(e.target instanceof HTMLElement)) return;
+//     const target = e.target as HTMLElement;
+//     if (!target.closest('.modal')) closeAll();
+//   });
 
-  // Esc
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      closeAll();
-    }
-  });
-};
+//   // Esc
+//   document.addEventListener('keydown', (e) => {
+//     if (e.key === 'Escape') {
+//       closeAll();
+//     }
+//   });
+// };
 
-export const setupAttachMenu = (): void => {
-  const toggle = document.getElementById('attach-toggle');
-  const menu = document.getElementById('attach-menu');
-  const modal = document.getElementById('upload-modal');
-  const backdrop = document.getElementById('upload-backdrop');
-  const closeBtn = document.getElementById('upload-close');
+// export const setupAttachMenu = (): void => {
+//   const toggle = document.getElementById('attach-toggle');
+//   const menu = document.getElementById('attach-menu');
+//   const modal = document.getElementById('upload-modal');
+//   const backdrop = document.getElementById('upload-backdrop');
+//   const closeBtn = document.getElementById('upload-close');
 
-  if (!toggle || !menu || !modal || !backdrop) return;
+//   if (!toggle || !menu || !modal || !backdrop) return;
 
-  const openModal = () => {
-    modal.classList.add('chat-upload-modal--open');
-    backdrop.classList.add('chat-upload-backdrop--open');
-  };
+//   const openModal = () => {
+//     modal.classList.add('chat-upload-modal--open');
+//     backdrop.classList.add('chat-upload-backdrop--open');
+//   };
 
-  const closeModal = () => {
-    modal.classList.remove('chat-upload-modal--open');
-    backdrop.classList.remove('chat-upload-backdrop--open');
-  };
+//   const closeModal = () => {
+//     modal.classList.remove('chat-upload-modal--open');
+//     backdrop.classList.remove('chat-upload-backdrop--open');
+//   };
 
-  toggle.addEventListener('click', () => {
-    menu.classList.toggle('chat-input__attach-menu--open');
-  });
+//   toggle.addEventListener('click', () => {
+//     menu.classList.toggle('chat-input__attach-menu--open');
+//   });
 
-  menu.addEventListener('click', (e) => {
-    if (!(e.target instanceof HTMLElement)) return;
-    const target = e.target as HTMLElement;
-    if (!target.matches('.chat-input__attach-item')) return;
-    menu.classList.remove('chat-input__attach-menu--open');
-    openModal();
-  });
+//   menu.addEventListener('click', (e) => {
+//     if (!(e.target instanceof HTMLElement)) return;
+//     const target = e.target as HTMLElement;
+//     if (!target.matches('.chat-input__attach-item')) return;
+//     menu.classList.remove('chat-input__attach-menu--open');
+//     openModal();
+//   });
 
-  // клик по затемнению
-  backdrop.addEventListener('click', closeModal);
+//   // клик по затемнению
+//   backdrop.addEventListener('click', closeModal);
 
-  // клик по крестику / кнопке
-  closeBtn?.addEventListener('click', closeModal);
+//   // клик по крестику / кнопке
+//   closeBtn?.addEventListener('click', closeModal);
 
-  // клик вне содержимого модалки
-  modal.addEventListener('click', (e) => {
-    if (!(e.target instanceof HTMLElement)) return;
-    const target = e.target as HTMLElement;
-    if (!target.closest('.modal')) {
-      closeModal();
-    }
-  });
+//   // клик вне содержимого модалки
+//   modal.addEventListener('click', (e) => {
+//     if (!(e.target instanceof HTMLElement)) return;
+//     const target = e.target as HTMLElement;
+//     if (!target.closest('.modal')) {
+//       closeModal();
+//     }
+//   });
 
-  // Esc
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      closeModal();
-    }
-  });
-};
+//   // Esc
+//   document.addEventListener('keydown', (e) => {
+//     if (e.key === 'Escape') {
+//       closeModal();
+//     }
+//   });
+// };
 
 const setupCommonUI = (): void => {
   if (
@@ -264,9 +264,9 @@ const initApp = (): void => {
 
   root.innerHTML = '';
   pageInstance.mount(rootSelector);
-  setupChatMenu();
-  setupAttachMenu();
-  setupUserModals();
+  // setupChatMenu();
+  // setupAttachMenu();
+  // setupUserModals();
 
   if (!path.startsWith('/chat')) {
     injectFooter();
