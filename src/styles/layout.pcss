@@ -123,6 +123,7 @@
 
 .settings-card__title {
   margin: 0 0 var(--space-4);
+  text-align: center;
 }
 
 .error-page {
@@ -317,7 +318,7 @@
 .profile-form__row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: start;
   padding: var(--space-2) 0;
   border-bottom: 1px solid var(--color-border-subtle);
   gap: var(--space-4);
@@ -330,16 +331,24 @@
 
 .profile-form__input {
   flex: 1;
+  width:100%;
+  min-width: 280px;
   border: none;
   text-align: right;
   background: transparent;
-  color: var(--color-text-muted);
+  color: var(--color-text-primary);
   padding: var(--space-2) 0;
 }
 
 .profile-form__input:focus {
   outline: none;
-  border-bottom: 1px solid var(--color-accent);
+  border-bottom: 1px solid var(--color-border-subtle);
+  color: var(--color-text-primary);
+}
+
+.profile-form__input:hover {
+  border-bottom: 1px solid var(--color-border-subtle);
+  background-color: var(--bg-elevated);
 }
 
 .profile-form__actions {

@@ -62,6 +62,12 @@ export class ChatsPage extends Block<ChatsPageProps> {
     const root = this.getContent();
     if (!root) return;
 
+    const uploadBackdrop = document.getElementById('upload-backdrop');
+    const uploadClose = document.getElementById('upload-close');
+
+    console.log(uploadClose);
+    console.log(uploadBackdrop);
+
     // Форма отправки сообщения
     const form = root.querySelector<HTMLFormElement>('#chat-message-form');
     if (form) {
@@ -184,6 +190,9 @@ export class ChatsPage extends Block<ChatsPageProps> {
       });
     }
 
+    console.log(uploadModal);
+    console.log(uploadBackdrop);
+
     if (uploadModal && uploadBackdrop) {
       const closeUpload = () => {
         uploadModal.classList.remove('chat-upload-modal--open');
@@ -195,11 +204,13 @@ export class ChatsPage extends Block<ChatsPageProps> {
       uploadModal.addEventListener('click', (e) => {
         if (!(e.target instanceof HTMLElement)) return;
         if (!e.target.closest('.modal')) {
+          console.log('[ChatsPage] Клик вне окна');
           closeUpload();
         }
       });
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
+          console.log('[ChatsPage] Нажали Esc');
           closeUpload();
         }
       });

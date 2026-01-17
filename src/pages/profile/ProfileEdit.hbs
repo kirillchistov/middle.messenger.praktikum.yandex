@@ -5,6 +5,16 @@
 
   <div class="profile-card">
     <h1 class="settings-card__title">Изменить данные</h1>
+    <div class="profile-card__avatar-block">
+      <div class="profile-avatar profile-avatar--button">
+      </div>
+      <div class="profile-card__name">
+        {{display_name}}
+      </div>
+      <a href="/profile/avatar" class="profile-link">
+        Поменять аватар
+      </a>
+    </div>
 
     <form class="profile-form" id="profile-edit-form">
       <div class="profile-form__row form__field">
@@ -38,6 +48,7 @@
           type="text"
         />
         <p class="form__error"></p>
+      </div>
 
       <div class="form__field profile-form__row">
         <label class="form__label" for="second_name">Фамилия</label>
