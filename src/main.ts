@@ -173,6 +173,59 @@ const setupNavToggle = (): void => {
 //   });
 // };
 
+const setupModals = (): void => {
+  // user-модалки
+  const addModal = document.getElementById('user-modal-add');
+  const removeModal = document.getElementById('user-modal-remove');
+  const userBackdrop = document.getElementById('user-modal-backdrop');
+
+  if (addModal && removeModal && userBackdrop) {
+    const closeAllUsers = () => {
+      addModal.classList.remove('chat-user-modal--open');
+      removeModal.classList.remove('chat-user-modal--open');
+      userBackdrop.classList.remove('chat-user-backdrop--open');
+    };
+
+    userBackdrop.addEventListener('click', closeAllUsers);
+
+    addModal.addEventListener('click', (e) => {
+      if (!(e.target instanceof HTMLElement)) return;
+      if (!e.target.closest('.modal')) closeAllUsers();
+    });
+
+    removeModal.addEventListener('click', (e) => {
+      if (!(e.target instanceof HTMLElement)) return;
+      if (!e.target.closest('.modal')) closeAllUsers();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeAllUsers();
+    });
+  }
+
+  // upload-модалка
+  const uploadModal = document.getElementById('upload-modal');
+  const uploadBackdrop = document.getElementById('upload-backdrop');
+  const uploadClose = document.getElementById('upload-close');
+
+  if (uploadModal && uploadBackdrop) {
+    const closeUpload = () => {
+      uploadModal.classList.remove('chat-upload-modal--open');
+      uploadBackdrop.classList.remove('chat-upload-backdrop--open');
+    };
+
+    uploadClose?.addEventListener('click', closeUpload);
+    uploadBackdrop.addEventListener('click', closeUpload);
+    uploadModal.addEventListener('click', (e) => {
+      if (!(e.target instanceof HTMLElement)) return;
+      if (!e.target.closest('.modal')) closeUpload();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeUpload();
+    });
+  }
+};
+
 const setupCommonUI = (): void => {
   if (
     !document.body.classList.contains('theme-light')
@@ -267,6 +320,7 @@ const initApp = (): void => {
   // setupChatMenu();
   // setupAttachMenu();
   // setupUserModals();
+  setupModals();
 
   if (!path.startsWith('/chat')) {
     injectFooter();
