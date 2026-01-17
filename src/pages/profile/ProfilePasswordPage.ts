@@ -53,7 +53,7 @@ export class ProfilePasswordPage extends Block<ProfilePasswordProps> {
 
     inputs.forEach((input) => {
       this.addDOMListener(input, 'blur', (e: FocusEvent) => {
-        const target = e.target;
+        const { target } = e;
         if (
           target instanceof HTMLInputElement
           || target instanceof HTMLTextAreaElement

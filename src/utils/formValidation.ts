@@ -95,8 +95,7 @@ export const createFormValidation = (
       }
 
       if (name === 'repeatPassword') {
-        const newPasswordInput =
-          formElement.querySelector<HTMLInputElement>('input[name="newPassword"]')
+        const newPasswordInput = formElement.querySelector<HTMLInputElement>('input[name="newPassword"]')
           || formElement.querySelector<HTMLInputElement>('input[name="password"]');
 
         if (newPasswordInput && newPasswordInput.value) {

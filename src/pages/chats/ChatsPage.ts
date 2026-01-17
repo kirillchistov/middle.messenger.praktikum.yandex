@@ -173,8 +173,7 @@ export class ChatsPage extends Block<ChatsPageProps> {
         const item = (event.target as HTMLElement).closest<HTMLButtonElement>('.chat-input__attach-item');
         if (!item) return;
 
-        const type =
-          item.dataset.type
+        const type = item.dataset.type
           || (item.textContent ?? '').trim().toLowerCase();
 
         // eslint-disable-next-line no-console
@@ -228,7 +227,6 @@ export class ChatsPage extends Block<ChatsPageProps> {
     modal.classList.add('chat-upload-modal--open');
     backdrop.classList.add('chat-upload-backdrop--open');
   }
-
 
   protected render(): string {
     return renderTemplate(template, this.props);

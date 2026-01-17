@@ -32,7 +32,7 @@ export class ProfileEditPage extends Block<ProfileEditProps> {
 
     inputs.forEach((input) => {
       this.addDOMListener(input, 'blur', (event: FocusEvent) => {
-        const target = event.target;
+        const { target } = event;
         if (
           target instanceof HTMLInputElement
           || target instanceof HTMLTextAreaElement
