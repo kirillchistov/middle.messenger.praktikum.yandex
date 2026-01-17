@@ -1,0 +1,18 @@
+{{!-- Шаблон с версткой модалки с загрузкой файла --}}
+<div
+  id="upload-modal"
+  class="chat-upload-modal {{#if isOpen}}chat-upload-modal--open{{/if}}"
+  data-modal="attach"
+>
+  <div class="modal">
+    <h2 class="modal__title" data-modal-title>{{title}}</h2>
+    <input id="upload-file" name="avatar" class="profile-form__input" type="file" accept="image/*" />
+    <div class="modal__actions">
+      <button id="upload-close" class="btn btn--primary" type="button">Закрыть</button>
+    </div>
+  </div>
+</div>
+<div
+  id="upload-backdrop"
+  class="chat-upload-backdrop {{#if isOpen}}chat-upload-backdrop--open{{/if}}"
+></div>

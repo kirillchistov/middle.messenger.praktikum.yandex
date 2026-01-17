@@ -135,11 +135,21 @@ export abstract class Block<P extends BlockProps = BlockProps> {
   public mount(rootSelector: string): void {
     const root = document.querySelector(rootSelector);
     if (!root) return;
+
     root.innerHTML = '';
     const content = this.getContent();
     if (content) {
       root.appendChild(content);
     }
+
+    // if (options?.position === 'append') {
+    //   root.appendChild(content);
+    // } else {
+    //   root.innerHTML = '';
+    //   root.appendChild(content);
+    // }
+
+    // this.dispatchComponentDidMount();
   }
 
   public getContent(): HTMLElement | null {
@@ -169,8 +179,20 @@ export abstract class Block<P extends BlockProps = BlockProps> {
     handler: (event: HTMLElementEventMap[K]) => void,
   ): void {
     element.addEventListener(type, handler as EventListener);
+    // console.log(
+    //   `[Block] addDOMListener: ${type} on`,
+    //   element,
+    //   'for',
+    //   this.constructor.name,
+    // );
     this._unsubscribeListeners.push(() => {
       element.removeEventListener(type, handler as EventListener);
+      // console.log(
+      //   `[Block] removeDOMListener: ${type} from`,
+      //   element,
+      //   'for',
+      //   this.constructor.name,
+      // );
     });
   }
 

@@ -238,34 +238,7 @@ const setupCommonUI = (): void => {
   setupNavToggle();
 };
 
-// ---------- Общий футер на всех страницах ----------
-
-const injectFooter = (): void => {
-  const existing = document.querySelector('.app-footer');
-  if (existing) return;
-
-  const footer = document.createElement('footer');
-  footer.className = 'app-footer';
-  footer.innerHTML = `
-    <nav class="app-footer__inner">
-      <a href="/" class="app-footer__link">Лендинг</a>
-      <a href="/register" class="app-footer__link">Регистрация</a>
-      <a href="/login" class="app-footer__link">Вход</a>
-      <a href="/chats" class="app-footer__link">Чаты</a>
-      <a href="/profile" class="app-footer__link">Профиль</a>
-      <a href="/error-404" class="app-footer__link">404</a>
-      <a href="/error-5xx" class="app-footer__link">5xx</a>
-    </nav>
-  `;
-
-  const appShell = document.querySelector('.app-shell');
-
-  if (appShell?.parentElement) {
-    appShell.parentElement.appendChild(footer);
-  } else {
-    document.body.appendChild(footer);
-  }
-};
+// ---------- Футер вынесу в отдельный компонент, доделаю в рутинге  ----------
 
 // ---------- Инициализация страницы по pathname ----------
 
@@ -317,14 +290,11 @@ const initApp = (): void => {
 
   root.innerHTML = '';
   pageInstance.mount(rootSelector);
-  // setupChatMenu();
-  // setupAttachMenu();
-  // setupUserModals();
   setupModals();
 
-  if (!path.startsWith('/chat')) {
-    injectFooter();
-  }
+  // if (!path.startsWith('/chat')) {
+  //   injectFooter();
+  // }
 };
 
 document.addEventListener('DOMContentLoaded', initApp);
