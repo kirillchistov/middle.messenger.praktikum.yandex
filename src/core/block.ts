@@ -14,8 +14,20 @@ export abstract class Block<P extends BlockProps = BlockProps> {
 
   protected props: P;
 
-  // Для отписки от слушателей
+  // Для отписки от слушателей + EventTarget
   private _unsubscribeListeners: Array<() => void> = [];
+
+  // Хелпер для DOM‑слушателей
+  protected addDOMListener(
+    target: EventTarget,
+    type: string,
+    handler: (event: Event) => void,
+  ): void {
+    target.addEventListener(type, handler as EventListener);
+    this._unsubscribeListeners.push(() => {
+      target.removeEventListener(type, handler as EventListener);
+    });
+  }
 
   constructor(tagName: keyof HTMLElementTagNameMap = 'div', props = {} as P) {
     this.eventBus = new EventBus<BlockEventMap>();
@@ -47,7 +59,7 @@ export abstract class Block<P extends BlockProps = BlockProps> {
   protected init(): void {
     this._createResources();
     this.eventBus.emit(Block.EVENTS.FLOW_RENDER);
-    this.eventBus.emit(Block.EVENTS.FLOW_CDM);
+    // this.eventBus.emit(Block.EVENTS.FLOW_CDM);
   }
 
   private _createResources(): void {
@@ -127,7 +139,15 @@ export abstract class Block<P extends BlockProps = BlockProps> {
   private _render(): void {
     const html = this.render();
     if (!this._element) return;
+
+    // Снимаю все слушатели через addDOMListener
+    this.removeAllDOMListeners();
+
+    // Перерисовываю шаблон
     this._element.innerHTML = html;
+
+    // Вешаю слушатели заново
+    this.componentDidMount();
   }
 
   protected abstract render(): string;
@@ -140,6 +160,8 @@ export abstract class Block<P extends BlockProps = BlockProps> {
     if (content) {
       root.appendChild(content);
     }
+    // Явно вызываю CDM после монтажа
+    // this.dispatchComponentDidMount();
   }
 
   public getContent(): HTMLElement | null {
@@ -160,18 +182,6 @@ export abstract class Block<P extends BlockProps = BlockProps> {
     if (this._element) {
       this._element.style.display = 'none';
     }
-  }
-
-  // Для регистрации слушателей через Block
-  protected addDOMListener<K extends keyof HTMLElementEventMap>(
-    element: HTMLElement,
-    type: K,
-    handler: (event: HTMLElementEventMap[K]) => void,
-  ): void {
-    element.addEventListener(type, handler as EventListener);
-    this._unsubscribeListeners.push(() => {
-      element.removeEventListener(type, handler as EventListener);
-    });
   }
 
   protected removeAllDOMListeners(): void {

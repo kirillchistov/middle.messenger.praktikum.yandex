@@ -5,14 +5,16 @@ import template from './ProfilePassword.hbs?raw';
 
 type ProfilePasswordProps = Record<string, never>;
 
-type SubmitHandler = (event: SubmitEvent) => void;
-
 export class ProfilePasswordPage extends Block<ProfilePasswordProps> {
-  private handleSubmit: SubmitHandler;
+  private handleSubmit: (event: Event) => void;
 
   constructor(props: ProfilePasswordProps = {}) {
     super('div', props);
-    this.handleSubmit = this.onSubmit.bind(this);
+
+    // подвязал onSubmit и адаптировал тип
+    this.handleSubmit = (event: Event) => {
+      this.onSubmit(event as SubmitEvent);
+    };
   }
 
   private onSubmit(event: SubmitEvent): void {
@@ -52,7 +54,8 @@ export class ProfilePasswordPage extends Block<ProfilePasswordProps> {
     );
 
     inputs.forEach((input) => {
-      this.addDOMListener(input, 'blur', (e: FocusEvent) => {
+      this.addDOMListener(input, 'blur', (event) => {
+        const e = event as FocusEvent;
         const { target } = e;
         if (
           target instanceof HTMLInputElement

@@ -30,8 +30,9 @@ export class LoginPage extends Block<LoginProps> {
     );
 
     inputs.forEach((input) => {
-      this.addDOMListener(input, 'blur', (event: FocusEvent) => {
-        const { target } = event;
+      this.addDOMListener(input, 'blur', (event) => {
+        const e = event as MouseEvent;
+        const { target } = e;
         if (
           target instanceof HTMLInputElement
           || target instanceof HTMLTextAreaElement
@@ -41,8 +42,9 @@ export class LoginPage extends Block<LoginProps> {
       });
     });
 
-    this.addDOMListener(form, 'submit', (event: SubmitEvent) => {
-      event.preventDefault();
+    this.addDOMListener(form, 'submit', (event) => {
+      const e = event as SubmitEvent;
+      e.preventDefault();
 
       const { valid } = validateForm();
       if (!valid) {

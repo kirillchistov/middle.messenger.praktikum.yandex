@@ -62,19 +62,14 @@ export class ChatsPage extends Block<ChatsPageProps> {
     const root = this.getContent();
     if (!root) return;
 
-    const uploadBackdrop = document.getElementById('upload-backdrop');
-    const uploadClose = document.getElementById('upload-close');
-
-    console.log(uploadClose);
-    console.log(uploadBackdrop);
-
     // Форма отправки сообщения
     const form = root.querySelector<HTMLFormElement>('#chat-message-form');
     if (form) {
       const textarea = form.querySelector<HTMLTextAreaElement>('textarea[name="message"]');
 
-      this.addDOMListener(form, 'submit', (event: SubmitEvent) => {
-        event.preventDefault();
+      this.addDOMListener(form, 'submit', (event) => {
+        const e = event as SubmitEvent;
+        e.preventDefault();
         if (!textarea) return;
 
         const value = textarea.value.trim();
@@ -90,6 +85,13 @@ export class ChatsPage extends Block<ChatsPageProps> {
       });
     }
 
+    console.log('[ChatsPage] CDM, found:', {
+      chatMenuToggle: !!root.querySelector('#chat-menu-toggle'),
+      chatMenu: !!root.querySelector('#chat-menu'),
+      attachToggle: !!root.querySelector('#attach-toggle'),
+      attachMenu: !!root.querySelector('#attach-menu'),
+    });
+
     this.setupMenus(root);
   }
 
@@ -100,21 +102,24 @@ export class ChatsPage extends Block<ChatsPageProps> {
 
     if (chatMenuToggle && chatMenu) {
       // открыть/закрыть дропдаун
-      chatMenuToggle.addEventListener('click', () => {
+      this.addDOMListener(chatMenuToggle, 'click', () => {
         chatMenu.classList.toggle('chat-thread__menu-dropdown--open');
       });
 
       // клик вне меню — закрыть
-      document.addEventListener('click', (event: MouseEvent) => {
-        const target = event.target as HTMLElement;
+      this.addDOMListener(document, 'click', (event) => {
+        const e = event as MouseEvent;
+        const target = e.target as HTMLElement;
         if (!chatMenu.contains(target) && target !== chatMenuToggle) {
           chatMenu.classList.remove('chat-thread__menu-dropdown--open');
         }
       });
 
       // открытие модалок add/remove user
-      chatMenu.addEventListener('click', (event: MouseEvent) => {
-        const item = (event.target as HTMLElement).closest<HTMLButtonElement>('.chat-thread__menu-item');
+      this.addDOMListener(chatMenu, 'click', (event) => {
+        const e = event as MouseEvent;
+        const item = (e.target as HTMLElement)
+          .closest<HTMLButtonElement>('.chat-thread__menu-item');
         if (!item) return;
 
         const action = item.dataset.modalOpen; // "add-user" | "remove-user"
@@ -141,24 +146,34 @@ export class ChatsPage extends Block<ChatsPageProps> {
         };
 
         // клик по затемнению
-        userBackdrop.addEventListener('click', closeAll);
-
-        // клик вне .modal
-        addModal.addEventListener('click', (e) => {
-          if (!(e.target instanceof HTMLElement)) return;
-          if (!e.target.closest('.modal')) closeAll();
+        this.addDOMListener(userBackdrop, 'click', () => {
+          closeAll();
         });
 
-        removeModal.addEventListener('click', (e) => {
-          if (!(e.target instanceof HTMLElement)) return;
-          if (!e.target.closest('.modal')) closeAll();
+        // клик вне .modal
+        this.addDOMListener(addModal, 'click', (event) => {
+          const e = event as MouseEvent;
+          const target = e.target as HTMLElement;
+          if (!target.closest('.modal')) closeAll();
+        });
+
+        this.addDOMListener(removeModal, 'click', (event) => {
+          const e = event as MouseEvent;
+          const target = e.target as HTMLElement;
+          if (!target.closest('.modal')) closeAll();
         });
 
         // Esc
-        document.addEventListener('keydown', (e) => {
+        this.addDOMListener(document, 'keydown', (event) => {
+          const e = event as KeyboardEvent;
           if (e.key === 'Escape') {
             closeAll();
           }
+        });
+
+        this.addDOMListener(userBackdrop, 'click', (event) => {
+          console.log('[ChatsPage] backdrop click', event);
+          closeAll();
         });
       }
     }
@@ -171,12 +186,14 @@ export class ChatsPage extends Block<ChatsPageProps> {
     const uploadClose = document.getElementById('upload-close');
 
     if (attachToggle && attachMenu) {
-      attachToggle.addEventListener('click', () => {
+      this.addDOMListener(attachToggle, 'click', () => {
         attachMenu.classList.toggle('chat-input__attach-menu--open');
       });
 
-      attachMenu.addEventListener('click', (event: MouseEvent) => {
-        const item = (event.target as HTMLElement).closest<HTMLButtonElement>('.chat-input__attach-item');
+      this.addDOMListener(attachMenu, 'click', (event) => {
+        const e = event as MouseEvent;
+        const item = (e.target as HTMLElement)
+          .closest<HTMLButtonElement>('.chat-input__attach-item');
         if (!item) return;
 
         const type = item.dataset.type
@@ -190,27 +207,39 @@ export class ChatsPage extends Block<ChatsPageProps> {
       });
     }
 
-    console.log(uploadModal);
-    console.log(uploadBackdrop);
-
     if (uploadModal && uploadBackdrop) {
       const closeUpload = () => {
+        console.log('[ChatsPage] closeUpload()'); // лог
         uploadModal.classList.remove('chat-upload-modal--open');
         uploadBackdrop.classList.remove('chat-upload-backdrop--open');
       };
 
-      uploadClose?.addEventListener('click', closeUpload);
-      uploadBackdrop.addEventListener('click', closeUpload);
-      uploadModal.addEventListener('click', (e) => {
-        if (!(e.target instanceof HTMLElement)) return;
-        if (!e.target.closest('.modal')) {
-          console.log('[ChatsPage] Клик вне окна');
+      if (uploadClose) {
+        this.addDOMListener(uploadClose, 'click', () => {
+          console.log('[ChatsPage] uploadClose click');
+          closeUpload();
+        });
+      }
+
+      this.addDOMListener(uploadBackdrop, 'click', () => {
+        console.log('[ChatsPage] uploadBackdrop click');
+        closeUpload();
+      });
+
+      this.addDOMListener(uploadModal, 'click', (event) => {
+        const e = event as MouseEvent;
+        const target = e.target as HTMLElement;
+        console.log('[ChatsPage] uploadModal click target', target);
+        // если кликнули по «фону» внутри модалки, а не по её содержимому
+        if (!target.closest('.modal')) {
           closeUpload();
         }
       });
-      document.addEventListener('keydown', (e) => {
+
+      this.addDOMListener(document, 'keydown', (event) => {
+        const e = event as KeyboardEvent;
+        console.log('[ChatsPage] keydown', e.key);
         if (e.key === 'Escape') {
-          console.log('[ChatsPage] Нажали Esc');
           closeUpload();
         }
       });

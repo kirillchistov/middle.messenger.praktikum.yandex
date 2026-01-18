@@ -31,8 +31,9 @@ export class ProfileEditPage extends Block<ProfileEditProps> {
     );
 
     inputs.forEach((input) => {
-      this.addDOMListener(input, 'blur', (event: FocusEvent) => {
-        const { target } = event;
+      this.addDOMListener(input, 'blur', (event) => {
+        const e = event as FocusEvent;
+        const { target } = e;
         if (
           target instanceof HTMLInputElement
           || target instanceof HTMLTextAreaElement
@@ -42,8 +43,9 @@ export class ProfileEditPage extends Block<ProfileEditProps> {
       });
     });
 
-    this.addDOMListener(form, 'submit', (event: SubmitEvent) => {
-      event.preventDefault();
+    this.addDOMListener(form, 'submit', (event) => {
+      const e = event as SubmitEvent;
+      e.preventDefault();
       const { valid } = validateForm();
       if (!valid) {
         // eslint-disable-next-line no-console
