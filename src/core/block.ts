@@ -15,19 +15,49 @@ export abstract class Block<P extends BlockProps = BlockProps> {
   protected props: P;
 
   // Для отписки от слушателей + EventTarget
-  private _unsubscribeListeners: Array<() => void> = [];
+  // локальные слушатели (на элементах самого блока)
+  private _unsubscribeLocalListeners: Array<() => void> = [];
 
-  // Хелпер для DOM‑слушателей
-  protected addDOMListener(
+  // глобальные, живут после локального рендера
+  private _unsubscribeGlobalListeners: Array<() => void> = [];
+
+  // Локальный: элемент внутри this._element
+  protected addDOMListener<K extends keyof HTMLElementEventMap>(
+    element: HTMLElement,
+    type: K,
+    handler: (event: HTMLElementEventMap[K]) => void,
+  ): void {
+    element.addEventListener(type, handler as EventListener);
+    this._unsubscribeLocalListeners.push(() => {
+      element.removeEventListener(type, handler as EventListener);
+    });
+  }
+
+  // Хелперы для DOM‑слушателей
+  // Глобальный: document / window / модалки вне this._element
+  protected addGlobalListener(
     target: EventTarget,
     type: string,
     handler: (event: Event) => void,
   ): void {
     target.addEventListener(type, handler as EventListener);
-    this._unsubscribeListeners.push(() => {
+    this._unsubscribeGlobalListeners.push(() => {
       target.removeEventListener(type, handler as EventListener);
     });
   }
+
+  // private _unsubscribeListeners: Array<() => void> = [];
+
+  // protected addDOMListener(
+  //   target: EventTarget,
+  //   type: string,
+  //   handler: (event: Event) => void,
+  // ): void {
+  //   target.addEventListener(type, handler as EventListener);
+  //   this._unsubscribeListeners.push(() => {
+  //     target.removeEventListener(type, handler as EventListener);
+  //   });
+  // }
 
   constructor(tagName: keyof HTMLElementTagNameMap = 'div', props = {} as P) {
     this.eventBus = new EventBus<BlockEventMap>();
@@ -136,17 +166,27 @@ export abstract class Block<P extends BlockProps = BlockProps> {
     return true;
   }
 
+  // Заменил innerHTML на fragment как в теории
   private _render(): void {
     const html = this.render();
     if (!this._element) return;
 
-    // Снимаю все слушатели через addDOMListener
-    this.removeAllDOMListeners();
+    // снимаем локальные слушатели
+    this.removeLocalDOMListeners();
 
-    // Перерисовываю шаблон
-    this._element.innerHTML = html;
+    // безопасно создаём DOM из строки во временном контейнере
+    const tpl = document.createElement('template');
+    tpl.innerHTML = html;
 
-    // Вешаю слушатели заново
+    // очищаем корневой элемент
+    while (this._element.firstChild) {
+      this._element.removeChild(this._element.firstChild);
+    }
+
+    // переносим готовое дерево
+    this._element.appendChild(tpl.content);
+
+    // вешаем слушатели заново
     this.componentDidMount();
   }
 
@@ -184,8 +224,20 @@ export abstract class Block<P extends BlockProps = BlockProps> {
     }
   }
 
-  protected removeAllDOMListeners(): void {
-    this._unsubscribeListeners.forEach((unsubscribe) => unsubscribe());
-    this._unsubscribeListeners = [];
+  // Локальное снятие подписки перед ререндером
+  protected removeLocalDOMListeners(): void {
+    this._unsubscribeLocalListeners.forEach((fn) => fn());
+    this._unsubscribeLocalListeners = [];
   }
+
+  // Глобальное снятие подписки
+  protected removeGlobalDOMListeners(): void {
+    this._unsubscribeGlobalListeners.forEach((fn) => fn());
+    this._unsubscribeGlobalListeners = [];
+  }
+
+  // protected removeAllDOMListeners(): void {
+  //   this._unsubscribeListeners.forEach((unsubscribe) => unsubscribe());
+  //   this._unsubscribeListeners = [];
+  // }
 }

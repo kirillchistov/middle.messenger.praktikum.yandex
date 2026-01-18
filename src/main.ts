@@ -164,13 +164,11 @@ const initApp = (): void => {
     pageInstance = new ChatsPage();
   }
 
-  root.innerHTML = '';
+  // root.innerHTML = '';
+  while (root.firstChild) {
+    root.removeChild(root.firstChild);
+  }
   pageInstance.mount(rootSelector);
-  // setupModals();
-
-  // if (!path.startsWith('/chat')) {
-  //   injectFooter();
-  // }
 };
 
 document.addEventListener('DOMContentLoaded', initApp);

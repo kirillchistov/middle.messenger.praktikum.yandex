@@ -1,5 +1,7 @@
+/* eslint-disable import/extensions */
 import { Block } from '@core/block';
 import { renderTemplate } from '@utils/renderTemplate';
+// import { renderTemplateToFragment } from '@/utils/renderTemplate';
 import template from './landing.hbs?raw';
 
 type LandingProps = Record<string, never>;

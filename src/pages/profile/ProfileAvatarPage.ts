@@ -1,6 +1,7 @@
 /* eslint-disable import/extensions */
+import { renderTemplate } from '@utils/renderTemplate';
 import { Block } from '@/core/block';
-import { renderTemplate } from '@/utils/renderTemplate';
+// import { renderTemplateToFragment } from '@/utils/renderTemplate';
 import template from './ProfileAvatar.hbs?raw';
 
 type ProfileAvatarProps = {

@@ -1,6 +1,8 @@
+/* eslint-disable import/extensions */
 import { Block } from '@core/block';
-import { renderTemplate } from '@utils/renderTemplate';
 import { createFormValidation } from '@utils/formValidation';
+import { renderTemplate } from '@utils/renderTemplate';
+// import { renderTemplateToFragment } from '@/utils/renderTemplate';
 import template from './login.hbs?raw';
 
 type LoginProps = Record<string, never>;
@@ -61,4 +63,8 @@ export class LoginPage extends Block<LoginProps> {
   protected render(): string {
     return renderTemplate(template, this.props);
   }
+
+  // protected render(): DocumentFragment {
+  //   return renderTemplateToFragment(template, this.props);
+  // }
 }

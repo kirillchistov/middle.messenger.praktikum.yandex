@@ -1,6 +1,8 @@
+/* eslint-disable import/extensions */
 import { Block } from '@core/block';
-import { renderTemplate } from '@utils/renderTemplate';
 import { createFormValidation } from '@utils/formValidation';
+import { renderTemplate } from '@utils/renderTemplate';
+// import { renderTemplateToFragment } from '@/utils/renderTemplate';
 import template from './ProfilePassword.hbs?raw';
 
 type ProfilePasswordProps = Record<string, never>;

@@ -1,6 +1,8 @@
+/* eslint-disable import/extensions */
 import { Block } from '@core/block';
 import { createFormValidation } from '@utils/formValidation';
 import { renderTemplate } from '@utils/renderTemplate';
+// import { renderTemplateToFragment } from '@/utils/renderTemplate';
 import template from './register.hbs?raw';
 
 type RegisterProps = Record<string, never>;
@@ -64,4 +66,8 @@ export class RegisterPage extends Block<RegisterProps> {
   protected render(): string {
     return renderTemplate(template, this.props);
   }
+
+  // protected render(): DocumentFragment {
+  //   return renderTemplateToFragment(template, this.props);
+  // }
 }

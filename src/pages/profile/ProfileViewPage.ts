@@ -1,7 +1,8 @@
 /* eslint-disable import/extensions */
+import { renderTemplate } from '@utils/renderTemplate';
 import { Block } from '@/core/block';
 import template from './ProfileView.hbs?raw';
-import { renderTemplate } from '@/utils/renderTemplate';
+// import { renderTemplateToFragment } from '@/utils/renderTemplate';
 
 type ProfileViewProps = {
   email: string;

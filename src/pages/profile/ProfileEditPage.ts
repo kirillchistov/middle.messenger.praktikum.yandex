@@ -1,7 +1,8 @@
 /* eslint-disable import/extensions */
+import { renderTemplate } from '@utils/renderTemplate';
 import { Block } from '@/core/block';
 import { createFormValidation } from '@/utils/formValidation';
-import { renderTemplate } from '@/utils/renderTemplate';
+// import { renderTemplateToFragment } from '@/utils/renderTemplate';
 import template from './ProfileEdit.hbs?raw';
 
 type ProfileEditProps = Record<string, never>;

@@ -1,6 +1,8 @@
+/* eslint-disable import/extensions */
 // Вынес футер в отдельный компонент
+import { renderTemplate } from '@utils/renderTemplate';
 import { Block } from '../../core/block';
-import { renderTemplate } from '../../utils/renderTemplate';
+// import { renderTemplateToFragment } from '@/utils/renderTemplate';
 import template from './Footer.hbs?raw';
 
 export class Footer extends Block<Record<string, never>> {
@@ -9,6 +11,10 @@ export class Footer extends Block<Record<string, never>> {
   }
 
   protected render(): string {
-    return renderTemplate(template, {});
+    return renderTemplate(template, this.props);
   }
+
+  // protected render(): DocumentFragment {
+  //   return renderTemplateToFragment(template, this.props);
+  // }
 }

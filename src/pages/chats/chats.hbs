@@ -120,57 +120,58 @@
             </form>
         </div>
     </section>
-</div>
 
-<div class="chat-sidebar-backdrop" data-chat-sidebar-backdrop></div>
+  <div class="chat-sidebar-backdrop" data-chat-sidebar-backdrop></div>
 
-{{!-- Модалки добавления и удаления пользователя из чата --}}
-<div id="user-modal-add" class="chat-user-modal">
-  <div class="modal">
-    <h2 class="modal__title">Добавить пользователя</h2>
-    <div class="chat-user-modal__field">
-      <label class="form__label" for="add-login">Логин</label>
-      <input id="add-login" class="form__input" type="text" />
-    </div>
-    <div class="modal__actions">
-      <button class="btn btn--primary" type="button">Добавить в чат</button>
-    </div>
-  </div>
-</div>
-
-<div id="user-modal-remove" class="chat-user-modal">
-  <div class="modal">
-    <h2 class="modal__title">Удалить пользователя</h2>
-    <div class="chat-user-modal__field">
-      <label class="form__label" for="remove-login">Логин</label>
-      <input id="remove-login" class="form__input" type="text" />
-    </div>
-    <div class="modal__actions">
-      <button class="btn btn--primary" type="button">Удалить из чата</button>
+  {{!-- Модалки добавления и удаления пользователя из чата --}}
+  <div id="user-modal-add" class="chat-user-modal">
+    <div class="modal">
+      <h2 class="modal__title">Добавить пользователя</h2>
+      <div class="chat-user-modal__field">
+        <label class="form__label" for="add-login">Логин</label>
+        <input id="add-login" class="form__input" type="text" />
+      </div>
+      <div class="modal__actions">
+        <button class="btn btn--primary" type="button">Добавить в чат</button>
+      </div>
     </div>
   </div>
-</div>
 
-<div id="user-modal-backdrop" class="chat-user-backdrop"></div>
-
-<div id="upload-modal" class="chat-upload-modal" data-modal="attach">
-  <div class="modal">
-    <h2 class="modal__title" data-modal-title>Загрузка файла</h2>
-      <input
-          id="upload-file"
-          name="avatar"
-          class="profile-form__input"
-          type="file"
-          accept="image/*"
-      />
-    {{!-- <p class="modal__text">Выберите файл.</p> --}}
-    <div class="modal__actions">
-      <button id="upload-close" class="btn btn--primary" type="button">
-        Закрыть
-      </button>
+  <div id="user-modal-remove" class="chat-user-modal">
+    <div class="modal">
+      <h2 class="modal__title">Удалить пользователя</h2>
+      <div class="chat-user-modal__field">
+        <label class="form__label" for="remove-login">Логин</label>
+        <input id="remove-login" class="form__input" type="text" />
+      </div>
+      <div class="modal__actions">
+        <button class="btn btn--primary" type="button">Удалить из чата</button>
+      </div>
     </div>
   </div>
-</div>
 
-<div id="upload-backdrop" class="chat-upload-backdrop"></div>
+  <div id="user-modal-backdrop" class="chat-user-backdrop"></div>
+
+  <div id="upload-modal" class="chat-upload-modal" data-modal="attach">
+    <div class="modal">
+      <h2 class="modal__title" data-modal-title>Загрузка файла</h2>
+        <input
+            id="upload-file"
+            name="avatar"
+            class="profile-form__input"
+            type="file"
+            accept="image/*"
+        />
+      {{!-- <p class="modal__text">Выберите файл.</p> --}}
+      <div class="modal__actions">
+        <button id="upload-close" class="btn btn--primary" type="button">
+          Закрыть
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="upload-backdrop" class="chat-upload-backdrop"></div>
+
+</div>
 

@@ -1,6 +1,7 @@
 /* eslint-disable import/extensions */
+import { renderTemplate } from '@utils/renderTemplate';
 import { Block } from '@/core/block';
-import { renderTemplate } from '@/utils/renderTemplate';
+// import { renderTemplateToFragment } from '@/utils/renderTemplate';
 import template from './chats.hbs?raw';
 
 type Chat = {
@@ -96,18 +97,16 @@ export class ChatsPage extends Block<ChatsPageProps> {
   }
 
   private setupMenus(root: HTMLElement): void {
-    // ----- Контекстное меню чата (Добавить/Удалить пользователя) -----
+    // меню чата
     const chatMenuToggle = root.querySelector<HTMLButtonElement>('#chat-menu-toggle');
     const chatMenu = root.querySelector<HTMLDivElement>('#chat-menu');
 
     if (chatMenuToggle && chatMenu) {
-      // открыть/закрыть дропдаун
       this.addDOMListener(chatMenuToggle, 'click', () => {
         chatMenu.classList.toggle('chat-thread__menu-dropdown--open');
       });
 
-      // клик вне меню — закрыть
-      this.addDOMListener(document, 'click', (event) => {
+      this.addDOMListener(root, 'click', (event) => {
         const e = event as MouseEvent;
         const target = e.target as HTMLElement;
         if (!chatMenu.contains(target) && target !== chatMenuToggle) {
@@ -115,75 +114,66 @@ export class ChatsPage extends Block<ChatsPageProps> {
         }
       });
 
-      // открытие модалок add/remove user
       this.addDOMListener(chatMenu, 'click', (event) => {
         const e = event as MouseEvent;
         const item = (e.target as HTMLElement)
           .closest<HTMLButtonElement>('.chat-thread__menu-item');
         if (!item) return;
 
-        const action = item.dataset.modalOpen; // "add-user" | "remove-user"
-        const modalId = action === 'add-user' ? 'user-modal-add' : 'user-modal-remove';
-        const modal = document.getElementById(modalId);
-        const backdrop = document.getElementById('user-modal-backdrop');
+        const action = item.dataset.modalOpen;
+        const modalId = action === 'add-user' ? '#user-modal-add' : '#user-modal-remove';
+        const modal = root.querySelector<HTMLDivElement>(modalId);
+        const backdrop = root.querySelector<HTMLDivElement>('#user-modal-backdrop');
 
         if (!modal || !backdrop) return;
 
         modal.classList.add('chat-user-modal--open');
         backdrop.classList.add('chat-user-backdrop--open');
       });
-
-      // закрытие модалок пользователя (по фону/клику вне/Esc)
-      const addModal = document.getElementById('user-modal-add');
-      const removeModal = document.getElementById('user-modal-remove');
-      const userBackdrop = document.getElementById('user-modal-backdrop');
-
-      if (addModal && removeModal && userBackdrop) {
-        const closeAll = () => {
-          addModal.classList.remove('chat-user-modal--open');
-          removeModal.classList.remove('chat-user-modal--open');
-          userBackdrop.classList.remove('chat-user-backdrop--open');
-        };
-
-        // клик по затемнению
-        this.addDOMListener(userBackdrop, 'click', () => {
-          closeAll();
-        });
-
-        // клик вне .modal
-        this.addDOMListener(addModal, 'click', (event) => {
-          const e = event as MouseEvent;
-          const target = e.target as HTMLElement;
-          if (!target.closest('.modal')) closeAll();
-        });
-
-        this.addDOMListener(removeModal, 'click', (event) => {
-          const e = event as MouseEvent;
-          const target = e.target as HTMLElement;
-          if (!target.closest('.modal')) closeAll();
-        });
-
-        // Esc
-        this.addDOMListener(document, 'keydown', (event) => {
-          const e = event as KeyboardEvent;
-          if (e.key === 'Escape') {
-            closeAll();
-          }
-        });
-
-        this.addDOMListener(userBackdrop, 'click', (event) => {
-          console.log('[ChatsPage] backdrop click', event);
-          closeAll();
-        });
-      }
     }
 
-    // ----- Меню вложений + модалка загрузки -----
+    // модалки add/remove внутри root
+    const addModal = root.querySelector<HTMLDivElement>('#user-modal-add');
+    const removeModal = root.querySelector<HTMLDivElement>('#user-modal-remove');
+    const userBackdrop = root.querySelector<HTMLDivElement>('#user-modal-backdrop');
+
+    if (addModal && removeModal && userBackdrop) {
+      const closeAll = () => {
+        addModal.classList.remove('chat-user-modal--open');
+        removeModal.classList.remove('chat-user-modal--open');
+        userBackdrop.classList.remove('chat-user-backdrop--open');
+      };
+
+      this.addDOMListener(userBackdrop, 'click', () => {
+        closeAll();
+      });
+
+      this.addDOMListener(addModal, 'click', (event) => {
+        const e = event as MouseEvent;
+        const target = e.target as HTMLElement;
+        if (!target.closest('.modal')) closeAll();
+      });
+
+      this.addDOMListener(removeModal, 'click', (event) => {
+        const e = event as MouseEvent;
+        const target = e.target as HTMLElement;
+        if (!target.closest('.modal')) closeAll();
+      });
+
+      this.addDOMListener(root, 'keydown', (event) => {
+        const e = event as KeyboardEvent;
+        if (e.key === 'Escape') {
+          closeAll();
+        }
+      });
+    }
+
+    // меню вложений
     const attachToggle = root.querySelector<HTMLButtonElement>('#attach-toggle');
     const attachMenu = root.querySelector<HTMLDivElement>('#attach-menu');
-    const uploadModal = document.getElementById('upload-modal');
-    const uploadBackdrop = document.getElementById('upload-backdrop');
-    const uploadClose = document.getElementById('upload-close');
+    const uploadModal = root.querySelector<HTMLDivElement>('#upload-modal');
+    const uploadBackdrop = root.querySelector<HTMLDivElement>('#upload-backdrop');
+    const uploadClose = root.querySelector<HTMLButtonElement>('#upload-close');
 
     if (attachToggle && attachMenu) {
       this.addDOMListener(attachToggle, 'click', () => {
@@ -199,46 +189,39 @@ export class ChatsPage extends Block<ChatsPageProps> {
         const type = item.dataset.type
           || (item.textContent ?? '').trim().toLowerCase();
 
-        // eslint-disable-next-line no-console
         console.log('[ChatsPage] Выбрано вложение:', type);
 
         attachMenu.classList.remove('chat-input__attach-menu--open');
-        this.openAttachModal(type);
+        this.openAttachModal(type, root);
       });
     }
 
     if (uploadModal && uploadBackdrop) {
       const closeUpload = () => {
-        console.log('[ChatsPage] closeUpload()'); // лог
         uploadModal.classList.remove('chat-upload-modal--open');
         uploadBackdrop.classList.remove('chat-upload-backdrop--open');
       };
 
       if (uploadClose) {
         this.addDOMListener(uploadClose, 'click', () => {
-          console.log('[ChatsPage] uploadClose click');
           closeUpload();
         });
       }
 
       this.addDOMListener(uploadBackdrop, 'click', () => {
-        console.log('[ChatsPage] uploadBackdrop click');
         closeUpload();
       });
 
       this.addDOMListener(uploadModal, 'click', (event) => {
         const e = event as MouseEvent;
         const target = e.target as HTMLElement;
-        console.log('[ChatsPage] uploadModal click target', target);
-        // если кликнули по «фону» внутри модалки, а не по её содержимому
         if (!target.closest('.modal')) {
           closeUpload();
         }
       });
 
-      this.addDOMListener(document, 'keydown', (event) => {
+      this.addDOMListener(root, 'keydown', (event) => {
         const e = event as KeyboardEvent;
-        console.log('[ChatsPage] keydown', e.key);
         if (e.key === 'Escape') {
           closeUpload();
         }
@@ -246,9 +229,9 @@ export class ChatsPage extends Block<ChatsPageProps> {
     }
   }
 
-  private openAttachModal(type: string): void {
-    const modal = document.getElementById('upload-modal');
-    const backdrop = document.getElementById('upload-backdrop');
+  private openAttachModal(type: string, root: HTMLElement): void {
+    const modal = root.querySelector<HTMLDivElement>('#upload-modal');
+    const backdrop = root.querySelector<HTMLDivElement>('#upload-backdrop');
     if (!modal || !backdrop) return;
 
     const titleEl = modal.querySelector<HTMLElement>('[data-modal-title]');
@@ -271,4 +254,8 @@ export class ChatsPage extends Block<ChatsPageProps> {
   protected render(): string {
     return renderTemplate(template, this.props);
   }
+
+  // protected render(): DocumentFragment {
+  //   return renderTemplateToFragment(template, this.props);
+  // }
 }
