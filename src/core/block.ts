@@ -171,22 +171,28 @@ export abstract class Block<P extends BlockProps = BlockProps> {
     const html = this.render();
     if (!this._element) return;
 
-    // снимаем локальные слушатели
+    // До удаления считаю число слушателей
+    this.logLocalListeners('listeners before remove');
+
+    // снимаю локальные слушатели
     this.removeLocalDOMListeners();
 
-    // безопасно создаём DOM из строки во временном контейнере
+    // После удаления считаю число слушателей
+    this.logLocalListeners('listeners after remove');
+
+    // безопасно создаю DOM из строки во временном контейнере
     const tpl = document.createElement('template');
     tpl.innerHTML = html;
 
-    // очищаем корневой элемент
+    // очищаю корневой элемент
     while (this._element.firstChild) {
       this._element.removeChild(this._element.firstChild);
     }
 
-    // переносим готовое дерево
+    // переношу готовое дерево
     this._element.appendChild(tpl.content);
 
-    // вешаем слушатели заново
+    // вешаю слушатели заново
     this.componentDidMount();
   }
 
@@ -200,7 +206,7 @@ export abstract class Block<P extends BlockProps = BlockProps> {
     if (content) {
       root.appendChild(content);
     }
-    // Явно вызываю CDM после монтажа
+    // Явно вызываю CDM после монтажа - уже нет
     // this.dispatchComponentDidMount();
   }
 
@@ -230,14 +236,22 @@ export abstract class Block<P extends BlockProps = BlockProps> {
     this._unsubscribeLocalListeners = [];
   }
 
-  // Глобальное снятие подписки
+  // Глобальное снятие подписки - пока не используется, т.к. нужны пока есть app
   protected removeGlobalDOMListeners(): void {
     this._unsubscribeGlobalListeners.forEach((fn) => fn());
     this._unsubscribeGlobalListeners = [];
   }
 
-  // protected removeAllDOMListeners(): void {
-  //   this._unsubscribeListeners.forEach((unsubscribe) => unsubscribe());
-  //   this._unsubscribeListeners = [];
-  // }
+  protected logLocalListeners(tag: string): void {
+    // eslint-disable-next-line no-console
+    console.log(`[Block:${this.constructor.name}] ${tag}`, {
+      count: this._unsubscribeLocalListeners.length,
+      handlers: this._unsubscribeLocalListeners,
+    });
+  }
+
+  public destroy(): void {
+    this.removeLocalDOMListeners();
+    this.removeGlobalDOMListeners();
+  }
 }

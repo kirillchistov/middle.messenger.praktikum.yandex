@@ -94,6 +94,25 @@ export class ChatsPage extends Block<ChatsPageProps> {
     });
 
     this.setupMenus(root);
+
+    // --- ТЕСТ ДЛЯ ПРОВЕРКИ ОТПИСКИ ---
+    setTimeout(() => {
+      // eslint-disable-next-line no-console
+      console.log('[ChatsPage] setProps test: triggering re-render');
+
+      this.setProps({
+        messages: [
+          ...this.props.messages,
+          {
+            id: this.props.messages.length + 1,
+            type: 'incoming',
+            text: '[test] сообщение для проверки отписки слушателей',
+            time: '23:59',
+          },
+        ],
+      });
+    }, 2000);
+    // --- КОНЕЦ ТЕСТА ---
   }
 
   private setupMenus(root: HTMLElement): void {
