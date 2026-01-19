@@ -198,6 +198,7 @@ export abstract class Block<P extends BlockProps = BlockProps> {
 
   protected abstract render(): string;
 
+  // монтирую корневой элемент в дерево
   public mount(rootSelector: string): void {
     const root = document.querySelector(rootSelector);
     if (!root) return;
@@ -206,8 +207,6 @@ export abstract class Block<P extends BlockProps = BlockProps> {
     if (content) {
       root.appendChild(content);
     }
-    // Явно вызываю CDM после монтажа - уже нет
-    // this.dispatchComponentDidMount();
   }
 
   public getContent(): HTMLElement | null {
@@ -242,6 +241,7 @@ export abstract class Block<P extends BlockProps = BlockProps> {
     this._unsubscribeGlobalListeners = [];
   }
 
+  // Метод для теста успешного локального снятия слушателей
   protected logLocalListeners(tag: string): void {
     // eslint-disable-next-line no-console
     console.log(`[Block:${this.constructor.name}] ${tag}`, {
@@ -250,6 +250,7 @@ export abstract class Block<P extends BlockProps = BlockProps> {
     });
   }
 
+  // Метод для тотального снятия слушателей пока не используется
   public destroy(): void {
     this.removeLocalDOMListeners();
     this.removeGlobalDOMListeners();
