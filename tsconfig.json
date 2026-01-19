@@ -1,10 +1,3 @@
-// {
-//   "references": [
-//     { "path": "./tsconfig.app.json" },
-//     { "path": "./tsconfig.node.json" }
-//   ]
-// }
-
 {
   "compilerOptions": {
     "target": "ESNext",
@@ -12,20 +5,30 @@
     "useDefineForClassFields": true,
     "moduleResolution": "bundler",
     "strict": true,
-    "jsx": "preserve",
+    "noImplicitAny": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strictNullChecks": true,
     "typeRoots": ["./src/types", "./node_modules/@types"],
+    "skipLibCheck": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "lib": ["ESNext", "DOM"],
-    "baseUrl": "./src",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "noEmit": true,
+    "sourceMap": true,
     "paths": {
-      "@/*": ["*"],
-      "@pages/*": ["pages/*"],
-      "@components/*": ["components/*"],
-      "@styles/*": ["styles/*"]
+      "@/*": ["./src/*"],
+      "@pages/*": ["./src/pages/*"],
+      "@components/*": ["./src/components/*"],
+      "@styles/*": ["./src/styles/*"],
+      "@partials/*": ["./src/partials/*"],
+      "@core/*": ["./src/core/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@types/*": ["./src/types/*"]
     }
   },
-  "include": ["src/**/*", "vite.config.ts"]
+  "include": ["./src/**/*", "vite.config.ts"]
 }

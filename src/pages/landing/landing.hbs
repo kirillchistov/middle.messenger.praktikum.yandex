@@ -1,0 +1,55 @@
+<div class="app">
+  <div class="app-shell">
+    <header class="landing-nav">
+      <div class="landing-nav__inner">
+        <div class="landing-nav__brand">
+          <span class="landing-nav__dot"></span>
+          <span><a href="/" class="logo">Chat App</a></span>
+        </div>
+        <nav class="landing-nav__links" id="nav-links">
+            <a href="/login" class="landing-nav__link">Вход</a>
+            <a href="/register" class="landing-nav__link landing-nav__link--primary">Регистрация</a>
+            <a href="/chat" class="landing-nav__link landing-nav__link--primary">Диалоги</a>
+            <a href="/profile" class="landing-nav__link landing-nav__link--primary">Профиль</a>
+          {{!-- <button
+            class="theme-toggle"
+            type="button"
+            data-theme-toggle
+            id="nav-theme-toggle"
+          >
+            Тема
+          </button> --}}
+        </nav>
+      </div>
+    </header>
+
+    <main class="landing">
+      <section class="landing-hero">
+        <div>
+          <div class="landing-hero__badge">
+            <span class="landing-hero__badge-dot"></span>
+            <span>ИИ + живые эксперты</span>
+          </div>
+
+          <h1 class="landing-hero__title">Чаты, в которых вас понимают.</h1>
+          <p class="landing-hero__subtitle">
+            Задавайте важным вопросы на естественном языке. Эксперты сразу ответят
+            или помогут найти ответ самостоятельно.
+          </p>
+
+          <div class="landing-hero__actions">
+            <a href="/login" class="btn btn--primary">Войдите</a>
+          </div>
+          <p class="landing-hero__hint">
+            Нет аккаунта?
+            <a href="/regster" class="landing-nav__link landing-nav__link--primary">Зарегистрируйтесь</a>
+          </p>
+        </div>
+
+        <div class="landing-hero__preview">
+          {{> chat-preview}}
+        </div>
+      </section>
+    </main>
+  </div>
+</div>

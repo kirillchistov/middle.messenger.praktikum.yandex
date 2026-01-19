@@ -1,0 +1,53 @@
+<section class="profile-layout">
+  <aside class="profile-sidebar">
+    <a href="/chats" class="profile-sidebar__back">←</a>
+  </aside>
+
+  <div class="profile-card">
+    <div class="profile-card__avatar-block">
+      <div class="profile-avatar profile-avatar--button">
+      </div>
+      <div class="profile-card__name">
+        {{display_name}}
+      </div>
+      <a href="/profile/avatar" class="profile-link">
+        Поменять аватар
+      </a>
+    </div>
+
+    <dl class="profile-table">
+      <div class="profile-table__row">
+        <dt>Почта</dt>
+        <dd>{{email}}</dd>
+      </div>
+      <div class="profile-table__row">
+        <dt>Логин</dt>
+        <dd>{{login}}</dd>
+      </div>
+      <div class="profile-table__row">
+        <dt>Имя</dt>
+        <dd>{{first_name}}</dd>
+      </div>
+      <div class="profile-table__row">
+        <dt>Фамилия</dt>
+        <dd>{{second_name}}</dd>
+      </div>
+      <div class="profile-table__row">
+        <dt>Имя в чате</dt>
+        <dd>{{display_name}}</dd>
+      </div>
+      <div class="profile-table__row">
+        <dt>Телефон</dt>
+        <dd>{{phone}}</dd>
+      </div>
+    </dl>
+
+    <div class="profile-card__actions">
+      <a href="/profile/edit" class="profile-link">Изменить данные</a>
+      <a href="/profile/password" class="profile-link">Изменить пароль</a>
+      <button class="profile-link profile-link--danger" type="button">
+        Выйти
+      </button>
+    </div>
+  </div>
+</section>

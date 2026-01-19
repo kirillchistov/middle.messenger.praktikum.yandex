@@ -1,11 +1,9 @@
 <div class="form-group">
-    {{#if label}}
-        <label for="{{name}}" class="form-label">{{label}}</label>
-    {{/if}}
-    
+  <div class="form-field">
+    <label class="form-field__label" for="{{id}}">{{label}}</label>
     <input
         type="{{type}}"
-        id="{{name}}"
+        id="{{id}}"
         name="{{name}}"
         class="form-input {{#if error}}form-input--error{{/if}}"
         placeholder="{{placeholder}}"
@@ -14,12 +12,14 @@
         {{#if disabled}}disabled{{/if}}
         data-testid="{{testId}}"
     />
-    
-    {{#if error}}
-        <span class="error-message">{{error}}</span>
-    {{/if}}
-    
-    {{#if helpText}}
-        <small class="help-text">{{helpText}}</small>
-    {{/if}}
+    <div class="form-field__error error-{{name}}">
+        {{#if error}}
+            <span class="error-message">{{error}}</span>
+        {{/if}}
+
+        {{#if helpText}}
+            <small class="help-text">{{helpText}}</small>
+        {{/if}}
+    </div>
+  </div>
 </div>
