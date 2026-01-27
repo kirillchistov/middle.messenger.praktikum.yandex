@@ -46,19 +46,6 @@ export abstract class Block<P extends BlockProps = BlockProps> {
     });
   }
 
-  // private _unsubscribeListeners: Array<() => void> = [];
-
-  // protected addDOMListener(
-  //   target: EventTarget,
-  //   type: string,
-  //   handler: (event: Event) => void,
-  // ): void {
-  //   target.addEventListener(type, handler as EventListener);
-  //   this._unsubscribeListeners.push(() => {
-  //     target.removeEventListener(type, handler as EventListener);
-  //   });
-  // }
-
   constructor(tagName: keyof HTMLElementTagNameMap = 'div', props = {} as P) {
     this.eventBus = new EventBus<BlockEventMap>();
 
