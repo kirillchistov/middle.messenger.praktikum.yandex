@@ -39,9 +39,13 @@ pnpm dev
 ### 3. Спринт 3
 - [x] [PR2 Merge to main](https://github.com/kirillchistov/middle.messenger.praktikum.yandex/pull/2)
 - [x] Создать ветку sprint_3 (local + remote)
+- [] Реализовать авторизацию (подробности позже)
+- [] Реализовать роутинг (подробности позже)
+- [] Реализовать навигацию по чатам (подробности позже)
+- [] Реализовать функционал меню (создание чатов, добавление юзеров, профиль)
 - [] Проверить себя по [чек-листу](https://vk.cc/cTxY8J).
 - [] Починить [Деплой на Netlify](https://christoff-middlefront.netlify.app/)
-- [] PR3 to main [“Sprint 2”](https://github.com/kirillchistov/middle.messenger.praktikum.yandex/pull/3).
+- [] PR3 to main [“Sprint 3”](https://github.com/kirillchistov/middle.messenger.praktikum.yandex/pull/3).
 
 
 ### 2. Спринт 2

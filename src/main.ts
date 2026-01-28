@@ -1,6 +1,7 @@
 import Handlebars from 'handlebars';
 import { registerHandlebarsPartials } from './utils/registerPartials';
-import { Block } from './core/block';
+// import { Block } from './core/block';
+import { router } from './core/router';
 
 import { RegisterPage } from './pages/register';
 import { LoginPage } from './pages/login';
@@ -104,6 +105,22 @@ const setupNavToggle = (): void => {
 //   }
 // };
 
+const setupLinkInterception = (): void => {
+  document.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement | null;
+    if (!target) return;
+
+    const link = target.closest<HTMLElement>('[data-link]');
+    if (!link) return;
+
+    const path = link.getAttribute('data-link');
+    if (!path) return;
+
+    event.preventDefault();
+    router.go(path);
+  });
+};
+
 const setupCommonUI = (): void => {
   if (
     !document.body.classList.contains('theme-light')
@@ -114,6 +131,7 @@ const setupCommonUI = (): void => {
 
   setupThemeToggle();
   setupNavToggle();
+  setupLinkInterception();
 };
 
 // ---------- Инициализация страницы по pathname ----------
@@ -122,53 +140,25 @@ const initApp = (): void => {
   registerHandlebarsPartials();
   setupCommonUI();
 
-  const rootSelector = '#app';
-  const root = document.querySelector(rootSelector);
-  if (!root) return;
+  // регистрируем роуты
+  router
+    .use('/', LandingPage) // будет перевод на /login
+    .use('/sign-up', RegisterPage) // дубль на всякий
+    .use('/register', RegisterPage)
+    .use('/login', LoginPage)
+    .use('/sign-in', LoginPage) // дубль на всякий
+    .use('/messenger', ChatsPage)
+    .use('/chat', ChatsPage) // дубль на всякий
+    .use('/chats', ChatsPage) // дубль на всякий
+    .use('/profile', ProfileViewPage)
+    .use('/profile/edit', ProfileEditPage)
+    .use('/profile/avatar', ProfileAvatarPage)
+    .use('/profile/password', ProfilePasswordPage)
+    .use('/settings', ProfileViewPage) // дубль на всякий
+    .use('/404', Error404Page)
+    .use('/5xx', Error5xxPage);
 
-  const path = window.location.pathname;
-
-  let pageInstance: Block;
-  // | LandingPage
-  // | RegisterPage
-  // | LoginPage
-  // | ChatsPage
-  // | ProfileViewPage
-  // | ProfileEditPage
-  // | ProfileAvatarPage
-  // | ProfilePasswordPage
-  // | Error404Page
-  // | Error5xxPage;
-
-  if (path === '/' || path === '/index.html') {
-    pageInstance = new LandingPage();
-  } else if (path.startsWith('/chats')) {
-    pageInstance = new ChatsPage();
-  } else if (path === '/register' || path === '/register.html') {
-    pageInstance = new RegisterPage();
-  } else if (path === '/login' || path === '/login.html') {
-    pageInstance = new LoginPage();
-  } else if (path === '/profile' || path === '/profile-view.html') {
-    pageInstance = new ProfileViewPage();
-  } else if (path === '/profile/edit' || path === '/profile-edit.html') {
-    pageInstance = new ProfileEditPage();
-  } else if (path === '/profile/avatar' || path === '/profile-avatar.html') {
-    pageInstance = new ProfileAvatarPage();
-  } else if (path === '/profile/password' || path === '/profile-password.html') {
-    pageInstance = new ProfilePasswordPage();
-  } else if (path === '/error-404' || path === '/error-404.html') {
-    pageInstance = new Error404Page();
-  } else if (path === '/error-5xx' || path === '/error-5xx.html') {
-    pageInstance = new Error5xxPage();
-  } else {
-    pageInstance = new ChatsPage();
-  }
-
-  // root.innerHTML = '';
-  while (root.firstChild) {
-    root.removeChild(root.firstChild);
-  }
-  pageInstance.mount(rootSelector);
+  router.start();
 };
 
 document.addEventListener('DOMContentLoaded', initApp);

@@ -1,4 +1,4 @@
-// Реализация EventBus cо строгой типизацией
+// Этот дубль можно удалить. Основной - в /core
 
 export type EventMap = Record<string, unknown[]>;
 

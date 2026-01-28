@@ -1,4 +1,4 @@
-// Реализация EventBus cо строгой типизацией
+// EventBus cо строгой типизацией
 
 export type EventMap = Record<string, unknown[]>;
 
