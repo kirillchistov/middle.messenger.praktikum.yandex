@@ -1,3 +1,4 @@
+// Node-сценарий для сервера
 {
   "compilerOptions": {
     "target": "ES2020",

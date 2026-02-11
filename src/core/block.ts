@@ -159,13 +159,13 @@ export abstract class Block<P extends BlockProps = BlockProps> {
     if (!this._element) return;
 
     // До удаления считаю число слушателей
-    this.logLocalListeners('listeners before remove');
+    // this.logLocalListeners('listeners before remove');
 
     // снимаю локальные слушатели
-    this.removeLocalDOMListeners();
+    // this.removeLocalDOMListeners();
 
     // После удаления считаю число слушателей
-    this.logLocalListeners('listeners after remove');
+    // this.logLocalListeners('listeners after remove');
 
     // безопасно создаю DOM из строки во временном контейнере
     const tpl = document.createElement('template');
@@ -229,13 +229,13 @@ export abstract class Block<P extends BlockProps = BlockProps> {
     this._unsubscribeGlobalListeners = [];
   }
 
-  protected logLocalListeners(tag: string): void {
-    // eslint-disable-next-line no-console
-    console.log(`[Block:${this.constructor.name}] ${tag}`, {
-      count: this._unsubscribeLocalListeners.length,
-      handlers: this._unsubscribeLocalListeners,
-    });
-  }
+  // protected logLocalListeners(tag: string): void {
+  // eslint-disable-next-line no-console
+  // console.log(`[Block:${this.constructor.name}] ${tag}`, {
+  //   count: this._unsubscribeLocalListeners.length,
+  //   handlers: this._unsubscribeLocalListeners,
+  // });
+  // }
 
   public destroy(): void {
     this.removeLocalDOMListeners();

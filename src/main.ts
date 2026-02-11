@@ -1,7 +1,12 @@
+// Импортируем store и API авторизации
+// Меняем роутинг по ссылкам на роутинг по путям
 import Handlebars from 'handlebars';
 import { registerHandlebarsPartials } from './utils/registerPartials';
+import { registerHandlebarsHelpers } from './utils/handlebars-helpers';
 // import { Block } from './core/block';
 import { router } from './core/router';
+import { store } from './core/store';
+import { AuthAPI } from './api/auth-api';
 
 import { RegisterPage } from './pages/register';
 import { LoginPage } from './pages/login';
@@ -136,8 +141,9 @@ const setupCommonUI = (): void => {
 
 // ---------- Инициализация страницы по pathname ----------
 
-const initApp = (): void => {
+const initApp = async (): Promise<void> => {
   registerHandlebarsPartials();
+  registerHandlebarsHelpers();
   setupCommonUI();
 
   // регистрируем роуты
@@ -158,7 +164,35 @@ const initApp = (): void => {
     .use('/404', Error404Page)
     .use('/5xx', Error5xxPage);
 
+  try {
+    const user = await AuthAPI.getUser();
+    if (user) {
+      store.setState({ user });
+      // если пользователь уже авторизован и мы на / или /login — перебросим в /messenger
+      const path = window.location.pathname;
+      if (path === '/' || path === '/login' || path === '/sign-up') {
+        router.go('/messenger');
+        return;
+      }
+    } else {
+      store.setState({ user: null });
+      const path = window.location.pathname;
+      if (path === '/messenger' || path === '/settings') {
+        router.go('/');
+        return;
+      }
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('[initApp] getUser error', error);
+  }
+
   router.start();
 };
 
-document.addEventListener('DOMContentLoaded', initApp);
+document.addEventListener('DOMContentLoaded', () => {
+  initApp().catch((error) => {
+    // eslint-disable-next-line no-console
+    console.error('[initApp] unhandled error', error);
+  });
+});
