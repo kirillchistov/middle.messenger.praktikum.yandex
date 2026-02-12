@@ -3,13 +3,13 @@
     <div class="landing-nav__inner">
       <div class="landing-nav__brand">
         <span class="landing-nav__dot"></span>
-        <a href="/" class="landing-nav__link">
+        <a href="/" class="landing-nav__link" data-link data-link-home>
           <span>Chat App</span>
         </a>
       </div>
       <nav class="landing-nav__links" id="nav-links">
-           <a href="/profile" class="landing-nav__link landing-nav__link--primary">Профиль</a>
-          <a href="/login" class="landing-nav__link">Выход</a>
+           <a href="/profile" class="landing-nav__link landing-nav__link--primary" data-link data-link-profile>Профиль</a>
+          <a href="/logout" class="landing-nav__link" data-logout>Выход</a>
         {{!-- <button
           class="theme-toggle"
           type="button"
@@ -48,7 +48,7 @@
               </div>
 
               <div class="chat-thread__right">
-                <a href="/profile" class="link">ivanivanov</a>
+                <a href="/profile" class="link" data-link data-link-profile>ivanivanov</a>
 
                 <div class="chat-thread__menu">
                   <button

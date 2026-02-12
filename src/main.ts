@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 // Импортируем store и API авторизации
 // Меняем роутинг по ссылкам на роутинг по путям
 import Handlebars from 'handlebars';
@@ -7,6 +8,8 @@ import { registerHandlebarsHelpers } from './utils/handlebars-helpers';
 import { router } from './core/router';
 import { store } from './core/store';
 import { AuthAPI } from './api/auth-api';
+
+import { withLayout } from '@/hoc/withLayout';
 
 import { RegisterPage } from './pages/register';
 import { LoginPage } from './pages/login';
@@ -57,59 +60,6 @@ const setupNavToggle = (): void => {
   });
 };
 
-// const setupModals = (): void => {
-//   // user-модалки
-//   const addModal = document.getElementById('user-modal-add');
-//   const removeModal = document.getElementById('user-modal-remove');
-//   const userBackdrop = document.getElementById('user-modal-backdrop');
-
-//   if (addModal && removeModal && userBackdrop) {
-//     const closeAllUsers = () => {
-//       addModal.classList.remove('chat-user-modal--open');
-//       removeModal.classList.remove('chat-user-modal--open');
-//       userBackdrop.classList.remove('chat-user-backdrop--open');
-//     };
-
-//     userBackdrop.addEventListener('click', closeAllUsers);
-
-//     addModal.addEventListener('click', (e) => {
-//       if (!(e.target instanceof HTMLElement)) return;
-//       if (!e.target.closest('.modal')) closeAllUsers();
-//     });
-
-//     removeModal.addEventListener('click', (e) => {
-//       if (!(e.target instanceof HTMLElement)) return;
-//       if (!e.target.closest('.modal')) closeAllUsers();
-//     });
-
-//     document.addEventListener('keydown', (e) => {
-//       if (e.key === 'Escape') closeAllUsers();
-//     });
-//   }
-
-//   // upload-модалка
-//   const uploadModal = document.getElementById('upload-modal');
-//   const uploadBackdrop = document.getElementById('upload-backdrop');
-//   const uploadClose = document.getElementById('upload-close');
-
-//   if (uploadModal && uploadBackdrop) {
-//     const closeUpload = () => {
-//       uploadModal.classList.remove('chat-upload-modal--open');
-//       uploadBackdrop.classList.remove('chat-upload-backdrop--open');
-//     };
-
-//     uploadClose?.addEventListener('click', closeUpload);
-//     uploadBackdrop.addEventListener('click', closeUpload);
-//     uploadModal.addEventListener('click', (e) => {
-//       if (!(e.target instanceof HTMLElement)) return;
-//       if (!e.target.closest('.modal')) closeUpload();
-//     });
-//     document.addEventListener('keydown', (e) => {
-//       if (e.key === 'Escape') closeUpload();
-//     });
-//   }
-// };
-
 const setupLinkInterception = (): void => {
   document.addEventListener('click', (event) => {
     const target = event.target as HTMLElement | null;
@@ -152,17 +102,19 @@ const initApp = async (): Promise<void> => {
     .use('/sign-up', RegisterPage) // дубль на всякий
     .use('/register', RegisterPage)
     .use('/login', LoginPage)
+    .use('/logout', LoginPage) // Позже будет LogoutPage
     .use('/sign-in', LoginPage) // дубль на всякий
-    .use('/messenger', ChatsPage)
-    .use('/chat', ChatsPage) // дубль на всякий
-    .use('/chats', ChatsPage) // дубль на всякий
-    .use('/profile', ProfileViewPage)
-    .use('/profile/edit', ProfileEditPage)
-    .use('/profile/avatar', ProfileAvatarPage)
-    .use('/profile/password', ProfilePasswordPage)
-    .use('/settings', ProfileViewPage) // дубль на всякий
+    .use('/messenger', withLayout(ChatsPage))
+    .use('/chat', withLayout(ChatsPage)) // дубль на всякий
+    .use('/chats', withLayout(ChatsPage)) // дубль на всякий
+    .use('/profile', withLayout(ProfileViewPage))
+    .use('/profile/edit', withLayout(ProfileEditPage))
+    .use('/profile/avatar', withLayout(ProfileAvatarPage))
+    .use('/profile/password', withLayout(ProfilePasswordPage))
+    .use('/settings', withLayout(ProfileViewPage)) // дубль на всякий
     .use('/404', Error404Page)
-    .use('/5xx', Error5xxPage);
+    .use('/5xx', Error5xxPage)
+    .use('/500', Error5xxPage); // дубль на всякий
 
   try {
     const user = await AuthAPI.getUser();

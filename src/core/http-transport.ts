@@ -1,121 +1,91 @@
-/* eslint-disable max-classes-per-file */
-// http-клиента (Переезд из /utils)
-// Транспорт с таймаутом, JSON‑сериализацией
-// Детальная обработка исключений, 4xx/5xx и сетевых
+/* eslint-disable import/extensions */
+import { API_BASE_URL } from '@/utils/constants';
 
-export type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
-
-export type RequestOptions = {
-  method?: HTTPMethod;
-  data?: unknown;
-  timeout?: number;
+type RequestOptions = {
+  data?: any;
   headers?: Record<string, string>;
+  timeout?: number;
 };
 
-export class HTTPError extends Error {
-  public status: number;
-
-  public statusText: string;
-
-  constructor(message: string, status: number, statusText: string) {
-    super(message);
-    this.name = 'HTTPError';
-    this.status = status;
-    this.statusText = statusText;
-  }
-}
-
 export class HTTPTransport {
-  private baseUrl: string;
+  private readonly baseUrl: string;
 
-  constructor(baseUrl: string) {
-    this.baseUrl = baseUrl.replace(/\/$/, '');
+  constructor(basePath: string = '') {
+    this.baseUrl = `${API_BASE_URL}${basePath}`;
   }
 
-  public get<T>(url: string, options: RequestOptions = {}): Promise<T> {
-    return this.request<T>(url, { ...options, method: 'GET' });
+  get<T = unknown>(url: string, options: RequestOptions = {}): Promise<T> {
+    return this.request<T>(url, 'GET', options);
   }
 
-  public post<T>(url: string, options: RequestOptions = {}): Promise<T> {
-    return this.request<T>(url, { ...options, method: 'POST' });
+  post<T = unknown>(url: string, options: RequestOptions = {}): Promise<T> {
+    return this.request<T>(url, 'POST', options);
   }
 
-  public put<T>(url: string, options: RequestOptions = {}): Promise<T> {
-    return this.request<T>(url, { ...options, method: 'PUT' });
+  put<T = unknown>(url: string, options: RequestOptions = {}): Promise<T> {
+    return this.request<T>(url, 'PUT', options);
   }
 
-  public delete<T>(url: string, options: RequestOptions = {}): Promise<T> {
-    return this.request<T>(url, { ...options, method: 'DELETE' });
+  delete<T = unknown>(url: string, options: RequestOptions = {}): Promise<T> {
+    return this.request<T>(url, 'DELETE', options);
   }
 
-  private async request<T>(url: string, options: RequestOptions): Promise<T> {
-    const {
-      method = 'GET',
-      data,
-      timeout = 5000,
-      headers = {},
-    } = options;
+  private request<T>(
+    url: string,
+    method: string,
+    options: RequestOptions,
+  ): Promise<T> {
+    const { data, headers = {}, timeout = 5000 } = options;
 
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeout);
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      const isGet = method === 'GET';
 
-    const fetchOptions: RequestInit = {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        ...headers,
-      },
-      signal: controller.signal,
-      credentials: 'include',
-    };
+      let fullUrl = `${this.baseUrl}${url}`;
 
-    if (data !== undefined && method !== 'GET') {
-      fetchOptions.body = JSON.stringify(data);
-    }
+      if (isGet && data) {
+        const query = new URLSearchParams(data).toString();
+        fullUrl = `${fullUrl}?${query}`;
+      }
 
-    try {
-      const response = await fetch(`${this.baseUrl}${url}`, fetchOptions);
-      clearTimeout(id);
+      xhr.open(method, fullUrl);
+      xhr.withCredentials = true;
+      xhr.timeout = timeout;
 
-      let responseBody: unknown = null;
-      const text = await response.text();
-      if (text) {
+      Object.entries(headers).forEach(([key, value]) => {
+        xhr.setRequestHeader(key, value);
+      });
+
+      xhr.onload = () => {
+        const { status } = xhr;
+
+        const { responseText } = xhr;
+        let response: any = responseText;
+
         try {
-          responseBody = JSON.parse(text);
+          response = responseText ? JSON.parse(responseText) : responseText;
         } catch {
-          responseBody = text;
+          // текстовый ответ, оставляем как есть
         }
+
+        if (status >= 200 && status < 300) {
+          resolve(response as T);
+        } else {
+          // формат ошибок ЯП: { reason: string }
+          reject({ status, ...(response || {}) });
+        }
+      };
+
+      xhr.onabort = () => reject(new Error('Request aborted'));
+      xhr.ontimeout = () => reject(new Error('Request timeout'));
+      xhr.onerror = () => reject(new Error('Network error'));
+
+      if (isGet || !data) {
+        xhr.send();
+      } else {
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(data));
       }
-
-      if (!response.ok) {
-        // eslint-disable-next-line no-console
-        console.error('[HTTPTransport] error', {
-          url,
-          method,
-          status: response.status,
-          statusText: response.statusText,
-          body: responseBody,
-        });
-
-        throw new HTTPError(
-          `Request failed with status ${response.status}`,
-          response.status,
-          response.statusText,
-        );
-      }
-
-      return responseBody as T;
-    } catch (error) {
-      clearTimeout(id);
-
-      if (error instanceof HTTPError) {
-        throw error;
-      }
-
-      // eslint-disable-next-line no-console
-      console.error('[HTTPTransport] network/timeout error', { url, method, error });
-
-      throw new Error('Network error, please try again later');
-    }
+    });
   }
 }

@@ -1,8 +1,10 @@
 /* eslint-disable import/extensions */
 import { renderTemplate } from '@utils/renderTemplate';
 import { Block } from '@/core/block';
+import { router } from '@/core/router';
 // import { renderTemplateToFragment } from '@/utils/renderTemplate';
 import template from './chats.hbs?raw';
+import { handleLogout } from '@/hoc/withLayout';
 
 type Chat = {
   id: number;
@@ -84,6 +86,26 @@ export class ChatsPage extends Block<ChatsPageProps> {
         console.log('[ChatsPage] Сообщение отправлено:', value);
         textarea.value = '';
       });
+
+      const links = document.querySelectorAll('[data-link]');
+
+      links.forEach((link) => {
+        link.addEventListener('click', (event) => {
+          event.preventDefault();
+          const href = (event.currentTarget as HTMLAnchorElement).getAttribute('href');
+          if (href) {
+            router.go(href);
+          }
+        });
+      });
+
+      const logoutButton = document.querySelector('[data-logout]');
+      if (logoutButton) {
+        logoutButton.addEventListener('click', async (event) => {
+          event.preventDefault();
+          await handleLogout();
+        });
+      }
     }
 
     // console.log('[ChatsPage] CDM, found:', {
@@ -273,8 +295,4 @@ export class ChatsPage extends Block<ChatsPageProps> {
   protected render(): string {
     return renderTemplate(template, this.props);
   }
-
-  // protected render(): DocumentFragment {
-  //   return renderTemplateToFragment(template, this.props);
-  // }
 }

@@ -67,6 +67,7 @@ export class RegisterPage extends Block<RegisterProps> {
 
       try {
         await AuthAPI.signUp(data);
+        await AuthAPI.signIn({ login: data.login, password: data.password });
         const user = await AuthAPI.getUser();
 
         store.set('user', user);
