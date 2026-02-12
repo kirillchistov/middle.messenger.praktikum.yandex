@@ -14,78 +14,69 @@ export class RegisterPage extends Block<RegisterProps> {
   //   super('div', props);
   // }
 
-  protected componentDidMount(): void {
-    const root = this.getContent();
-    if (!root) return;
-
-    const form = root.querySelector<HTMLFormElement>('#register-form');
+  componentDidMount(): void {
+    const form = document.querySelector('#register-form') as HTMLFormElement | null;
     if (!form) {
-      // eslint-disable-next-line no-console
-      // console.warn('[RegisterPage] форма потерялась');
       return;
     }
 
-    const errorEl = root.querySelector<HTMLElement>('[data-form-error]');
-
-    // const { validateField, validateForm } = createFormValidation(form, {
-    const { validateForm } = createFormValidation(form, {
+    const { validateForm, validateField } = createFormValidation(form, {
       logOnSuccess: false,
     });
 
-    // const inputs = Array.from(
-    //   form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input, textarea'),
-    // );
+    form.addEventListener(
+      'blur',
+      (event) => {
+        const target = event.target as HTMLInputElement | HTMLTextAreaElement | null;
+        if (!target) return;
+        validateField(target);
+      },
+      true,
+    );
 
-    // inputs.forEach((input) => {
-    //   this.addDOMListener(input, 'blur', (event) => {
-    //     const e = event as FocusEvent;
-    //     const { target } = e;
-    //     if (
-    //       target instanceof HTMLInputElement
-    //       || target instanceof HTMLTextAreaElement
-    //     ) {
-    //       validateField(target);
-    //     }
-    //   });
-    // });
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
 
-    this.addDOMListener(form, 'submit', async (event) => {
-      const e = event as SubmitEvent;
-      e.preventDefault();
-
-      if (errorEl) errorEl.textContent = '';
-
-      const valid = validateForm();
-      if (!valid.valid) {
-        if (errorEl) {
-          errorEl.textContent = 'Исправьте ошибки в форме';
-        }
+      const isValid = validateForm();
+      if (!isValid) {
         return;
       }
 
       const formData = new FormData(form);
 
+      const password = (formData.get('password') || '').toString();
+      const passwordConfirm = (formData.get('password_confirm') || '').toString();
+
+      // на всякий случай дополнительная проверка совпадения паролей
+      if (password !== passwordConfirm) {
+        const errorElement = form.querySelector('[data-form-error]');
+        if (errorElement) {
+          errorElement.textContent = 'Пароли не совпадают';
+        }
+        return;
+      }
+
       const data = {
-        login: String(formData.get('login') ?? ''),
-        password: String(formData.get('password') ?? ''),
-        email: String(formData.get('email') ?? ''),
-        first_name: String(formData.get('first_name') ?? ''),
-        second_name: String(formData.get('second_name') ?? ''),
-        display_name: String(formData.get('display_name') ?? ''),
-        phone: String(formData.get('phone') ?? ''),
+        email: (formData.get('email') || '').toString(),
+        login: (formData.get('login') || '').toString(),
+        first_name: (formData.get('first_name') || '').toString(),
+        second_name: (formData.get('second_name') || '').toString(),
+        phone: (formData.get('phone') || '').toString(),
+        password,
       };
 
       try {
-        const user = await AuthAPI.signUp(data);
-        store.setState({ user });
+        await AuthAPI.signUp(data);
+        const user = await AuthAPI.getUser();
+
+        store.set('user', user);
         router.go('/messenger');
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('[RegisterPage] Ошибка регистрации', error);
-        if (errorEl) {
-          errorEl.textContent = error instanceof Error
-            ? error.message
-            : 'Ошибка регистрации. Попробуйте ещё раз.';
+      } catch (error: any) {
+        const errorMessage = error?.reason || 'Не удалось зарегистрироваться. Попробуйте ещё раз.';
+
+        const errorElement = form.querySelector('[data-form-error]');
+        if (errorElement) {
+          errorElement.textContent = errorMessage;
         }
       }
     });

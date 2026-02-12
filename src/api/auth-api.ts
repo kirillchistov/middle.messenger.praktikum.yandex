@@ -1,38 +1,38 @@
 /* eslint-disable import/extensions */
 import { HTTPTransport } from '@/core/http-transport';
-// import { API_BASE_URL } from '@/utils/constants';
-import type { SignInData, SignUpData } from '@/types/response-data';
 
 const authHttp = new HTTPTransport('/auth');
 
-export class AuthAPI {
-  // регистрация
-  public static async signUp(data: SignUpData): Promise<SignUpData> {
-    return authHttp.post<SignUpData>('/signup', {
-      data,
-    });
+export type SignInData = {
+  login: string;
+  password: string;
+};
+
+export type SignUpData = {
+  first_name: string;
+  second_name: string;
+  login: string;
+  email: string;
+  password: string;
+  phone: string;
+};
+
+class AuthAPIClass {
+  public async signIn(data: SignInData): Promise<void> {
+    await authHttp.post('/signin', { data });
   }
 
-  // логин
-  public static async signIn(
-    login: string,
-    password: string,
-  ): Promise<SignInData> {
-    return authHttp.post<SignInData>('/signin', { data: { login, password } });
+  public async signUp(data: SignUpData): Promise<void> {
+    await authHttp.post('/signup', { data });
   }
 
-  // текущий пользователь
-  public static async getUser(): Promise<SignUpData | null> {
-    try {
-      const user = await authHttp.get<SignUpData>('/user');
-      return user;
-    } catch {
-      return null;
-    }
+  public async getUser(): Promise<unknown> {
+    return authHttp.get('/user');
   }
 
-  // logout
-  public static async logout(): Promise<void> {
-    await authHttp.post('/logout', { data: {} });
+  public async logout(): Promise<void> {
+    await authHttp.post('/logout');
   }
 }
+
+export const AuthAPI = new AuthAPIClass();

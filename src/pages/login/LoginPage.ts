@@ -1,6 +1,6 @@
 /* eslint-disable import/extensions */
 import { Block } from '@core/block';
-// import { createFormValidation } from '@utils/formValidation';
+import { createFormValidation } from '@utils/formValidation';
 import { renderTemplate } from '@utils/renderTemplate';
 import template from './login.hbs?raw';
 import { AuthAPI } from '@/api/auth-api';
@@ -14,74 +14,54 @@ export class LoginPage extends Block<LoginProps> {
   //   super('div', props);
   // }
 
-  protected componentDidMount(): void {
-    const root = this.getContent();
-    if (!root) return;
-
-    const form = root.querySelector<HTMLFormElement>('#login-form');
+  componentDidMount(): void {
+    const form = document.querySelector('#login-form') as HTMLFormElement | null;
     if (!form) {
-      // eslint-disable-next-line no-console
-      // console.warn('[LoginPage] форма потерялась');
       return;
     }
 
-    // const { validateField, validateForm } = createFormValidation(form, {
-    //   logOnSuccess: true,
-    // });
+    const { validateForm, validateField } = createFormValidation(form, {
+      logOnSuccess: false,
+    });
 
-    // const inputs = Array.from(
-    //   form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input, textarea'),
-    // );
+    form.addEventListener(
+      'blur',
+      (event) => {
+        const target = event.target as HTMLInputElement | HTMLTextAreaElement | null;
+        if (!target) return;
+        validateField(target);
+      },
+      true,
+    );
 
-    // inputs.forEach((input) => {
-    //   this.addDOMListener(input, 'blur', (event) => {
-    //     const e = event as MouseEvent;
-    //     const { target } = e;
-    //     if (
-    //       target instanceof HTMLInputElement
-    //       || target instanceof HTMLTextAreaElement
-    //     ) {
-    //       validateField(target);
-    //     }
-    //   });
-    // });
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
 
-    //   this.addDOMListener(form, 'submit', async (event) => {
-    //     const e = event as SubmitEvent;
-    //     e.preventDefault();
-
-    //     const { valid } = validateForm();
-    //     if (!valid) {
-    //       // eslint-disable-next-line no-console
-    //       console.warn('[LoginPage] Данные формы невалидны — отправка отменена');
-    //       return;
-    //     }
-
-    //     // eslint-disable-next-line no-console
-    //     console.log('[LoginPage] Данные успешно отправлены');
-    //   });
-    // }
-
-    this.addDOMListener(form, 'submit', async (event) => {
-      const e = event as SubmitEvent;
-      e.preventDefault();
+      const isValid = validateForm();
+      if (!isValid) {
+        return;
+      }
 
       const formData = new FormData(form);
-      const login = String(formData.get('login') ?? '');
-      const password = String(formData.get('password') ?? '');
-
-      const errorEl = root.querySelector<HTMLElement>('[data-form-error]');
-      if (errorEl) errorEl.textContent = '';
+      const login = (formData.get('login') || '').toString();
+      const password = (formData.get('password') || '').toString();
 
       try {
-        const user = await AuthAPI.signIn(login, password);
-        store.setState({ user });
+        await AuthAPI.signIn({ login, password });
+        const user = await AuthAPI.getUser();
+
+        // сохраняем пользователя в глобальный store
+        store.set('user', user);
+
+        // переход в мессенджер
         router.go('/messenger');
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('[LoginPage] Ошибка авторизации', error);
-        if (errorEl) {
-          errorEl.textContent = error instanceof Error ? error.message : 'Ошибка входа';
+      } catch (error: any) {
+        const errorMessage = error?.reason || 'Не удалось войти. Попробуйте ещё раз.';
+
+        // элемент для вывода ошибки под формой
+        const errorElement = form.querySelector('[data-form-error]');
+        if (errorElement) {
+          errorElement.textContent = errorMessage;
         }
       }
     });
