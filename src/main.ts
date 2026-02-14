@@ -129,7 +129,9 @@ const initApp = async (): Promise<void> => {
     } else {
       store.setState({ user: null });
       const path = window.location.pathname;
-      if (path === '/messenger' || path === '/settings') {
+      if (
+        path === '/messenger' || path === '/settings' || path.startsWith('/profile')
+      ) {
         router.go('/');
         return;
       }

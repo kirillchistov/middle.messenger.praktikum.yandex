@@ -1,5 +1,5 @@
 /* eslint-disable import/extensions */
-import { API_BASE_URL } from '@/utils/constants';
+import API_BASE_URL from '@/utils/constants';
 
 type RequestOptions = {
   data?: any;
@@ -71,7 +71,6 @@ export class HTTPTransport {
         if (status >= 200 && status < 300) {
           resolve(response as T);
         } else {
-          // формат ошибок ЯП: { reason: string }
           reject({ status, ...(response || {}) });
         }
       };

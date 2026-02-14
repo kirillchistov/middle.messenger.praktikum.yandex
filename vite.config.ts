@@ -7,6 +7,13 @@ export default defineConfig({
   server: {
     port: 3000,
     strictPort: true,
+    // proxy: {
+    //   '/api/v2': {
+    //     target: 'https://ya-praktikum.tech',
+    //     changeOrigin: true,
+    //     secure: true,
+    //   },
+    // },
   },
   preview: {
     port: 3000,

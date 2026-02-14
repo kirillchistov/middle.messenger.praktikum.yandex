@@ -3,81 +3,103 @@ import { Block } from '@core/block';
 import { renderTemplate } from '@utils/renderTemplate';
 import { createFormValidation } from '@utils/formValidation';
 import template from './register.hbs?raw';
-import { AuthAPI } from '@/api/auth-api';
+import { AuthAPI, SignUpData } from '@/api/auth-api';
 import { store } from '@/core/store';
 import { router } from '@/core/router';
 
 type RegisterProps = Record<string, never>;
 
 export class RegisterPage extends Block<RegisterProps> {
-  // constructor(props: RegisterProps = {}) {
-  //   super('div', props);
-  // }
+  // используем базовый конструктор Block
 
-  componentDidMount(): void {
-    const form = document.querySelector('#register-form') as HTMLFormElement | null;
+  protected componentDidMount(): void {
+    const root = this.getContent();
+    if (!root) return;
+
+    const form = root.querySelector<HTMLFormElement>('#register-form');
     if (!form) {
+      // eslint-disable-next-line no-console
+      console.warn('RegisterPage: form not found');
       return;
     }
 
-    const { validateForm, validateField } = createFormValidation(form, {
+    const errorEl = root.querySelector<HTMLElement>('[data-form-error]');
+
+    const { validateField, validateForm } = createFormValidation(form, {
       logOnSuccess: false,
     });
 
-    form.addEventListener(
-      'blur',
-      (event) => {
-        const target = event.target as HTMLInputElement | HTMLTextAreaElement | null;
-        if (!target) return;
-        validateField(target);
-      },
-      true,
+    const inputs = Array.from(
+      form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
+        'input, textarea',
+      ),
     );
 
-    form.addEventListener('submit', async (event) => {
+    inputs.forEach((input) => {
+      this.addDOMListener(input, 'blur', (event: FocusEvent) => {
+        const { target } = event;
+        if (
+          target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement
+        ) {
+          validateField(target);
+        }
+      });
+    });
+
+    this.addDOMListener(form, 'submit', async (event: SubmitEvent) => {
       event.preventDefault();
 
-      const isValid = validateForm();
-      if (!isValid) {
+      if (errorEl) {
+        errorEl.textContent = '';
+      }
+
+      const valid = validateForm();
+      if (!valid) {
+        // eslint-disable-next-line no-console
+        console.warn('RegisterPage: form is not valid');
         return;
       }
 
       const formData = new FormData(form);
 
-      const password = (formData.get('password') || '').toString();
-      const passwordConfirm = (formData.get('password_confirm') || '').toString();
+      const password = String(formData.get('password') ?? '');
+      const passwordConfirm = String(formData.get('password_confirm') ?? '');
 
-      // на всякий случай дополнительная проверка совпадения паролей
       if (password !== passwordConfirm) {
-        const errorElement = form.querySelector('[data-form-error]');
-        if (errorElement) {
-          errorElement.textContent = 'Пароли не совпадают';
+        if (errorEl) {
+          errorEl.textContent = 'Пароли не совпадают';
         }
         return;
       }
 
-      const data = {
-        email: (formData.get('email') || '').toString(),
-        login: (formData.get('login') || '').toString(),
-        first_name: (formData.get('first_name') || '').toString(),
-        second_name: (formData.get('second_name') || '').toString(),
-        phone: (formData.get('phone') || '').toString(),
+      const payload: SignUpData = {
+        email: String(formData.get('email') ?? ''),
+        login: String(formData.get('login') ?? ''),
+        first_name: String(formData.get('first_name') ?? ''),
+        second_name: String(formData.get('second_name') ?? ''),
+        phone: String(formData.get('phone') ?? ''),
         password,
       };
 
       try {
-        await AuthAPI.signUp(data);
-        await AuthAPI.signIn({ login: data.login, password: data.password });
-        const user = await AuthAPI.getUser();
+        const signUpResult = await AuthAPI.signUp(payload);
+        console.log('signUpResult', signUpResult); // debug
+        // await AuthAPI.signUp(payload);
+        // Сразу signIn, чтобы получить куки
+        const signInResult = await AuthAPI.signIn({
+          login: payload.login,
+          password: payload.password,
+        });
+        console.log('signInResult', signInResult); // debug
 
-        store.set('user', user);
+        const user = await AuthAPI.getUser();
+        store.setState({ user });
         router.go('/messenger');
       } catch (error: any) {
-        const errorMessage = error?.reason || 'Не удалось зарегистрироваться. Попробуйте ещё раз.';
-
-        const errorElement = form.querySelector('[data-form-error]');
-        if (errorElement) {
-          errorElement.textContent = errorMessage;
+        // eslint-disable-next-line no-console
+        console.error('RegisterPage signUp error', error);
+        if (errorEl) {
+          errorEl.textContent = error?.reason || 'Не удалось зарегистрироваться. Проверьте данные и попробуйте ещё раз.';
         }
       }
     });

@@ -1,11 +1,6 @@
 /* eslint-disable import/extensions */
 import { HTTPTransport } from '@/core/http-transport';
 
-export type SignInData = {
-  login: string;
-  password: string;
-};
-
 export type SignUpData = {
   first_name: string;
   second_name: string;
@@ -13,6 +8,11 @@ export type SignUpData = {
   email: string;
   password: string;
   phone: string;
+};
+
+export type SignInData = {
+  login: string;
+  password: string;
 };
 
 export type UserDTO = {
@@ -26,42 +26,56 @@ export type UserDTO = {
   avatar: string | null;
 };
 
-const authHttp = new HTTPTransport('/auth');
-
-// class AuthAPIClass {
-//   public async signIn(data: SignInData): Promise<void> {
-//     await authHttp.post('/signin', { data });
-//   }
-
-//   public async signUp(data: SignUpData): Promise<void> {
-//     await authHttp.post('/signup', { data });
-//   }
-
-//   public async getUser(): Promise<unknown> {
-//     return authHttp.get('/user');
-//   }
-
-//   public async logout(): Promise<void> {
-//     await authHttp.post('/logout');
-//   }
-// }
+const http = new HTTPTransport('/auth');
 
 class AuthAPIClass {
-  public signUp(data: SignUpData): Promise<{ id: number }> {
-    return authHttp.post<{ id: number }>('/signup', { data });
+  // ожидаем объект SignUpData
+  // public signUp(data: SignUpData): Promise<{ id: number }> {
+  //   return http.post<{ id: number }>('/signup', { data });
+  // }
+
+  // ожидаем объект SignInData
+  //   public async signIn(data: SignInData): Promise<void> {
+  //     return http.post<void>('/signin', { data }).catch((error) => {
+  //       console.error('AuthAPI.signIn error', error);
+  //       throw error;
+  //     });
+  //   }
+
+  //   public getUser(): Promise<UserDTO> {
+  //     return http.get<UserDTO>('/user');
+  //   }
+
+  //   public logout(): Promise<void> {
+  //     return http.post<void>('/logout');
+  //   }
+  // }
+  public signUp(data:SignUpData): Promise<{ id: number }> {
+    return http.post<{ id: number }>('/signup', { data });
   }
 
-  public signIn(data: SignInData): Promise<void> {
-    return authHttp.post<void>('/signin', { data });
+  public async signIn(data:SignInData): Promise<void> {
+    return http.post<void>('/signin', { data }).catch((error) => {
+      // eslint-disable-next-line no-console
+      console.error('AuthAPI.signIn error', error);
+      throw error;
+    });
   }
 
   public getUser(): Promise<UserDTO> {
-    return authHttp.get<UserDTO>('/user');
+    return http.get<UserDTO>('/user');
   }
 
   public logout(): Promise<void> {
-    return authHttp.post<void>('/logout');
+    return http.post<void>('/logout');
   }
 }
 
-export const AuthAPI = new AuthAPIClass();
+// export default AuthAPI;
+// export const AuthAPI = new AuthAPIClass();
+
+const AuthAPI = new AuthAPIClass();
+
+// экспорт по умолчанию + именованный
+export default AuthAPI;
+export { AuthAPI };

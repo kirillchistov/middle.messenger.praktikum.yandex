@@ -2,52 +2,97 @@
   <main class="auth">
     <section class="auth-card">
       <header class="auth-card__header">
-        {{!-- <button class="theme-toggle" type="button" data-theme-toggle>
-          Тема
-        </button> --}}
+        {{!-- button class="theme-toggle" type="button" data-theme-toggle>🌓</button> --}}
         <h1 class="auth-card__title">Регистрация</h1>
-        <p class="auth-card__subtitle"></p>
+        <p class="auth-card__subtitle">Создайте аккаунт, чтобы продолжить</p>
       </header>
 
       <form class="form" id="register-form">
         <div class="form__field">
           <label for="first_name" class="form__label">Имя</label>
-          {{> input id="first_name" name="first_name" type="text" class="form__input"}}
-           <p class="form__error" data-form-error></p>
+          <input
+            id="first_name"
+            name="first_name"
+            type="text"
+            class="form__input"
+          />
+          <p class="form__error"></p>
         </div>
+
         <div class="form__field">
           <label for="second_name" class="form__label">Фамилия</label>
-          {{> input id="second_name" name="second_name" type="text" class="form__input"}}
-          <p class="form__error" data-form-error></p>
+          <input
+            id="second_name"
+            name="second_name"
+            type="text"
+            class="form__input"
+          />
+          <p class="form__error"></p>
         </div>
+
         <div class="form__field">
           <label for="login" class="form__label">Логин</label>
-          {{> input id="login" name="login" type="text" class="form__input"}}
-          <p class="form__error" data-form-error></p>
+          <input
+            id="login"
+            name="login"
+            type="text"
+            class="form__input"
+          />
+          <p class="form__error"></p>
         </div>
+
         <div class="form__field">
           <label for="email" class="form__label">Email</label>
-          {{> input id="email" name="email" type="email" class="form__input"}}
-          <p class="form__error" data-form-error></p>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            class="form__input"
+          />
+          <p class="form__error"></p>
         </div>
+
         <div class="form__field">
           <label for="password" class="form__label">Пароль</label>
-          {{> input id="password" name="password" type="password" class="form__input"}}
-          <p class="form__error" data-form-error></p>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            class="form__input"
+          />
+          <p class="form__error"></p>
         </div>
+
+        <div class="form__field">
+          <label for="password_confirm" class="form__label">Повторите пароль</label>
+          <input
+            id="password_confirm"
+            name="password_confirm"
+            type="password"
+            class="form__input"
+          />
+          <p class="form__error"></p>
+        </div>
+
         <div class="form__field">
           <label for="phone" class="form__label">Телефон</label>
-          {{> input id="phone" name="phone" type="tel" class="form__input"}}
-          <p class="form__error" data-form-error></p>
+          <input
+            id="phone"
+            name="phone"
+            type="tel"
+            class="form__input"
+          />
+          <p class="form__error"></p>
         </div>
+
+        <p class="form__error form__error--global" data-form-error></p>
 
         <div class="auth-card__footer">
           <button class="btn btn--primary btn--full" type="submit">
-            Создать аккаунт
+            <span>Зарегистрироваться</span>
           </button>
-          <span>
-            Есть аккаунт?
-            <a class="link" data-link="/login" href="/login">Войдите</a>
+          <span>Уже есть аккаунт?
+            <a class="link" data-link href="/login">Войти</a>
           </span>
         </div>
       </form>
