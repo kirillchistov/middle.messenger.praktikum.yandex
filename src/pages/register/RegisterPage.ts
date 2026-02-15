@@ -82,17 +82,14 @@ export class RegisterPage extends Block<RegisterProps> {
       };
 
       try {
-        const signUpResult = await AuthAPI.signUp(payload);
-        console.log('signUpResult', signUpResult); // debug
-        // await AuthAPI.signUp(payload);
-        // Сразу signIn, чтобы получить куки
-        const signInResult = await AuthAPI.signIn({
+        // Последовательное выполнение: sign-up, sign-in, get-user
+        await AuthAPI.signUp(payload);
+        await AuthAPI.signIn({
           login: payload.login,
           password: payload.password,
         });
-        console.log('signInResult', signInResult); // debug
-
         const user = await AuthAPI.getUser();
+
         store.setState({ user });
         router.go('/messenger');
       } catch (error: any) {

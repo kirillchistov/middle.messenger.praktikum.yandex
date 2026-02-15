@@ -136,9 +136,10 @@ const initApp = async (): Promise<void> => {
         return;
       }
     }
-  } catch (error) {
+  } catch (error: any) {
     // eslint-disable-next-line no-console
-    console.error('[initApp] getUser error', error);
+    store.setState({ user: null });
+    // console.error('[initApp] getUser error', error);
   }
 
   router.start();
