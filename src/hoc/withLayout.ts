@@ -1,95 +1,60 @@
 /* eslint-disable import/extensions */
 import { Block } from '@/core/block';
-import { router } from '@/core/router';
-import { AuthAPI } from '@/api/auth-api';
 import { store } from '@/core/store';
-import { renderTemplate } from '@/utils/renderTemplate';
-import layoutTemplate from '../layouts/layout.hbs?raw';
+import { AuthAPI } from '@/api/auth-api';
+import { router } from '@/core/router';
 
-type BlockPageClass = new () => Block;
+type BlockPageClass = new (props?: any) => Block<any>;
 
-export async function handleLogout() {
-  try {
-    await AuthAPI.logout();
-  } catch {
-    // игнорируем сетевые ошибки, всё равно чистим состояние
-  } finally {
-    store.setState({
-      user: null,
-      chats: [],
-      activeChatId: null,
-      messages: {},
-    });
-    router.go('/login');
+export const withLayout = (Page: BlockPageClass) => class WithLayout extends Block {
+  private pageInstance: Block | null = null;
+
+  constructor() {
+    super('div', {}); // контейнер layout'а
   }
-}
 
-export function withLayout(Page: BlockPageClass): BlockPageClass {
-  return class WithLayout extends Block {
-    private pageInstance: Block | null = null;
+  protected async componentDidMount(): Promise<void> {
+    const state = store.getState();
 
-    render(): string {
-      // лениво создаём вложенную страницу
-      if (!this.pageInstance) {
-        this.pageInstance = new Page();
-      }
-
-      const pageHtml = (this.pageInstance as any).render() as string;
-
-      return renderTemplate(layoutTemplate, { body: pageHtml });
-    }
-
-    componentDidMount(): void {
-      // гарантируем, что pageInstance есть
-      if (!this.pageInstance) {
-        this.pageInstance = new Page();
-      }
-
-      const main = document.querySelector('.app-main') as HTMLElement | null;
-      if (main) {
-        main.innerHTML = (this.pageInstance as any).render() as string;
-        (this.pageInstance as any).componentDidMount?.();
-      }
-
-      const header = document.querySelector('.app-header') as HTMLElement | null;
-      if (!header) return;
-
-      const profileLink = header.querySelector('[data-link-profile]');
-      const homeLink = header.querySelector('[data-link-home]');
-      const logoutButton = header.querySelector('[data-link-logout]');
-
-      if (profileLink) {
-        profileLink.addEventListener('click', (event) => {
-          event.preventDefault();
-          router.go('/settings');
-        });
-      }
-
-      if (homeLink) {
-        homeLink.addEventListener('click', (event) => {
-          event.preventDefault();
-          router.go('/');
-        });
-      }
-
-      if (logoutButton) {
-        logoutButton.addEventListener('click', async (event) => {
-          event.preventDefault();
-          try {
-            await AuthAPI.logout();
-          } catch {
-            // ignore
-          } finally {
-            store.setState({
-              user: null,
-              chats: [],
-              activeChatId: null,
-              messages: {},
-            });
-            router.go('/login');
-          }
-        });
+    if (!state.user) {
+      try {
+        const user = await AuthAPI.getUser();
+        store.setState({ user });
+      } catch (e) {
+        store.setState({ user: null });
+        router.go('/login');
+        return;
       }
     }
-  };
-}
+
+    // создаём страницу
+    this.pageInstance = new Page({});
+
+    // ждём, пока у неё появится DOM
+    const root = this.getContent();
+    if (!root) return;
+
+    const pageRoot = this.pageInstance.getContent();
+    if (!pageRoot) return;
+
+    // простой layout без Handlebars
+    root.innerHTML = `
+      <div class="app-layout">
+        <aside class="app-layout__sidebar">
+          <!-- здесь можешь вывести меню, логотип и т.п. -->
+        </aside>
+        <main class="app-layout__main"></main>
+      </div>
+    `;
+
+    const main = root.querySelector<HTMLElement>('.app-layout__main');
+    if (main) {
+      main.appendChild(pageRoot);
+    }
+  }
+
+  protected render(): string {
+    // на первый рендер — просто контейнер
+    return '<div class="app-layout"></div>';
+  }
+};

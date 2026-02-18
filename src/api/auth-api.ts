@@ -29,29 +29,8 @@ export type UserDTO = {
 const http = new HTTPTransport('/auth');
 
 class AuthAPIClass {
-  // ожидаем объект SignUpData
-  // public signUp(data: SignUpData): Promise<{ id: number }> {
-  //   return http.post<{ id: number }>('/signup', { data });
-  // }
-
-  // ожидаем объект SignInData
-  //   public async signIn(data: SignInData): Promise<void> {
-  //     return http.post<void>('/signin', { data }).catch((error) => {
-  //       console.error('AuthAPI.signIn error', error);
-  //       throw error;
-  //     });
-  //   }
-
-  //   public getUser(): Promise<UserDTO> {
-  //     return http.get<UserDTO>('/user');
-  //   }
-
-  //   public logout(): Promise<void> {
-  //     return http.post<void>('/logout');
-  //   }
-  // }
   public signUp(data:SignUpData): Promise<{ id: number }> {
-    return http.post<{ id: number }>('/signup', { data });
+    return http.post('/signup', { data });
   }
 
   public async signIn(data:SignInData): Promise<void> {
@@ -63,16 +42,13 @@ class AuthAPIClass {
   }
 
   public getUser(): Promise<UserDTO> {
-    return http.get<UserDTO>('/user');
+    return http.get('/user');
   }
 
   public logout(): Promise<void> {
-    return http.post<void>('/logout');
+    return http.post('/logout');
   }
 }
-
-// export default AuthAPI;
-// export const AuthAPI = new AuthAPIClass();
 
 const AuthAPI = new AuthAPIClass();
 

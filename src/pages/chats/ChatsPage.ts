@@ -1,71 +1,100 @@
 /* eslint-disable import/extensions */
 import { renderTemplate } from '@utils/renderTemplate';
+import ChatsAPI from '@/api/chats-api';
+import { store } from '@/core/store';
 import { Block } from '@/core/block';
 import { router } from '@/core/router';
-// import { renderTemplateToFragment } from '@/utils/renderTemplate';
 import template from './chats.hbs?raw';
-import { handleLogout } from '@/hoc/withLayout';
+// import { handleLogout } from '@/hoc/withLayout';
+import { chatSocket } from '@/api/chat-socket';
 
 type Chat = {
   id: number;
-  initials: string;
   title: string;
-  lastMessage: string;
-  time: string;
-  unread: number;
-};
-
-type Message = {
-  id: number;
-  type: 'incoming' | 'outgoing';
-  text: string;
-  time: string;
 };
 
 type ChatsPageProps = {
   chats: Chat[];
-  messages: Message[];
 };
 
 export class ChatsPage extends Block<ChatsPageProps> {
   constructor(props?: Partial<ChatsPageProps>) {
     const defaultProps: ChatsPageProps = {
-      chats: [
-        {
-          id: 1,
-          initials: 'JD',
-          title: 'Иван Лань',
-          lastMessage: 'Привет!',
-          time: '15:30',
-          unread: 2,
-        },
-        {
-          id: 2,
-          initials: 'AS',
-          title: 'Алиса Чудова',
-          lastMessage: 'Перезвоню позже',
-          time: '10:05',
-          unread: 0,
-        },
-      ],
-      messages: [
-        {
-          id: 1, type: 'incoming', text: 'Салют!', time: '12:20',
-        },
-        {
-          id: 2, type: 'outgoing', text: 'Привет, как дела?', time: '12:21',
-        },
-      ],
+      chats: [],
     };
 
     super('div', { ...defaultProps, ...props } as ChatsPageProps);
   }
 
-  protected componentDidMount(): void {
+  // CHANGED: рендер списка чатов из данных API
+  private updateChatsList(chats: Chat[]): void {
     const root = this.getContent();
     if (!root) return;
 
-    // Форма отправки сообщения
+    const listEl = root.querySelector<HTMLElement>('[data-chats-list]');
+    if (!listEl) return;
+
+    listEl.innerHTML = chats
+      .map(
+        (chat) => `
+        <li class="chat-list__item" data-chat-id="${chat.id}">
+          <button class="chat-sidebar__item" type="button">
+            <div class="chat-sidebar__item-top">
+              <div class="chat-sidebar__item-avatar">
+                ${chat.title.charAt(0).toUpperCase()}
+              </div>
+              <span class="chat-sidebar__item-title">${chat.title}</span>
+            </div>
+            <div class="chat-sidebar__item-bottom">
+              <span class="chat-sidebar__item-subtitle">Чат</span>
+            </div>
+          </button>
+        </li>`,
+      )
+      .join('');
+
+    listEl.querySelectorAll<HTMLElement>('[data-chat-id]').forEach((item) => {
+      item.addEventListener('click', async () => {
+        const id = Number(item.dataset.chatId);
+        store.setState({ activeChatId: id });
+
+        const rootEl = this.getContent();
+        if (rootEl) {
+          const titleEl = rootEl.querySelector<HTMLElement>('[data-chat-title]');
+          const avatarEl = rootEl.querySelector<HTMLElement>('[data-chat-avatar]');
+          if (titleEl) titleEl.textContent = chats.find((c) => c.id === id)?.title ?? 'Чат';
+          if (avatarEl) {
+            avatarEl.textContent = (chats.find((c) => c.id === id)?.title ?? '?')
+              .charAt(0)
+              .toUpperCase();
+          }
+        }
+
+        try {
+          await chatSocket.connect(id); // CHANGED
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error('Failed to connect chat socket', e);
+        }
+      });
+    });
+  }
+
+  protected async componentDidMount(): Promise<void> {
+    const root = this.getContent();
+    if (!root) return;
+
+    // Загрузка чатов пользователя
+    try {
+      const chats = await ChatsAPI.getChats({ limit: 50 });
+      store.setState({ chats });
+      this.updateChatsList(chats);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('ChatsPage: не удалось загрузить чаты', error);
+    }
+
+    // Форма отправки сообщения (пока заглушка)
     const form = root.querySelector<HTMLFormElement>('#chat-message-form');
     if (form) {
       const textarea = form.querySelector<HTMLTextAreaElement>('textarea[name="message"]');
@@ -82,63 +111,131 @@ export class ChatsPage extends Block<ChatsPageProps> {
           return;
         }
 
-        // eslint-disable-next-line no-console
-        console.log('[ChatsPage] Сообщение отправлено:', value);
+        const state = store.getState();
+        const chatId = state.activeChatId;
+        if (!chatId) {
+          console.warn('[ChatsPage]: Нет выбранного чата');
+          return;
+        }
+
+        // Отправка по WebSocket
+        chatSocket.sendMessage(value);
         textarea.value = '';
       });
-
-      const links = document.querySelectorAll('[data-link]');
-
-      links.forEach((link) => {
-        link.addEventListener('click', (event) => {
-          event.preventDefault();
-          const href = (event.currentTarget as HTMLAnchorElement).getAttribute('href');
-          if (href) {
-            router.go(href);
-          }
-        });
-      });
-
-      const logoutButton = document.querySelector('[data-logout]');
-      if (logoutButton) {
-        logoutButton.addEventListener('click', async (event) => {
-          event.preventDefault();
-          await handleLogout();
-        });
-      }
     }
 
-    // console.log('[ChatsPage] CDM, found:', {
-    //   chatMenuToggle: !!root.querySelector('#chat-menu-toggle'),
-    //   chatMenu: !!root.querySelector('#chat-menu'),
-    //   attachToggle: !!root.querySelector('#attach-toggle'),
-    //   attachMenu: !!root.querySelector('#attach-menu'),
-    // });
+    // Навигация по data-link
+    const links = document.querySelectorAll('[data-link]');
+    links.forEach((link) => {
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        const href = (event.currentTarget as HTMLAnchorElement).getAttribute(
+          'href',
+        );
+        if (href) {
+          router.go(href);
+        }
+      });
+    });
 
+    // Logout
+    const logoutButton = document.querySelector('[data-logout]');
+    if (logoutButton) {
+      logoutButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        router.go('/logout');
+      });
+    }
+
+    // Обработчик создания нового чата
+    const createForm = root.querySelector<HTMLFormElement>('#create-chat-form');
+    if (createForm) {
+      this.addDOMListener(
+        createForm,
+        'submit',
+        async (event: SubmitEvent) => {
+          event.preventDefault();
+
+          const formData = new FormData(createForm);
+          const title = String(formData.get('title') ?? '').trim();
+          if (!title) return;
+
+          try {
+            await ChatsAPI.createChat({ title });
+            const chats = await ChatsAPI.getChats({ limit: 50 });
+            store.setState({ chats });
+            this.updateChatsList(chats);
+            createForm.reset();
+          } catch (error) {
+            // eslint-disable-next-line no-console
+            console.error('ChatsPage: не удалось создать новый чат', error);
+          }
+        },
+      );
+    }
+
+    // Добавление пользователя в активный чат
+    const addUserForm = root.querySelector<HTMLFormElement>('#chat-add-user-form');
+    if (addUserForm) {
+      this.addDOMListener(
+        addUserForm,
+        'submit',
+        async (event: SubmitEvent) => {
+          event.preventDefault();
+
+          const state = store.getState();
+          const chatId = state.activeChatId;
+          if (!chatId) return;
+
+          const formData = new FormData(addUserForm);
+          const userId = Number(formData.get('userId') ?? 0);
+          if (!userId) return;
+
+          try {
+            await ChatsAPI.addUsersToChat({ users: [userId], chatId });
+            addUserForm.reset();
+          } catch (error) {
+            // eslint-disable-next-line no-console
+            console.error('ChatsPage: не удалось добавить пользователя', error);
+          }
+        },
+      );
+    }
+
+    // Удаление пользователя из активного чата
+    const removeUserForm = root.querySelector<HTMLFormElement>('#chat-remove-user-form');
+    if (removeUserForm) {
+      this.addDOMListener(
+        removeUserForm,
+        'submit',
+        async (event: SubmitEvent) => {
+          event.preventDefault();
+
+          const state = store.getState();
+          const chatId = state.activeChatId;
+          if (!chatId) return;
+
+          const formData = new FormData(removeUserForm);
+          const userId = Number(formData.get('userId') ?? 0);
+          if (!userId) return;
+
+          try {
+            await ChatsAPI.deleteUsersFromChat({ users: [userId], chatId });
+            removeUserForm.reset();
+          } catch (error) {
+            // eslint-disable-next-line no-console
+            console.error('ChatsPage: не удалось удалить пользователя', error);
+          }
+        },
+      );
+    }
+
+    // Меню/модалки/вложения в сообщение
     this.setupMenus(root);
-
-    // --- ТЕСТ ДЛЯ ПРОВЕРКИ ОТПИСКИ ---
-    // setTimeout(() => {
-    // eslint-disable-next-line no-console
-    // console.log('[ChatsPage] setProps test: triggering re-render');
-
-    //   this.setProps({
-    //     messages: [
-    //       ...this.props.messages,
-    //       {
-    //         id: this.props.messages.length + 1,
-    //         type: 'incoming',
-    //         text: '[test] сообщение для проверки отписки слушателей',
-    //         time: '23:59',
-    //       },
-    //     ],
-    //   });
-    // }, 2000);
-    // --- КОНЕЦ ТЕСТА ---
   }
 
   private setupMenus(root: HTMLElement): void {
-    // меню чата
+    // Меню чата
     const chatMenuToggle = root.querySelector<HTMLButtonElement>('#chat-menu-toggle');
     const chatMenu = root.querySelector<HTMLDivElement>('#chat-menu');
 
@@ -157,8 +254,9 @@ export class ChatsPage extends Block<ChatsPageProps> {
 
       this.addDOMListener(chatMenu, 'click', (event) => {
         const e = event as MouseEvent;
-        const item = (e.target as HTMLElement)
-          .closest<HTMLButtonElement>('.chat-thread__menu-item');
+        const item = (e.target as HTMLElement).closest<HTMLButtonElement>(
+          '.chat-thread__menu-item',
+        );
         if (!item) return;
 
         const action = item.dataset.modalOpen;
@@ -173,7 +271,7 @@ export class ChatsPage extends Block<ChatsPageProps> {
       });
     }
 
-    // модалки add/remove внутри root
+    // Модалки добавления/удаления пользователя из чата
     const addModal = root.querySelector<HTMLDivElement>('#user-modal-add');
     const removeModal = root.querySelector<HTMLDivElement>('#user-modal-remove');
     const userBackdrop = root.querySelector<HTMLDivElement>('#user-modal-backdrop');
@@ -223,13 +321,14 @@ export class ChatsPage extends Block<ChatsPageProps> {
 
       this.addDOMListener(attachMenu, 'click', (event) => {
         const e = event as MouseEvent;
-        const item = (e.target as HTMLElement)
-          .closest<HTMLButtonElement>('.chat-input__attach-item');
+        const item = (e.target as HTMLElement).closest<HTMLButtonElement>(
+          '.chat-input__attach-item',
+        );
         if (!item) return;
 
-        const type = item.dataset.type
-          || (item.textContent ?? '').trim().toLowerCase();
+        const type = item.dataset.type || (item.textContent ?? '').trim().toLowerCase();
 
+        // eslint-disable-next-line no-console
         console.log('[ChatsPage] Выбрано вложение:', type);
 
         attachMenu.classList.remove('chat-input__attach-menu--open');

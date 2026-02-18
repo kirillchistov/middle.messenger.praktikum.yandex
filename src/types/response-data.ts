@@ -12,6 +12,17 @@ export type SignUpData = {
   phone: string;
 };
 
+export type UserDTO = {
+  id: number;
+  first_name: string;
+  second_name: string;
+  display_name: string | null;
+  login: string;
+  email: string;
+  phone: string;
+  avatar: string | null;
+};
+
 export type SessionData = {
   _id?: string;
   userId: string;

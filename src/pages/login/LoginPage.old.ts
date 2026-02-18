@@ -18,6 +18,8 @@ export class LoginPage extends Block<LoginProps> {
 
     const form = root.querySelector<HTMLFormElement>('#login-form');
     if (!form) {
+      // eslint-disable-next-line no-console
+      console.warn('LoginPage: form not found');
       return;
     }
 
@@ -52,6 +54,8 @@ export class LoginPage extends Block<LoginProps> {
 
       const valid = validateForm();
       if (!valid) {
+        // eslint-disable-next-line no-console
+        console.warn('LoginPage: form is not valid');
         return;
       }
 
@@ -61,16 +65,21 @@ export class LoginPage extends Block<LoginProps> {
 
       try {
         await AuthAPI.signIn({ login, password }); // 1) login
-        const user = await AuthAPI.getUser(); // 2) getUser
-        console.log(user);
-        store.setState({ user });
-        router.go('/messenger'); // 3) redirect
+        // const user = await AuthAPI.getUser(); // 2) getUser
+        // console.log(user);
+        // store.setState({ user });
+        // router.go('/messenger'); // 3) redirect
       } catch (error: any) {
         console.error('LoginPage signIn error', error);
         if (errorEl) {
           errorEl.textContent = error?.reason || 'Не удалось войти. Проверьте логин и пароль.';
         }
       }
+
+      const user = await AuthAPI.getUser(); // 2) getUser
+      // console.log(user);
+      store.setState({ user });
+      router.go('/messenger'); // 3) redirect
     });
   }
 

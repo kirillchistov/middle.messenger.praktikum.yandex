@@ -44,10 +44,11 @@ export class HTTPTransport {
       let fullUrl = `${this.baseUrl}${url}`;
 
       if (isGet && data) {
-        const query = new URLSearchParams(data).toString();
+        const query = new URLSearchParams(data as Record<string, string>).toString();
         fullUrl = `${fullUrl}?${query}`;
       }
 
+      // CHANGED: сначала open, потом withCreds, потом вешаем обработчики
       xhr.open(method, fullUrl);
       xhr.withCredentials = true;
       xhr.timeout = timeout;
@@ -58,14 +59,13 @@ export class HTTPTransport {
 
       xhr.onload = () => {
         const { status } = xhr;
-
         const { responseText } = xhr;
         let response: any = responseText;
 
         try {
           response = responseText ? JSON.parse(responseText) : responseText;
         } catch {
-          // текстовый ответ, оставляем как есть
+          // текстовый ответ
         }
 
         if (status >= 200 && status < 300) {
@@ -79,8 +79,10 @@ export class HTTPTransport {
       xhr.ontimeout = () => reject(new Error('Request timeout'));
       xhr.onerror = () => reject(new Error('Network error'));
 
-      if (isGet || !data) {
-        xhr.send();
+      if (isGet || data === undefined || data === null) {
+        xhr.send(); // send только один раз
+      } else if (data instanceof FormData) {
+        xhr.send(data);
       } else {
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify(data));

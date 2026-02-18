@@ -13,6 +13,7 @@ import { withLayout } from '@/hoc/withLayout';
 
 import { RegisterPage } from './pages/register';
 import { LoginPage } from './pages/login';
+import { LogoutPage } from './pages/logout';
 import { ChatsPage } from './pages/chats';
 import { Error404Page } from './pages/error-404';
 import { Error5xxPage } from './pages/error-5xx';
@@ -102,16 +103,16 @@ const initApp = async (): Promise<void> => {
     .use('/sign-up', RegisterPage) // дубль на всякий
     .use('/register', RegisterPage)
     .use('/login', LoginPage)
-    .use('/logout', LoginPage) // Позже будет LogoutPage
     .use('/sign-in', LoginPage) // дубль на всякий
-    .use('/messenger', withLayout(ChatsPage))
-    .use('/chat', withLayout(ChatsPage)) // дубль на всякий
-    .use('/chats', withLayout(ChatsPage)) // дубль на всякий
+    .use('/logout', LogoutPage)
+    .use('/messenger', ChatsPage)
+    .use('/chat', ChatsPage) // дубль на всякий
+    .use('/chats', ChatsPage) // дубль на всякий
     .use('/profile', withLayout(ProfileViewPage))
     .use('/profile/edit', withLayout(ProfileEditPage))
     .use('/profile/avatar', withLayout(ProfileAvatarPage))
     .use('/profile/password', withLayout(ProfilePasswordPage))
-    .use('/settings', withLayout(ProfileViewPage)) // дубль на всякий
+    .use('/settings', withLayout(ProfileViewPage))
     .use('/404', Error404Page)
     .use('/5xx', Error5xxPage)
     .use('/500', Error5xxPage); // дубль на всякий
@@ -120,7 +121,7 @@ const initApp = async (): Promise<void> => {
     const user = await AuthAPI.getUser();
     if (user) {
       store.setState({ user });
-      // если пользователь уже авторизован и мы на / или /login — перебросим в /messenger
+      // если авторизован и мы на / или /login — перебросим в /messenger
       const path = window.location.pathname;
       if (path === '/' || path === '/login' || path === '/sign-up') {
         router.go('/messenger');
@@ -128,13 +129,6 @@ const initApp = async (): Promise<void> => {
       }
     } else {
       store.setState({ user: null });
-      const path = window.location.pathname;
-      if (
-        path === '/messenger' || path === '/settings' || path.startsWith('/profile')
-      ) {
-        router.go('/');
-        return;
-      }
     }
   } catch (error: any) {
     // eslint-disable-next-line no-console

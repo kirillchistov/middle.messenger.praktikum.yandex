@@ -2,7 +2,7 @@
 import { Block } from '@core/block';
 import { createFormValidation } from '@utils/formValidation';
 import { renderTemplate } from '@utils/renderTemplate';
-// import { renderTemplateToFragment } from '@/utils/renderTemplate';
+import { UsersAPI } from '@/api/users-api';
 import template from './ProfilePassword.hbs?raw';
 
 type ProfilePasswordProps = Record<string, never>;
@@ -13,29 +13,54 @@ export class ProfilePasswordPage extends Block<ProfilePasswordProps> {
   constructor(props: ProfilePasswordProps = {}) {
     super('div', props);
 
-    // подвязал onSubmit и адаптировал тип
     this.handleSubmit = (event: Event) => {
       this.onSubmit(event as SubmitEvent);
     };
   }
 
-  private onSubmit(event: SubmitEvent): void {
+  private async onSubmit(event: SubmitEvent): Promise<void> {
     event.preventDefault();
 
     const form = event.currentTarget;
     if (!(form instanceof HTMLFormElement)) return;
 
-    const { validateForm } = createFormValidation(form, { logOnSuccess: true });
+    const errorEl = form.querySelector<HTMLElement>('[data-form-error]');
+
+    const { validateForm } = createFormValidation(form, { logOnSuccess: false });
     const { valid } = validateForm();
 
     if (!valid) {
       // eslint-disable-next-line no-console
-      console.warn('[ProfilePasswordPage] Данные формы невалидны — отправка отменена');
+      console.warn(
+        '[ProfilePasswordPage] Данные формы невалидны — отправка отменена',
+      );
       return;
     }
 
-    // eslint-disable-next-line no-console
-    console.log('[ProfilePasswordPage] Данные успешно отправлены');
+    const formData = new FormData(form);
+    const oldPassword = String(formData.get('oldPassword') ?? '');
+    const newPassword = String(formData.get('newPassword') ?? '');
+    const newPasswordConfirm = String(formData.get('newPasswordConfirm') ?? '');
+
+    if (newPassword !== newPasswordConfirm) {
+      if (errorEl) {
+        errorEl.textContent = 'Новый пароль и подтверждение не совпадают';
+      }
+      return;
+    }
+
+    try {
+      await UsersAPI.updatePassword({ oldPassword, newPassword });
+      // eslint-disable-next-line no-console
+      console.log('[ProfilePasswordPage] пароль обновлён');
+      if (errorEl) errorEl.textContent = 'Пароль успешно изменён';
+    } catch (error: any) {
+      // eslint-disable-next-line no-console
+      console.error('[ProfilePasswordPage] ошибка смены пароля', error);
+      if (errorEl) {
+        errorEl.textContent = error?.reason || 'Не удалось сменить пароль. Попробуйте ещё раз.';
+      }
+    }
   }
 
   protected componentDidMount(): void {
@@ -49,10 +74,14 @@ export class ProfilePasswordPage extends Block<ProfilePasswordProps> {
       return;
     }
 
-    const { validateField } = createFormValidation(form, { logOnSuccess: true });
+    const { validateField } = createFormValidation(form, {
+      logOnSuccess: false,
+    });
 
     const inputs = Array.from(
-      form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input, textarea'),
+      form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
+        'input, textarea',
+      ),
     );
 
     inputs.forEach((input) => {
