@@ -10,7 +10,7 @@
     <input
       type="text"
       class="chat-sidebar__search-input"
-      placeholder="Поиск"
+      placeholder="Поиск по чатам"
       aria-label="Поиск по чатам"
     />
   </div>
@@ -27,13 +27,13 @@
         class="btn btn--ghost btn--full chat-sidebar__new-chat"
         type="submit"
       >
-        + Новый чат
+        + Создать новый чат
       </button>
     </form>
 
     <nav class="chat-sidebar__list">
       {{!-- Cписок чатов заполняется из JS в [data-chats-list] --}}
-      <ul class="chat-list" data-chats-list></ul>
+      <div class="chat-list" data-chats-list></div>
     </nav>
   </div>
 </aside>

@@ -79,9 +79,10 @@ export class HTTPTransport {
       xhr.ontimeout = () => reject(new Error('Request timeout'));
       xhr.onerror = () => reject(new Error('Network error'));
 
-      if (isGet || data === undefined || data === null) {
-        xhr.send(); // send только один раз
+      if (isGet || !data) {
+        xhr.send();
       } else if (data instanceof FormData) {
+        // не трогаем заголовки, не сериализуем
         xhr.send(data);
       } else {
         xhr.setRequestHeader('Content-Type', 'application/json');

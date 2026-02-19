@@ -1,4 +1,5 @@
 // Проверка работы API в обход CORS YP
+// Пока оставлю это здесь, уберу после первого ревью
 import express, { type Request, type Response } from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';

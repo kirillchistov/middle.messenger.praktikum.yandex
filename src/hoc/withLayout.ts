@@ -41,7 +41,7 @@ export const withLayout = (Page: BlockPageClass) => class WithLayout extends Blo
     root.innerHTML = `
       <div class="app-layout">
         <aside class="app-layout__sidebar">
-          <!-- здесь можешь вывести меню, логотип и т.п. -->
+          <!-- здесь буду выводить меню -->
         </aside>
         <main class="app-layout__main"></main>
       </div>

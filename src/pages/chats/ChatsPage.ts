@@ -120,6 +120,15 @@ export class ChatsPage extends Block<ChatsPageProps> {
 
         // Отправка по WebSocket
         chatSocket.sendMessage(value);
+        const messagesEl = root.querySelector<HTMLElement>('[data-chat-messages]');
+        if (messagesEl) {
+          messagesEl.insertAdjacentHTML(
+            'beforeend',
+            `<div class="chat-message chat-message--outgoing">
+              <div class="chat-message__bubble">${value}</div>
+            </div>`,
+          );
+        }
         textarea.value = '';
       });
     }

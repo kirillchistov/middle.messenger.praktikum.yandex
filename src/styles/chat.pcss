@@ -64,6 +64,13 @@
   margin-top: var(--space-2);
 }
 
+.chat-list {
+  list-style: none;
+  margin: 0;
+  padding: 8px 0;
+  overflow-y: auto;
+}
+
 .chat-sidebar__item {
   width: 100%;
   text-align: left;
@@ -163,6 +170,16 @@
 }
 
 .chat-sidebar__search-input {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border-subtle);
+  background-color: var(--color-bg-elevated-soft);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+}
+
+.chat-sidebar__create-input {
   width: 100%;
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-pill);

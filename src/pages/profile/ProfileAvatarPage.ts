@@ -2,6 +2,7 @@
 import { renderTemplate } from '@utils/renderTemplate';
 import { Block } from '@/core/block';
 import { store } from '@/core/store';
+import { router } from '@/core/router';
 import type { UserDTO } from '@/api/auth-api';
 import { UsersAPI } from '@/api/users-api';
 import template from './ProfileAvatar.hbs?raw';
@@ -10,15 +11,20 @@ type ProfileAvatarProps = {
   avatar: string;
 };
 
+const buildAvatarUrl = (path: string | null | undefined): string => {
+  if (path) {
+    return `https://ya-praktikum.tech/api/v2/resources${path}`;
+  }
+  return '/assets/avatar-transp.png';
+};
+
 export class ProfileAvatarPage extends Block<ProfileAvatarProps> {
   constructor(props?: Partial<ProfileAvatarProps>) {
     const state = store.getState();
     const user = state.user as UserDTO | null;
 
     const defaults: ProfileAvatarProps = {
-      avatar: user?.avatar
-        ? `https://ya-praktikum.tech${user.avatar}`
-        : '/images/avatar-placeholder.png',
+      avatar: buildAvatarUrl(user?.avatar),
     };
 
     super('div', { ...defaults, ...props } as ProfileAvatarProps);
@@ -50,14 +56,14 @@ export class ProfileAvatarPage extends Block<ProfileAvatarProps> {
         const updatedUser = await UsersAPI.updateAvatar(file);
         store.setState({ user: updatedUser as UserDTO });
 
-        const avatarUrl = updatedUser.avatar
-          ? `https://ya-praktikum.tech${updatedUser.avatar}`
-          : '/images/avatar-placeholder.png';
-
+        const avatarUrl = buildAvatarUrl(updatedUser.avatar);
         this.setProps({ avatar: avatarUrl });
 
-        // eslint-disable-next-line no-console
-        console.log('[ProfileAvatarPage] аватар обновлён');
+        const avatarEl = root.querySelector<HTMLElement>('.profile-avatar-button');
+        if (avatarEl) {
+          avatarEl.style.backgroundImage = `url("${avatarUrl}")`;
+        }
+        router.go('/profile');
       } catch (error: any) {
         // eslint-disable-next-line no-console
         console.error('[ProfileAvatarPage] ошибка загрузки аватара', error);
