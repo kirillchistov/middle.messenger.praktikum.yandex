@@ -2,27 +2,6 @@
 import { HTTPTransport } from '@/core/http-transport';
 import type { ChatDTO } from '@/types/response-data';
 
-// типы по swagger /chats
-// export type ChatDTO = {
-//   id: number;
-//   title: string;
-//   avatar: string | null;
-//   unread_count: number;
-//   created_by: number;
-//   last_message: {
-//     user: {
-//       first_name: string;
-//       second_name: string;
-//       avatar: string | null;
-//       email: string;
-//       login: string;
-//       phone: string;
-//     };
-//     time: string;
-//     content: string;
-//   } | null;
-// };
-
 export type GetChatsParams = {
   offset?: number;
   limit?: number;
@@ -31,6 +10,10 @@ export type GetChatsParams = {
 
 export type CreateChatRequest = {
   title: string;
+};
+
+export type FindUsersByLoginRequest = {
+  login: string;
 };
 
 export type AddUsersToChatRequest = {
@@ -47,23 +30,41 @@ export type GetChatTokenResponse = {
   token: string;
 };
 
+export type ChatUserDTO = {
+  id: number;
+  first_name: string;
+  second_name: string;
+  display_name: string;
+  login: string;
+  avatar: string | null;
+  role: string;
+};
+
 const http = new HTTPTransport('/chats');
 
+export type FindUsersRequest = {
+  login: string;
+};
+
+export type FindUsersResponse = ChatUserDTO[];
 class ChatsAPIClass {
   // GET /chats
   async getChats(params: GetChatsParams = {}): Promise<ChatDTO[]> {
     const chats = await http.get<ChatDTO[]>('', { data: params });
+
     if (!chats || chats.length === 0) {
+      // демо‑чат, совместимый с ChatDTO
       const demoChat: ChatDTO = {
         id: -1,
         title: 'Демо-чат с камерой',
         avatar: null,
-        last_message: null,
         unread_count: 0,
-        created_by: 5616,
+        created_by: 0,
+        last_message: null,
       };
       return [demoChat];
     }
+
     return chats;
   }
 
@@ -77,9 +78,20 @@ class ChatsAPIClass {
     return http.delete<void>('', { data: { chatId } });
   }
 
+  getChatUsers(chatId: number): Promise<ChatUserDTO[]> {
+    return http.get<ChatUserDTO[]>(`/${chatId}/users`);
+  }
+
   // PUT /chats/users
   addUsersToChat(data: AddUsersToChatRequest): Promise<void> {
     return http.put<void>('/users', { data });
+  }
+
+  // POST /user/search — поиск пользователя по логину
+  findUsersByLogin(login: string): Promise<ChatUserDTO[]> {
+    const payload: FindUsersByLoginRequest = { login };
+
+    return http.post<ChatUserDTO[]>('/users/search', { data: payload });
   }
 
   // DELETE /chats/users

@@ -5,29 +5,9 @@ import { store } from '@/core/store';
 import { Block } from '@/core/block';
 import { router } from '@/core/router';
 import template from './chats.hbs?raw';
-import { ChatDTO } from '@/types/response-data';
-// import { handleLogout } from '@/hoc/withLayout';
+import type { ChatDTO } from '@/types/response-data';
 import { chatSocket } from '@/api/chat-socket';
-
-// export type ChatDTO = {
-//   id: number;
-//   title: string;
-//   avatar: string | null;
-//   unread_count: number;
-//   created_by: number;
-//   last_message: {
-//     user: {
-//       first_name: string;
-//       second_name: string;
-//       avatar: string | null;
-//       email: string;
-//       login: string;
-//       phone: string;
-//     };
-//     time: string;
-//     content: string;
-//   } | null;
-// };
+import FilesAPI from '@/api/files-api';
 
 type ChatsPageProps = {
   chats: ChatDTO[];
@@ -51,35 +31,34 @@ export class ChatsPage extends Block<ChatsPageProps> {
     if (!listEl) return;
 
     listEl.innerHTML = chats
-      .map(
-        (chat) => {
-          const lastMessage = chat.last_message?.content ?? '';
-          const time = chat.last_message?.time ? new Date(chat.last_message.time).toLocaleTimeString('ru-RU', {
+      .map((chat) => {
+        const lastMessage = chat.last_message?.content ?? '';
+        const time = chat.last_message?.time
+          ? new Date(chat.last_message.time).toLocaleTimeString('ru-RU', {
             hour: '2-digit',
             minute: '2-digit',
           }) : '';
-          const unread = chat.unread_count;
+        const unread = chat.unread_count;
 
-          return `
-            <li class="chat-list__item" data-chat-id="${chat.id}">
-              <button class="chat-sidebar__item" type="button">
-                <div class="chat-sidebar__item-top">
-                  <div class="chat-sidebar__item-avatar">
-                    ${chat.title.charAt(0).toUpperCase()}
-                  </div>
-                  <span class="chat-sidebar__item-title">${chat.title}</span>
-                  <span class="chat-sidebar__item-time">${time}</span>
+        return `
+          <li class="chat-list__item" data-chat-id="${chat.id}">
+            <button class="chat-sidebar__item" type="button">
+              <div class="chat-sidebar__item-top">
+                <div class="chat-sidebar__item-avatar">
+                  ${chat.title.charAt(0).toUpperCase()}
                 </div>
-                <div class="chat-sidebar__item-bottom">
-                  <span class="chat-sidebar__item-subtitle">
-                    ${lastMessage}
-                  </span>
-                  ${unread > 0 ? `<span class="chat-sidebar__item-unread">${unread}</span>` : ''}
-                </div>
-              </button>
-            </li>`;
-        },
-      )
+                <span class="chat-sidebar__item-title">${chat.title}</span>
+                <span class="chat-sidebar__item-time">${time}</span>
+              </div>
+              <div class="chat-sidebar__item-bottom">
+                <span class="chat-sidebar__item-subtitle">
+                  ${lastMessage}
+                </span>
+                ${unread > 0 ? `<span class="chat-sidebar__item-unread">${unread}</span>` : ''}
+              </div>
+            </button>
+          </li>`;
+      })
       .join('');
 
     listEl.querySelectorAll<HTMLElement>('[data-chat-id]').forEach((item) => {
@@ -101,7 +80,7 @@ export class ChatsPage extends Block<ChatsPageProps> {
 
           if (messagesEl) {
             if (id === -1) {
-              messagesEl.innerHTML = this.renderDemoThread(); // демо‑чат
+              messagesEl.innerHTML = this.renderDemoThread();
             } else {
               messagesEl.innerHTML = '<p class="chat-thread__placeholder">Сообщения будут здесь</p>';
             }
@@ -113,7 +92,8 @@ export class ChatsPage extends Block<ChatsPageProps> {
         try {
           await chatSocket.connect(id);
         } catch (e) {
-          console.error('Failed to connect chat socket', e);
+          // eslint-disable-next-line no-console
+          console.error('Не удалось подключить сокет чатов', e);
         }
       });
     });
@@ -133,7 +113,6 @@ export class ChatsPage extends Block<ChatsPageProps> {
           </div>
         </div>
       </div>
-      <!-- остальные демо-сообщения, если нужны -->
     `;
   }
 
@@ -168,23 +147,14 @@ export class ChatsPage extends Block<ChatsPageProps> {
           return;
         }
 
-        const state = store.getState();
-        const chatId = state.activeChatId;
-        if (!chatId) {
-          console.warn('[ChatsPage]: Нет выбранного чата');
+        const stateNow = store.getState();
+        const chatId = stateNow.activeChatId;
+        if (!chatId || chatId === -1) {
+          console.warn('[ChatsPage]: Нет выбранного реального чата');
           return;
         }
 
-        // Отправка по WebSocket
         chatSocket.sendMessage(value);
-        const messagesEl = root.querySelector<HTMLElement>('[data-chat-messages]');
-        if (messagesEl) {
-          if (chatId === -1) {
-            messagesEl.innerHTML = this.renderDemoThread(); // только для демо-чата
-          } else {
-            messagesEl.innerHTML = '<p class="chat-thread__placeholder">Сообщения будут здесь</p>';
-          }
-        }
         textarea.value = '';
       });
     }
@@ -194,9 +164,7 @@ export class ChatsPage extends Block<ChatsPageProps> {
     links.forEach((link) => {
       link.addEventListener('click', (event) => {
         event.preventDefault();
-        const href = (event.currentTarget as HTMLAnchorElement).getAttribute(
-          'href',
-        );
+        const href = (event.currentTarget as HTMLAnchorElement).getAttribute('href');
         if (href) {
           router.go(href);
         }
@@ -212,8 +180,7 @@ export class ChatsPage extends Block<ChatsPageProps> {
       });
     }
 
-    // Обработчик создания нового чата
-    // кнопка открытия
+    // Создание нового чата (панель)
     const openCreateBtn = root.querySelector<HTMLButtonElement>('#open-create-chat');
     const createPanel = root.querySelector<HTMLDivElement>('#create-chat-panel');
     const createForm = root.querySelector<HTMLFormElement>('#create-chat-form');
@@ -240,12 +207,12 @@ export class ChatsPage extends Block<ChatsPageProps> {
           createForm.reset();
           createPanel?.classList.remove('chat-sidebar__create-panel--open');
 
-          // после создания показываем приветствие в центре
           const messagesEl = root.querySelector<HTMLElement>('[data-chat-messages]');
           if (messagesEl) {
-            messagesEl.innerHTML = '<p class="chat-thread__placeholder">Сообщения появятся здесь</p>';
+            messagesEl.innerHTML = '<p class="chat-thread__placeholder">Сообщения здесь</p>';
           }
         } catch (error) {
+          // eslint-disable-next-line no-console
           console.error('ChatsPage: не удалось создать новый чат', error);
         }
       });
@@ -254,83 +221,106 @@ export class ChatsPage extends Block<ChatsPageProps> {
     // Добавление пользователя в активный чат
     const addUserForm = root.querySelector<HTMLFormElement>('#chat-add-user-form');
     if (addUserForm) {
-      this.addDOMListener(
-        addUserForm,
-        'submit',
-        async (event: SubmitEvent) => {
-          event.preventDefault();
+      this.addDOMListener(addUserForm, 'submit', async (event: SubmitEvent) => {
+        event.preventDefault();
 
-          const state = store.getState();
-          const chatId = state.activeChatId;
-          if (!chatId) return;
+        const stateNow = store.getState();
+        const chatId = stateNow.activeChatId;
+        if (!chatId || chatId === -1) return;
 
-          const formData = new FormData(addUserForm);
-          const userId = Number(formData.get('userId') ?? 0);
-          if (!userId) return;
+        const formData = new FormData(addUserForm);
+        const userId = Number(formData.get('userId') ?? 0);
 
-          try {
-            await ChatsAPI.addUsersToChat({ users: [userId], chatId });
-            addUserForm.reset();
-          } catch (error) {
-            // eslint-disable-next-line no-console
-            console.error('ChatsPage: не удалось добавить пользователя', error);
-          }
-        },
-      );
+        if (!userId) return;
+
+        try {
+          // eslint-disable-next-line no-console
+          console.log('[ChatsPage:addUser] chatId=', chatId, 'userId=', userId);
+          await ChatsAPI.addUsersToChat({ users: [userId], chatId });
+          addUserForm.reset();
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error('ChatsPage: не удалось добавить пользователя', error);
+        }
+      });
     }
 
     // Удаление пользователя из активного чата
     const removeUserForm = root.querySelector<HTMLFormElement>('#chat-remove-user-form');
     if (removeUserForm) {
-      this.addDOMListener(
-        removeUserForm,
-        'submit',
-        async (event: SubmitEvent) => {
-          event.preventDefault();
+      this.addDOMListener(removeUserForm, 'submit', async (event: SubmitEvent) => {
+        event.preventDefault();
 
-          const state = store.getState();
-          const chatId = state.activeChatId;
-          if (!chatId) return;
+        const stateNow = store.getState();
+        const chatId = stateNow.activeChatId;
+        if (!chatId || chatId === -1) return;
 
-          const formData = new FormData(removeUserForm);
-          const userId = Number(formData.get('userId') ?? 0);
-          if (!userId) return;
+        const formData = new FormData(removeUserForm);
+        const userId = Number(formData.get('userId') ?? 0);
 
-          try {
-            await ChatsAPI.deleteUsersFromChat({ users: [userId], chatId });
-            removeUserForm.reset();
-          } catch (error) {
-            // eslint-disable-next-line no-console
-            console.error('ChatsPage: не удалось удалить пользователя', error);
-          }
-        },
-      );
+        if (!userId) return;
+
+        try {
+          console.log('[ChatsPage:removeUser] chatId=', chatId, 'userId=', userId);
+          await ChatsAPI.deleteUsersFromChat({ users: [userId], chatId });
+          removeUserForm.reset();
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error('ChatsPage: не удалось удалить пользователя', error);
+        }
+      });
     }
 
+    // Подписка на сообщения из сокета — отрисовка в центре
     chatSocket.subscribe((message) => {
-      // const root = this.getContent();
       if (!root) return;
 
       const messagesEl = root.querySelector<HTMLElement>('[data-chat-messages]');
       if (!messagesEl) return;
 
-      // убираем placeholder
       if (messagesEl.querySelector('.chat-thread__placeholder')) {
         messagesEl.innerHTML = '';
       }
 
-      const state = store.getState();
-      const currentUserId = state.user?.id;
+      const stateNow = store.getState();
+      const currentUserId = stateNow.user?.id;
       const isOutgoing = message.user_id === currentUserId;
 
       const { user } = (message as any);
+      // временная диагностика
+      // eslint-disable-next-line no-console
+      console.log('[ChatsPage] incoming message user =', user, 'raw message =', message);
 
-      const displayName = user?.display_name || user?.first_name || user?.login || 'Пользователь';
+      let displayName = 'Пользователь';
+      if (user) {
+        displayName = user.display_name
+          || user.first_name
+          || user.login
+          || 'Пользователь';
+      }
+
       const initial = displayName.charAt(0).toUpperCase();
+
       const time = new Date(message.time).toLocaleTimeString('ru-RU', {
         hour: '2-digit',
         minute: '2-digit',
       });
+
+      const filesBase = 'https://ya-praktikum.tech/api/v2/resources';
+
+      const fileHtml = message.file && message.file.path ? `<div class="chat-message__file">
+            <a href="${filesBase}${message.file.path}" target="_blank" rel="noopener noreferrer">
+              ${message.file.content_type?.startsWith('image/') ? `<img src="${filesBase}${message.file.path}"
+                alt="${message.file.filename}" class="chat-message__image" />` : message.file.filename || 'Файл'}
+            </a>
+          </div>`
+        : '';
+
+      const contentHtml = `
+        <div>${message.content}</div>
+        ${fileHtml}
+      `;
+      // const contentHtml = message.type === 'file' ? `<a href="${message.content}" target="_blank" rel="noopener noreferrer">Файл</a>` : message.content;
 
       messagesEl.insertAdjacentHTML(
         'beforeend',
@@ -342,7 +332,9 @@ export class ChatsPage extends Block<ChatsPageProps> {
                 <span class="chat-message__author">${displayName}</span>
                 <span class="chat-message__time">${time}</span>
               </div>
-              <div class="chat-message__bubble">${message.content}</div>
+              <div class="chat-message__bubble">
+                ${contentHtml}
+              </div>
             </div>
           </div>
         `,
@@ -351,7 +343,6 @@ export class ChatsPage extends Block<ChatsPageProps> {
       messagesEl.scrollTop = messagesEl.scrollHeight;
     });
 
-    // Меню/модалки/вложения в сообщение
     this.setupMenus(root);
   }
 
@@ -387,53 +378,122 @@ export class ChatsPage extends Block<ChatsPageProps> {
 
         if (!modal || !backdrop) return;
 
+        // для удаления сразу подтянем список участников
+        if (action === 'remove-user') {
+          this.populateChatUsers(modal).catch((err) => {
+            // eslint-disable-next-line no-console
+            console.error('[ChatsPage] failed to load chat users', err);
+          });
+        }
+
         modal.classList.add('chat-user-modal--open');
         backdrop.classList.add('chat-user-backdrop--open');
       });
     }
 
-    // Модалки добавления/удаления пользователя из чата
+    // --- логика закрытия модалок ---
     const addModal = root.querySelector<HTMLDivElement>('#user-modal-add');
     const removeModal = root.querySelector<HTMLDivElement>('#user-modal-remove');
     const userBackdrop = root.querySelector<HTMLDivElement>('#user-modal-backdrop');
 
-    if (addModal && removeModal && userBackdrop) {
-      const closeAll = () => {
-        addModal.classList.remove('chat-user-modal--open');
-        removeModal.classList.remove('chat-user-modal--open');
-        userBackdrop.classList.remove('chat-user-backdrop--open');
-      };
+    const closeAll = () => {
+      addModal?.classList.remove('chat-user-modal--open');
+      removeModal?.classList.remove('chat-user-modal--open');
+      userBackdrop?.classList.remove('chat-user-backdrop--open');
+    };
 
+    if (userBackdrop) {
       this.addDOMListener(userBackdrop, 'click', () => {
         closeAll();
       });
+    }
 
+    if (addModal) {
       this.addDOMListener(addModal, 'click', (event) => {
         const e = event as MouseEvent;
         const target = e.target as HTMLElement;
         if (!target.closest('.modal')) closeAll();
       });
+    }
 
+    if (removeModal) {
       this.addDOMListener(removeModal, 'click', (event) => {
         const e = event as MouseEvent;
         const target = e.target as HTMLElement;
         if (!target.closest('.modal')) closeAll();
       });
+    }
 
-      this.addDOMListener(root, 'keydown', (event) => {
-        const e = event as KeyboardEvent;
-        if (e.key === 'Escape') {
+    this.addDOMListener(root, 'keydown', (event) => {
+      const e = event as KeyboardEvent;
+      if (e.key === 'Escape') {
+        closeAll();
+      }
+    });
+
+    // --- обработка кнопок в модалках ---
+    const addSubmitBtn = root.querySelector<HTMLButtonElement>('#user-modal-add-submit');
+    const addCloseBtn = root.querySelector<HTMLButtonElement>('#user-modal-add-close');
+    const addLoginInput = root.querySelector<HTMLInputElement>('#add-login');
+    const addErrorEl = root.querySelector<HTMLElement>('[data-user-modal-add-error]');
+
+    if (addSubmitBtn && addLoginInput) {
+      this.addDOMListener(addSubmitBtn, 'click', async () => {
+        if (addErrorEl) addErrorEl.textContent = '';
+
+        const login = addLoginInput.value.trim();
+        if (!login) {
+          if (addErrorEl) addErrorEl.textContent = 'Укажите логин пользователя';
+          return;
+        }
+
+        const stateNow = store.getState();
+        const chatId = stateNow.activeChatId;
+        if (!chatId || chatId === -1) {
+          if (addErrorEl) addErrorEl.textContent = 'Чат не выбран';
+          return;
+        }
+
+        try {
+          // ищем пользователя по логину
+          const users = await ChatsAPI.findUsersByLogin(login);
+          const user = users[0];
+          if (!user) {
+            if (addErrorEl) addErrorEl.textContent = 'Пользователь не найден';
+            return;
+          }
+
+          await ChatsAPI.addUsersToChat({ users: [user.id], chatId });
+          addLoginInput.value = '';
           closeAll();
+        } catch (err: any) {
+          // eslint-disable-next-line no-console
+          console.error('[ChatsPage] add user failed', err);
+          if (addErrorEl) {
+            addErrorEl.textContent = err?.reason || 'Не удалось добавить пользователя';
+          }
         }
       });
     }
 
-    // меню вложений
+    if (addCloseBtn) {
+      this.addDOMListener(addCloseBtn, 'click', () => {
+        closeAll();
+      });
+    }
+
+    const removeCloseBtn = root.querySelector<HTMLButtonElement>('#user-modal-remove-close');
+    if (removeCloseBtn) {
+      this.addDOMListener(removeCloseBtn, 'click', () => {
+        closeAll();
+      });
+    }
+
     const attachToggle = root.querySelector<HTMLButtonElement>('#attach-toggle');
     const attachMenu = root.querySelector<HTMLDivElement>('#attach-menu');
-    const uploadModal = root.querySelector<HTMLDivElement>('#upload-modal');
-    const uploadBackdrop = root.querySelector<HTMLDivElement>('#upload-backdrop');
-    const uploadClose = root.querySelector<HTMLButtonElement>('#upload-close');
+    // const uploadModal = root.querySelector<HTMLDivElement>('#upload-modal');
+    // const uploadBackdrop = root.querySelector<HTMLDivElement>('#upload-backdrop');
+    // const uploadClose = root.querySelector<HTMLButtonElement>('#upload-close');
 
     if (attachToggle && attachMenu) {
       this.addDOMListener(attachToggle, 'click', () => {
@@ -449,67 +509,156 @@ export class ChatsPage extends Block<ChatsPageProps> {
 
         const type = item.dataset.type || (item.textContent ?? '').trim().toLowerCase();
 
-        // eslint-disable-next-line no-console
-        console.log('[ChatsPage] Выбрано вложение:', type);
-
         attachMenu.classList.remove('chat-input__attach-menu--open');
-        this.openAttachModal(type, root);
+        this.openAttachModal(type, root); // ← вот этот вызов должен быть
       });
     }
+  }
 
-    if (uploadModal && uploadBackdrop) {
-      const closeUpload = () => {
-        uploadModal.classList.remove('chat-upload-modal--open');
-        uploadBackdrop.classList.remove('chat-upload-backdrop--open');
-      };
+  // заполнение списка участников чата в модалке удаления
+  private async populateChatUsers(removeModal: HTMLDivElement): Promise<void> {
+    const stateNow = store.getState();
+    const chatId = stateNow.activeChatId;
+    if (!chatId || chatId === -1) return;
 
-      if (uploadClose) {
-        this.addDOMListener(uploadClose, 'click', () => {
-          closeUpload();
-        });
+    const listEl = removeModal.querySelector<HTMLElement>('[data-chat-users]');
+    const errorEl = removeModal.querySelector<HTMLElement>('[data-user-modal-remove-error]');
+    if (!listEl) return;
+    if (errorEl) errorEl.textContent = '';
+
+    try {
+      const users = await ChatsAPI.getChatUsers(chatId);
+      if (!users.length) {
+        listEl.innerHTML = '<li>В чате нет других участников</li>';
+        return;
       }
 
-      this.addDOMListener(uploadBackdrop, 'click', () => {
-        closeUpload();
-      });
+      listEl.innerHTML = users
+        .map(
+          (u) => `
+          <li
+            class="chat-user-modal__item"
+            data-user-id="${u.id}"
+          >
+            <span class="chat-user-modal__item-name">
+              ${u.display_name || u.login}
+            </span>
+            <button
+              class="chat-user-modal__item-remove"
+              type="button"
+            >
+              Удалить
+            </button>
+          </li>`,
+        )
+        .join('');
 
-      this.addDOMListener(uploadModal, 'click', (event) => {
-        const e = event as MouseEvent;
-        const target = e.target as HTMLElement;
-        if (!target.closest('.modal')) {
-          closeUpload();
-        }
-      });
+      // навесим обработчики по кнопкам "Удалить"
+      listEl.querySelectorAll<HTMLButtonElement>('.chat-user-modal__item-remove').forEach((btn) => {
+        this.addDOMListener(btn, 'click', async () => {
+          const li = btn.closest<HTMLLIElement>('.chat-user-modal__item');
+          if (!li) return;
+          const userId = Number(li.dataset.userId ?? 0);
+          if (!userId) return;
 
-      this.addDOMListener(root, 'keydown', (event) => {
-        const e = event as KeyboardEvent;
-        if (e.key === 'Escape') {
-          closeUpload();
-        }
+          try {
+            await ChatsAPI.deleteUsersFromChat({ users: [userId], chatId });
+            li.remove();
+          } catch (err: any) {
+            // eslint-disable-next-line no-console
+            console.error('[ChatsPage] remove user failed', err);
+            if (errorEl) {
+              errorEl.textContent = err?.reason || 'Не удалось удалить пользователя';
+            }
+          }
+        });
       });
+    } catch (err: any) {
+      // eslint-disable-next-line no-console
+      console.error('[ChatsPage] getChatUsers failed', err);
+      if (errorEl) {
+        errorEl.textContent = err?.reason || 'Не удалось загрузить участников';
+      }
     }
   }
 
   private openAttachModal(type: string, root: HTMLElement): void {
     const modal = root.querySelector<HTMLDivElement>('#upload-modal');
     const backdrop = root.querySelector<HTMLDivElement>('#upload-backdrop');
-    if (!modal || !backdrop) return;
+    const fileInput = modal?.querySelector<HTMLInputElement>('#upload-file');
+    if (!modal || !backdrop || !fileInput) return;
 
     const titleEl = modal.querySelector<HTMLElement>('[data-modal-title]');
     if (titleEl) {
-      if (type.includes('фото') || type.includes('видео')) {
+      if (type.includes('фото') || type.includes('видео') || type === 'photo') {
         titleEl.textContent = 'Прикрепить фото или видео';
-      } else if (type.includes('файл')) {
+      } else if (type.includes('файл') || type === 'file') {
         titleEl.textContent = 'Прикрепить файл';
-      } else if (type.includes('локация') || type.includes('локацию')) {
-        titleEl.textContent = 'Поделиться локацией';
+      } else if (type.includes('локация') || type === 'location') {
+        titleEl.textContent = 'Поделиться локацией (пока файл)';
       } else {
         titleEl.textContent = 'Прикрепить вложение';
       }
     }
 
+    // очистим прошлый выбор
+    fileInput.value = '';
+
     modal.classList.add('chat-upload-modal--open');
     backdrop.classList.add('chat-upload-backdrop--open');
+
+    const closeUpload = () => {
+      modal.classList.remove('chat-upload-modal--open');
+      backdrop.classList.remove('chat-upload-backdrop--open');
+    };
+
+    const handleChange = async () => {
+      const file = fileInput.files?.[0];
+      if (!file) return;
+
+      const stateNow = store.getState();
+      const chatId = stateNow.activeChatId;
+      if (!chatId || chatId === -1) {
+        // eslint-disable-next-line no-console
+        console.warn('[ChatsPage] Нет выбранного чата для вложения');
+        return;
+      }
+
+      try {
+        const uploaded = await FilesAPI.uploadFile(file);
+        // отправляем путь в сокет
+        chatSocket.sendFile(uploaded.path);
+        closeUpload();
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error('[ChatsPage] upload file failed', err);
+      } finally {
+        // чтобы повторно можно было выбрать тот же файл
+        fileInput.value = '';
+      }
+    };
+
+    // один раз навешиваем
+    this.addDOMListener(fileInput, 'change', handleChange);
+
+    const uploadClose = root.querySelector<HTMLButtonElement>('#upload-close');
+    if (uploadClose) {
+      this.addDOMListener(uploadClose, 'click', () => {
+        closeUpload();
+      });
+    }
+
+    this.addDOMListener(backdrop, 'click', () => {
+      closeUpload();
+    });
+
+    this.addDOMListener(modal, 'click', (event) => {
+      const e = event as MouseEvent;
+      const target = e.target as HTMLElement;
+      if (!target.closest('.modal')) {
+        closeUpload();
+      }
+    });
   }
 
   protected render(): string {

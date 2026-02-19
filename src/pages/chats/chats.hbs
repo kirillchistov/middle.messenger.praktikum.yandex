@@ -169,34 +169,57 @@
 
   <div class="chat-sidebar-backdrop" data-chat-sidebar-backdrop></div>
 
-  {{!-- модалки add/remove пользователя --}}
+  {{!-- модалка добавления пользователя --}}
   <div id="user-modal-add" class="chat-user-modal">
     <div class="modal">
       <h2 class="modal__title">Добавить пользователя</h2>
+
       <div class="chat-user-modal__field">
-        <label class="form__label" for="add-login">Логин</label>
+        <label class="form__label" for="add-login">Логин пользователя</label>
         <input id="add-login" class="form__input" type="text" />
       </div>
+
       <div class="modal__actions">
-        <button class="btn btn--primary" type="button">
+        <button
+          id="user-modal-add-submit"
+          class="btn btn--primary"
+          type="button"
+        >
           Добавить в чат
         </button>
+        <button
+          id="user-modal-add-close"
+          class="btn btn--ghost"
+          type="button"
+        >
+          Закрыть
+        </button>
       </div>
+
+      <p class="chat-user-modal__error" data-user-modal-add-error></p>
     </div>
   </div>
 
+  {{!-- модалка удаления пользователя --}}
   <div id="user-modal-remove" class="chat-user-modal">
     <div class="modal">
-      <h2 class="modal__title">Удалить пользователя</h2>
-      <div class="chat-user-modal__field">
-        <label class="form__label" for="remove-login">Логин</label>
-        <input id="remove-login" class="form__input" type="text" />
-      </div>
+      <h2 class="modal__title">Участники чата</h2>
+
+      <ul class="chat-user-modal__list" data-chat-users>
+        {{!-- сюда подставим список через JS --}}
+      </ul>
+
       <div class="modal__actions">
-        <button class="btn btn--primary" type="button">
-          Удалить из чата
+        <button
+          id="user-modal-remove-close"
+          class="btn btn--ghost"
+          type="button"
+        >
+          Закрыть
         </button>
       </div>
+
+      <p class="chat-user-modal__error" data-user-modal-remove-error></p>
     </div>
   </div>
 

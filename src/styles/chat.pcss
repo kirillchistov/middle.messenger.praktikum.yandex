@@ -669,6 +669,29 @@ html[data-theme="light"] .chat-input__textarea::placeholder {
   font-size: 1.5rem;
 }
 
+.chat-user-modal__list {
+  list-style: none;
+  margin: 0 0 var(--space-3);
+  padding: 0;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.chat-user-modal__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.chat-user-modal__item-remove {
+  border: none;
+  background: none;
+  color: var(--color-danger-soft);
+  cursor: pointer;
+}
+
 .chat-user-modal,
 .chat-upload-modal {
   position: fixed;
@@ -702,6 +725,16 @@ html[data-theme="light"] .chat-input__textarea::placeholder {
 
 .chat-user-backdrop--open,
 .chat-upload-backdrop--open {
+  display: block;
+}
+
+.chat-message__file {
+  margin-top: var(--space-2);
+}
+
+.chat-message__image {
+  max-width: 260px;
+  border-radius: var(--radius-md);
   display: block;
 }
 

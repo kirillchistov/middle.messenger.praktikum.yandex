@@ -3,6 +3,24 @@ import { store } from '@/core/store';
 import ChatsAPI from '@/api/chats-api';
 import type { UserDTO } from '@/api/auth-api';
 
+export type ChatMessageUser = {
+  first_name?: string;
+  second_name?: string;
+  display_name?: string;
+  login?: string;
+  avatar?: string | null;
+};
+
+export type ChatMessageFile = {
+  id: number;
+  user_id: number;
+  path: string;
+  filename: string;
+  content_type: string;
+  content_size: number;
+  upload_date: string;
+};
+
 export type ChatMessage = {
   id: number;
   user_id: number;
@@ -10,7 +28,9 @@ export type ChatMessage = {
   content: string;
   time: string;
   is_read?: boolean;
-  type?: 'message' | 'file' | 'sticker'; // WebSocket добавляет type
+  type?: 'message' | 'file' | 'sticker' | 'ping' | 'get old';
+  user?: ChatMessageUser;
+  file?: ChatMessageFile;
 };
 
 type SocketStatus = 'idle' | 'connecting' | 'open' | 'closed';
@@ -47,7 +67,6 @@ class ChatSocket {
       throw new Error('User is not authorized');
     }
 
-    // если уже подключены к этому чату — ничего не делаем
     if (this.socket && this.activeChatId === chatId && this.status === 'open') {
       return;
     }
@@ -114,20 +133,16 @@ class ChatSocket {
           },
         });
 
-        // уведомим подписчиков по каждому сообщению истории
         merged.forEach((msg) => this.notify(msg));
         return;
       }
 
-      // одиночное событие
-      const data = parsed as { type?: string } & Partial<ChatMessage>;
+      const data = parsed as ChatMessage;
 
-      if (data.type === 'message') {
-        const message = data as ChatMessage;
-
+      if (data.type === 'message' || data.type === 'file') {
         const stateNow = store.getState();
         const current = stateNow.messages?.[chatId] ?? [];
-        const updated = [...current, message];
+        const updated = [...current, data];
 
         store.setState({
           messages: {
@@ -136,7 +151,7 @@ class ChatSocket {
           },
         });
 
-        this.notify(message);
+        this.notify(data);
       }
     });
 
@@ -155,6 +170,14 @@ class ChatSocket {
     this.send({
       content,
       type: 'message',
+    });
+  }
+
+  // отправка файла: сначала загружаешь файл через /resources и сюда передаёшь URL/путь
+  sendFile(filePath: string): void {
+    this.send({
+      content: filePath,
+      type: 'file',
     });
   }
 
