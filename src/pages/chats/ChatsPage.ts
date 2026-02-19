@@ -5,16 +5,32 @@ import { store } from '@/core/store';
 import { Block } from '@/core/block';
 import { router } from '@/core/router';
 import template from './chats.hbs?raw';
+import { ChatDTO } from '@/types/response-data';
 // import { handleLogout } from '@/hoc/withLayout';
 import { chatSocket } from '@/api/chat-socket';
 
-type Chat = {
-  id: number;
-  title: string;
-};
+// export type ChatDTO = {
+//   id: number;
+//   title: string;
+//   avatar: string | null;
+//   unread_count: number;
+//   created_by: number;
+//   last_message: {
+//     user: {
+//       first_name: string;
+//       second_name: string;
+//       avatar: string | null;
+//       email: string;
+//       login: string;
+//       phone: string;
+//     };
+//     time: string;
+//     content: string;
+//   } | null;
+// };
 
 type ChatsPageProps = {
-  chats: Chat[];
+  chats: ChatDTO[];
 };
 
 export class ChatsPage extends Block<ChatsPageProps> {
@@ -26,8 +42,8 @@ export class ChatsPage extends Block<ChatsPageProps> {
     super('div', { ...defaultProps, ...props } as ChatsPageProps);
   }
 
-  // CHANGED: рендер списка чатов из данных API
-  private updateChatsList(chats: Chat[]): void {
+  // рендер списка чатов из данных API
+  private updateChatsList(chats: ChatDTO[]): void {
     const root = this.getContent();
     if (!root) return;
 
@@ -36,20 +52,33 @@ export class ChatsPage extends Block<ChatsPageProps> {
 
     listEl.innerHTML = chats
       .map(
-        (chat) => `
-        <li class="chat-list__item" data-chat-id="${chat.id}">
-          <button class="chat-sidebar__item" type="button">
-            <div class="chat-sidebar__item-top">
-              <div class="chat-sidebar__item-avatar">
-                ${chat.title.charAt(0).toUpperCase()}
-              </div>
-              <span class="chat-sidebar__item-title">${chat.title}</span>
-            </div>
-            <div class="chat-sidebar__item-bottom">
-              <span class="chat-sidebar__item-subtitle">Чат</span>
-            </div>
-          </button>
-        </li>`,
+        (chat) => {
+          const lastMessage = chat.last_message?.content ?? '';
+          const time = chat.last_message?.time ? new Date(chat.last_message.time).toLocaleTimeString('ru-RU', {
+            hour: '2-digit',
+            minute: '2-digit',
+          }) : '';
+          const unread = chat.unread_count;
+
+          return `
+            <li class="chat-list__item" data-chat-id="${chat.id}">
+              <button class="chat-sidebar__item" type="button">
+                <div class="chat-sidebar__item-top">
+                  <div class="chat-sidebar__item-avatar">
+                    ${chat.title.charAt(0).toUpperCase()}
+                  </div>
+                  <span class="chat-sidebar__item-title">${chat.title}</span>
+                  <span class="chat-sidebar__item-time">${time}</span>
+                </div>
+                <div class="chat-sidebar__item-bottom">
+                  <span class="chat-sidebar__item-subtitle">
+                    ${lastMessage}
+                  </span>
+                  ${unread > 0 ? `<span class="chat-sidebar__item-unread">${unread}</span>` : ''}
+                </div>
+              </button>
+            </li>`;
+        },
       )
       .join('');
 
@@ -62,22 +91,50 @@ export class ChatsPage extends Block<ChatsPageProps> {
         if (rootEl) {
           const titleEl = rootEl.querySelector<HTMLElement>('[data-chat-title]');
           const avatarEl = rootEl.querySelector<HTMLElement>('[data-chat-avatar]');
-          if (titleEl) titleEl.textContent = chats.find((c) => c.id === id)?.title ?? 'Чат';
+          const messagesEl = rootEl.querySelector<HTMLElement>('[data-chat-messages]');
+
+          const chat = chats.find((c) => c.id === id);
+          if (titleEl) titleEl.textContent = chat?.title ?? 'Чат';
           if (avatarEl) {
-            avatarEl.textContent = (chats.find((c) => c.id === id)?.title ?? '?')
-              .charAt(0)
-              .toUpperCase();
+            avatarEl.textContent = (chat?.title ?? '?').charAt(0).toUpperCase();
+          }
+
+          if (messagesEl) {
+            if (id === -1) {
+              messagesEl.innerHTML = this.renderDemoThread(); // демо‑чат
+            } else {
+              messagesEl.innerHTML = '<p class="chat-thread__placeholder">Сообщения будут здесь</p>';
+            }
           }
         }
 
+        if (id === -1) return;
+
         try {
-          await chatSocket.connect(id); // CHANGED
+          await chatSocket.connect(id);
         } catch (e) {
-          // eslint-disable-next-line no-console
           console.error('Failed to connect chat socket', e);
         }
       });
     });
+  }
+
+  private renderDemoThread(): string {
+    return `
+      <div class="chat-message chat-message--incoming">
+        <div class="chat-message__avatar">Н</div>
+        <div class="chat-message__content">
+          <div class="chat-message__header">
+            <span class="chat-message__author">Нил Армстронг</span>
+            <span class="chat-message__time">21:56</span>
+          </div>
+          <div class="chat-message__bubble">
+            Хассельблад SWC отлично подходит для съёмки на Луне…
+          </div>
+        </div>
+      </div>
+      <!-- остальные демо-сообщения, если нужны -->
+    `;
   }
 
   protected async componentDidMount(): Promise<void> {
@@ -94,7 +151,7 @@ export class ChatsPage extends Block<ChatsPageProps> {
       console.error('ChatsPage: не удалось загрузить чаты', error);
     }
 
-    // Форма отправки сообщения (пока заглушка)
+    // Форма отправки сообщения
     const form = root.querySelector<HTMLFormElement>('#chat-message-form');
     if (form) {
       const textarea = form.querySelector<HTMLTextAreaElement>('textarea[name="message"]');
@@ -122,12 +179,11 @@ export class ChatsPage extends Block<ChatsPageProps> {
         chatSocket.sendMessage(value);
         const messagesEl = root.querySelector<HTMLElement>('[data-chat-messages]');
         if (messagesEl) {
-          messagesEl.insertAdjacentHTML(
-            'beforeend',
-            `<div class="chat-message chat-message--outgoing">
-              <div class="chat-message__bubble">${value}</div>
-            </div>`,
-          );
+          if (chatId === -1) {
+            messagesEl.innerHTML = this.renderDemoThread(); // только для демо-чата
+          } else {
+            messagesEl.innerHTML = '<p class="chat-thread__placeholder">Сообщения будут здесь</p>';
+          }
         }
         textarea.value = '';
       });
@@ -157,30 +213,42 @@ export class ChatsPage extends Block<ChatsPageProps> {
     }
 
     // Обработчик создания нового чата
+    // кнопка открытия
+    const openCreateBtn = root.querySelector<HTMLButtonElement>('#open-create-chat');
+    const createPanel = root.querySelector<HTMLDivElement>('#create-chat-panel');
     const createForm = root.querySelector<HTMLFormElement>('#create-chat-form');
+
+    if (openCreateBtn && createPanel) {
+      this.addDOMListener(openCreateBtn, 'click', () => {
+        createPanel.classList.toggle('chat-sidebar__create-panel--open');
+      });
+    }
+
     if (createForm) {
-      this.addDOMListener(
-        createForm,
-        'submit',
-        async (event: SubmitEvent) => {
-          event.preventDefault();
+      this.addDOMListener(createForm, 'submit', async (event: SubmitEvent) => {
+        event.preventDefault();
 
-          const formData = new FormData(createForm);
-          const title = String(formData.get('title') ?? '').trim();
-          if (!title) return;
+        const formData = new FormData(createForm);
+        const title = String(formData.get('title') ?? '').trim();
+        if (!title) return;
 
-          try {
-            await ChatsAPI.createChat({ title });
-            const chats = await ChatsAPI.getChats({ limit: 50 });
-            store.setState({ chats });
-            this.updateChatsList(chats);
-            createForm.reset();
-          } catch (error) {
-            // eslint-disable-next-line no-console
-            console.error('ChatsPage: не удалось создать новый чат', error);
+        try {
+          await ChatsAPI.createChat({ title });
+          const chats = await ChatsAPI.getChats({ limit: 50 });
+          store.setState({ chats });
+          this.updateChatsList(chats);
+          createForm.reset();
+          createPanel?.classList.remove('chat-sidebar__create-panel--open');
+
+          // после создания показываем приветствие в центре
+          const messagesEl = root.querySelector<HTMLElement>('[data-chat-messages]');
+          if (messagesEl) {
+            messagesEl.innerHTML = '<p class="chat-thread__placeholder">Сообщения появятся здесь</p>';
           }
-        },
-      );
+        } catch (error) {
+          console.error('ChatsPage: не удалось создать новый чат', error);
+        }
+      });
     }
 
     // Добавление пользователя в активный чат
@@ -238,6 +306,50 @@ export class ChatsPage extends Block<ChatsPageProps> {
         },
       );
     }
+
+    chatSocket.subscribe((message) => {
+      // const root = this.getContent();
+      if (!root) return;
+
+      const messagesEl = root.querySelector<HTMLElement>('[data-chat-messages]');
+      if (!messagesEl) return;
+
+      // убираем placeholder
+      if (messagesEl.querySelector('.chat-thread__placeholder')) {
+        messagesEl.innerHTML = '';
+      }
+
+      const state = store.getState();
+      const currentUserId = state.user?.id;
+      const isOutgoing = message.user_id === currentUserId;
+
+      const { user } = (message as any);
+
+      const displayName = user?.display_name || user?.first_name || user?.login || 'Пользователь';
+      const initial = displayName.charAt(0).toUpperCase();
+      const time = new Date(message.time).toLocaleTimeString('ru-RU', {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+
+      messagesEl.insertAdjacentHTML(
+        'beforeend',
+        `
+          <div class="chat-message chat-message--${isOutgoing ? 'outgoing' : 'incoming'}">
+            <div class="chat-message__avatar">${initial}</div>
+            <div class="chat-message__content">
+              <div class="chat-message__header">
+                <span class="chat-message__author">${displayName}</span>
+                <span class="chat-message__time">${time}</span>
+              </div>
+              <div class="chat-message__bubble">${message.content}</div>
+            </div>
+          </div>
+        `,
+      );
+
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    });
 
     // Меню/модалки/вложения в сообщение
     this.setupMenus(root);

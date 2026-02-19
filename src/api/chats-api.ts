@@ -1,13 +1,27 @@
 /* eslint-disable import/extensions */
 import { HTTPTransport } from '@/core/http-transport';
+import type { ChatDTO } from '@/types/response-data';
 
 // типы по swagger /chats
-export type ChatDTO = {
-  id: number;
-  title: string;
-  avatar: string | null;
-  // last_message, unread_count добавлю позже
-};
+// export type ChatDTO = {
+//   id: number;
+//   title: string;
+//   avatar: string | null;
+//   unread_count: number;
+//   created_by: number;
+//   last_message: {
+//     user: {
+//       first_name: string;
+//       second_name: string;
+//       avatar: string | null;
+//       email: string;
+//       login: string;
+//       phone: string;
+//     };
+//     time: string;
+//     content: string;
+//   } | null;
+// };
 
 export type GetChatsParams = {
   offset?: number;
@@ -37,8 +51,20 @@ const http = new HTTPTransport('/chats');
 
 class ChatsAPIClass {
   // GET /chats
-  getChats(params: GetChatsParams = {}): Promise<ChatDTO[]> {
-    return http.get<ChatDTO[]>('', { data: params });
+  async getChats(params: GetChatsParams = {}): Promise<ChatDTO[]> {
+    const chats = await http.get<ChatDTO[]>('', { data: params });
+    if (!chats || chats.length === 0) {
+      const demoChat: ChatDTO = {
+        id: -1,
+        title: 'Демо-чат с камерой',
+        avatar: null,
+        last_message: null,
+        unread_count: 0,
+        created_by: 5616,
+      };
+      return [demoChat];
+    }
+    return chats;
   }
 
   // POST /chats

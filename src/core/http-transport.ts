@@ -2,7 +2,7 @@
 import API_BASE_URL from '@/utils/constants';
 
 type RequestOptions = {
-  data?: any;
+  data?: unknown;
   headers?: Record<string, string>;
   timeout?: number;
 };

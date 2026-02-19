@@ -14,26 +14,37 @@
       aria-label="Поиск по чатам"
     />
   </div>
+  <div class="chat-sidebar__create-wrapper">
+    <button
+      id="open-create-chat"
+      class="chat-sidebar__create-btn"
+      type="button"
+    >
+      + Новый чат
+    </button>
+  </div>
 
   <div class="chat-sidebar__body">
-    <form id="create-chat-form" class="chat-sidebar__create-form">
-      <input
-        name="title"
-        type="text"
-        class="chat-sidebar__create-input"
-        placeholder="Название чата"
-      />
-      <button
-        class="btn btn--ghost btn--full chat-sidebar__new-chat"
-        type="submit"
-      >
-        + Создать новый чат
-      </button>
-    </form>
+    <div
+      id="create-chat-panel"
+      class="chat-sidebar__create-panel"
+    >
+      <form id="create-chat-form" class="chat-sidebar__create-form">
+        <input
+          name="title"
+          type="text"
+          class="chat-sidebar__create-input"
+          placeholder="Название чата"
+        />
+        <button class="btn btn--primary chat-sidebar__create-submit" type="submit">
+          Создать чат
+        </button>
+      </form>
+    </div>
 
     <nav class="chat-sidebar__list">
       {{!-- Cписок чатов заполняется из JS в [data-chats-list] --}}
-      <div class="chat-list" data-chats-list></div>
+      <ul class="chat-list" data-chats-list></ul>
     </nav>
   </div>
 </aside>

@@ -31,7 +31,7 @@
           <div>
             <h2 class="chat-thread__title" data-chat-title>Выберите чат</h2>
             <p class="chat-thread__subtitle" data-chat-subtitle>
-              Сообщения появятся здесь, после выбора чата
+              {{!-- Сообщения появятся здесь, после выбора чата --}}
             </p>
           </div>
           <div class="chat-thread__all">
@@ -82,7 +82,7 @@
                 Удалить пользователя
               </button>
 
-              <form id="chat-add-user-form" class="chat-thread__user-form">
+              {{!-- <form id="chat-add-user-form" class="chat-thread__user-form">
                 <input
                   name="userId"
                   type="number"
@@ -107,14 +107,14 @@
                 <button class="btn btn--ghost" type="submit">
                   Удалить из чата
                 </button>
-              </form>
+              </form> --}}
             </div>
           </div>
         </div>
       </header>
 
       <div class="chat-thread__messages" data-chat-messages>
-        {{> chat-messages}}
+        {{!-- сюда рисуем сообщения из JS --}}
       </div>
 
       <form class="chat-input" id="chat-message-form">

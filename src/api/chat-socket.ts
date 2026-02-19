@@ -10,15 +10,35 @@ export type ChatMessage = {
   content: string;
   time: string;
   is_read?: boolean;
+  type?: 'message' | 'file' | 'sticker'; // WebSocket добавляет type
 };
 
 type SocketStatus = 'idle' | 'connecting' | 'open' | 'closed';
 
+type ChatSocketListener = (message: ChatMessage) => void;
+
 class ChatSocket {
   private socket: WebSocket | null = null;
+
   private status: SocketStatus = 'idle';
+
   private pingIntervalId: number | null = null;
+
   private activeChatId: number | null = null;
+
+  private listeners: ChatSocketListener[] = [];
+
+  subscribe(listener: ChatSocketListener): void {
+    this.listeners.push(listener);
+  }
+
+  unsubscribe(listener: ChatSocketListener): void {
+    this.listeners = this.listeners.filter((l) => l !== listener);
+  }
+
+  private notify(message: ChatMessage): void {
+    this.listeners.forEach((l) => l(message));
+  }
 
   async connect(chatId: number): Promise<void> {
     const state = store.getState();
@@ -27,6 +47,7 @@ class ChatSocket {
       throw new Error('User is not authorized');
     }
 
+    // если уже подключены к этому чату — ничего не делаем
     if (this.socket && this.activeChatId === chatId && this.status === 'open') {
       return;
     }
@@ -46,8 +67,10 @@ class ChatSocket {
       // eslint-disable-next-line no-console
       console.log('[ChatSocket] open for chat', chatId);
 
+      // запрос старых сообщений
       this.send({ type: 'get old', content: '0' });
 
+      // пинг каждые 10 секунд
       this.pingIntervalId = window.setInterval(() => {
         this.send({ type: 'ping' });
       }, 10000);
@@ -74,33 +97,46 @@ class ChatSocket {
     this.socket.addEventListener('message', (event) => {
       const parsed = JSON.parse(event.data) as unknown;
 
+      // история сообщений — массив
       if (Array.isArray(parsed)) {
         const messages = [...parsed].sort(
           (a: any, b: any) => new Date(a.time).getTime() - new Date(b.time).getTime(),
-        );
+        ) as ChatMessage[];
 
         const stateNow = store.getState();
         const current = stateNow.messages?.[chatId] ?? [];
+        const merged = [...current, ...messages];
+
         store.setState({
           messages: {
             ...stateNow.messages,
-            [chatId]: [...current, ...messages],
+            [chatId]: merged,
           },
         });
+
+        // уведомим подписчиков по каждому сообщению истории
+        merged.forEach((msg) => this.notify(msg));
         return;
       }
 
+      // одиночное событие
       const data = parsed as { type?: string } & Partial<ChatMessage>;
 
       if (data.type === 'message') {
+        const message = data as ChatMessage;
+
         const stateNow = store.getState();
         const current = stateNow.messages?.[chatId] ?? [];
+        const updated = [...current, message];
+
         store.setState({
           messages: {
             ...stateNow.messages,
-            [chatId]: [...current, data as ChatMessage],
+            [chatId]: updated,
           },
         });
+
+        this.notify(message);
       }
     });
 
