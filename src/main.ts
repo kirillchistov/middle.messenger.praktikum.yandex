@@ -37,6 +37,35 @@ import './styles/components/button.pcss';
 
 window.Handlebars = Handlebars;
 
+const protectedPaths = ['/messenger', '/chats', '/chat', '/settings'];
+
+const isProtectedPath = (path: string): boolean => protectedPaths.includes(path)
+  || path.startsWith('/profile');
+
+const navigate = (path: string): void => {
+  const state = store.getState();
+
+  // авторизованный пользователь не должен на /login /register /sign-up
+  if ((path === '/login' || path === '/register' || path === '/sign-up') && state.user) {
+    router.go('/messenger');
+    return;
+  }
+
+  // лендинг '/' доступен всем
+  if (path === '/') {
+    router.go('/');
+    return;
+  }
+
+  // защита приватных путей
+  if (!state.user && isProtectedPath(path)) {
+    router.go('/login');
+    return;
+  }
+
+  router.go(path);
+};
+
 const setupThemeToggle = (): void => {
   const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
   if (!buttons.length) return;
@@ -69,11 +98,11 @@ const setupLinkInterception = (): void => {
     const link = target.closest<HTMLElement>('[data-link]');
     if (!link) return;
 
-    const path = link.getAttribute('data-link');
+    const path = link.getAttribute('data-link') || link.getAttribute('href');
     if (!path) return;
 
     event.preventDefault();
-    router.go(path);
+    navigate(path);
   });
 };
 
@@ -119,21 +148,37 @@ const initApp = async (): Promise<void> => {
 
   try {
     const user = await AuthAPI.getUser();
+
     if (user) {
       store.setState({ user });
-      // если авторизован и мы на / или /login — перебросим в /messenger
       const path = window.location.pathname;
-      if (path === '/' || path === '/login' || path === '/sign-up') {
+
+      // авторизованный пользователь не должен сидеть на /login, /register, /sign-up
+      if (path === '/login'
+        || path === '/sign-in'
+        || path === '/register'
+        || path === '/sign-up') {
         router.go('/messenger');
         return;
       }
+      // лендинг '/' доступен всем — не трогаем
     } else {
       store.setState({ user: null });
+      const path = window.location.pathname;
+
+      // гость не может на защищённые роуты
+      if (isProtectedPath(path)) {
+        router.go('/login');
+        return;
+      }
     }
-  } catch (error: any) {
-    // eslint-disable-next-line no-console
+  } catch {
     store.setState({ user: null });
-    // console.error('[initApp] getUser error', error);
+    const path = window.location.pathname;
+    if (isProtectedPath(path)) {
+      router.go('/login');
+      return;
+    }
   }
 
   router.start();

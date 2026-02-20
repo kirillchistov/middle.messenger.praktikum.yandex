@@ -62,10 +62,22 @@ export class LoginPage extends Block<LoginProps> {
       try {
         await AuthAPI.signIn({ login, password }); // 1) login
         const user = await AuthAPI.getUser(); // 2) getUser
-        console.log(user);
         store.setState({ user });
         router.go('/messenger'); // 3) redirect
       } catch (error: any) {
+        const reason = error?.reason;
+        if (reason === 'User already in system') {
+        // пользователь уже авторизован — считаем это успехом
+          try {
+            const user = await AuthAPI.getUser();
+            store.setState({ user });
+            router.go('/messenger');
+            return;
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error('LoginPage getUser пользователь уже авторизован', e);
+          }
+        }
         console.error('LoginPage signIn error', error);
         if (errorEl) {
           errorEl.textContent = error?.reason || 'Не удалось войти. Проверьте логин и пароль.';
