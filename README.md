@@ -43,13 +43,13 @@
 ```bash
 git clone https://github.com/kirillchistov/middle.messenger.praktikum.yandex.git
 cd middle.messenger.praktikum.yandex
-pnpm install
+npm install
 ```
 
 ### 2. Локальная разработка
 
 ```bash
-pnpm dev
+npm run dev
 ```
 
 Откройте [http://localhost:3000](http://localhost:3000) в браузере.

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "deploy:branch": "npm run build && node ./scripts/deploy-to-branch.cjs",
     "typecheck": "tsc -b",
     "lint": "eslint \"src/**/*.{ts,tsx,js,jsx}\"",
     "preview": "vite preview",
