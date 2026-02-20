@@ -885,11 +885,20 @@ html[data-theme="light"] .chat-input__textarea::placeholder {
   width: 32px;
   height: 32px;
   border-radius: 999px;
-  background-color: var(--color-bg-elevated-soft);
-  color: var(--color-text-primary);
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: var(--color-bg-elevated-soft);
+}
+
+.chat-message__avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.chat-message__avatar-initial {
   font-weight: 600;
 }
 

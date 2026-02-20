@@ -4,6 +4,7 @@ import ChatsAPI from '@/api/chats-api';
 import type { UserDTO } from '@/api/auth-api';
 
 export type ChatMessageUser = {
+  author: string | undefined;
   first_name?: string;
   second_name?: string;
   display_name?: string;

@@ -5,7 +5,7 @@ import { store } from '@/core/store';
 import { Block } from '@/core/block';
 import { router } from '@/core/router';
 import template from './chats.hbs?raw';
-import type { ChatDTO } from '@/types/response-data';
+import type { ChatDTO, ChatUserDTO } from '@/types/response-data';
 import { chatSocket } from '@/api/chat-socket';
 import FilesAPI from '@/api/files-api';
 
@@ -91,6 +91,15 @@ export class ChatsPage extends Block<ChatsPageProps> {
 
         try {
           await chatSocket.connect(id);
+          // подгружаем участников чата и кладём в store
+          const users = await ChatsAPI.getChatUsers(id);
+          const stateNow = store.getState();
+          store.setState({
+            chatUsers: {
+              ...(stateNow.chatUsers ?? {}),
+              [id]: users,
+            },
+          });
         } catch (e) {
           // eslint-disable-next-line no-console
           console.error('Не удалось подключить сокет чатов', e);
@@ -271,7 +280,7 @@ export class ChatsPage extends Block<ChatsPageProps> {
       });
     }
 
-    // Подписка на сообщения из сокета — отрисовка в центре
+    // Подписка на сообщения из сокета
     chatSocket.subscribe((message) => {
       if (!root) return;
 
@@ -285,48 +294,42 @@ export class ChatsPage extends Block<ChatsPageProps> {
       const stateNow = store.getState();
       const currentUserId = stateNow.user?.id;
       const isOutgoing = message.user_id === currentUserId;
+      const { activeChatId, chatUsers } = stateNow;
+      const usersByChat = chatUsers ?? {};
+      const chatUsersForActive = activeChatId ? usersByChat[activeChatId] ?? [] : [];
 
-      const { user } = (message as any);
-      // временная диагностика
-      // eslint-disable-next-line no-console
-      console.log('[ChatsPage] incoming message user =', user, 'raw message =', message);
+      // const { activeChatId } = stateNow;
+      // const chatUsers = (stateNow.chatUsers ?? {})[activeChatId as number] ?? [];
 
-      let displayName = 'Пользователь';
-      if (user) {
-        displayName = user.display_name
-          || user.first_name
-          || user.login
-          || 'Пользователь';
-      }
+      const author = chatUsersForActive.find((u: ChatUserDTO) => u.id === message.user_id);
+      const displayName = author?.display_name
+        || author?.first_name
+        || author?.login
+        || 'Пользователь';
 
       const initial = displayName.charAt(0).toUpperCase();
+
+      const filesBase = 'https://ya-praktikum.tech/api/v2/resources';
+      const avatarUrl = author?.avatar ? `${filesBase}${author.avatar}` : '';
 
       const time = new Date(message.time).toLocaleTimeString('ru-RU', {
         hour: '2-digit',
         minute: '2-digit',
       });
 
-      const filesBase = 'https://ya-praktikum.tech/api/v2/resources';
+      const avatarHtml = avatarUrl
+        ? `<img src="${avatarUrl}" alt="${displayName}" class="chat-message__avatar-image" />`
+        : `<span class="chat-message__avatar-initial">${initial}</span>`;
 
-      const fileHtml = message.file && message.file.path ? `<div class="chat-message__file">
-            <a href="${filesBase}${message.file.path}" target="_blank" rel="noopener noreferrer">
-              ${message.file.content_type?.startsWith('image/') ? `<img src="${filesBase}${message.file.path}"
-                alt="${message.file.filename}" class="chat-message__image" />` : message.file.filename || 'Файл'}
-            </a>
-          </div>`
-        : '';
-
-      const contentHtml = `
-        <div>${message.content}</div>
-        ${fileHtml}
-      `;
-      // const contentHtml = message.type === 'file' ? `<a href="${message.content}" target="_blank" rel="noopener noreferrer">Файл</a>` : message.content;
+      const contentHtml = `<div>${message.content}</div>`;
 
       messagesEl.insertAdjacentHTML(
         'beforeend',
         `
           <div class="chat-message chat-message--${isOutgoing ? 'outgoing' : 'incoming'}">
-            <div class="chat-message__avatar">${initial}</div>
+            <div class="chat-message__avatar">
+              ${avatarHtml}
+            </div>
             <div class="chat-message__content">
               <div class="chat-message__header">
                 <span class="chat-message__author">${displayName}</span>

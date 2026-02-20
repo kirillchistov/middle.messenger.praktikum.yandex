@@ -1,4 +1,7 @@
 import { EventBus } from './event-bus';
+import type {
+  UserDTO, ChatDTO, ChatMessage, ChatUserDTO,
+} from '@/types/response-data';
 
 type Indexed<T = any> = {
   [key: string]: T;
@@ -27,10 +30,11 @@ function setValue(object: Indexed, path: string, value: unknown): Indexed {
 }
 
 export type AppState = {
-  user: any | null;
-  chats: any[];
+  user: UserDTO | null;
+  chats?: ChatDTO[];
   activeChatId: number | null;
-  messages: Record<number, any[]>;
+  messages: Record<number, ChatMessage[]>;
+  chatUsers?: Record<number, ChatUserDTO[]>;
 };
 
 const defaultState: AppState = {
