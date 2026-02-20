@@ -11,43 +11,7 @@ import type {
   GetChatTokenResponse,
 } from '@/types/response-data';
 
-// export type GetChatsParams = {
-//   offset?: number;
-//   limit?: number;
-//   title?: string;
-// };
-
-// export type CreateChatRequest = {
-//   title: string;
-// };
-
-// export type FindUsersByLoginRequest = {
-//   login: string;
-// };
-
-// export type AddUsersToChatRequest = {
-//   users: number[];
-//   chatId: number;
-// };
-
-// export type DeleteUsersFromChatRequest = {
-//   users: number[];
-//   chatId: number;
-// };
-
-// export type GetChatTokenResponse = {
-//   token: string;
-// };
-
-// export type ChatUserDTO = {
-//   id: number;
-//   first_name: string;
-//   second_name: string;
-//   display_name: string;
-//   login: string;
-//   avatar: string | null;
-//   role: string;
-// };
+export type UpdateChatAvatarResponse = ChatDTO;
 
 const http = new HTTPTransport('/chats');
 
@@ -112,6 +76,15 @@ class ChatsAPIClass {
   // GET /chats/token/{id}
   getChatToken(chatId: number): Promise<GetChatTokenResponse> {
     return http.post<GetChatTokenResponse>(`/token/${chatId}`);
+  }
+
+  // PUT /chats/avatar
+  updateChatAvatar(chatId: number, file: File): Promise<UpdateChatAvatarResponse> {
+    const formData = new FormData();
+    formData.append('chatId', String(chatId));
+    formData.append('avatar', file);
+
+    return http.put<UpdateChatAvatarResponse>('/avatar', { data: formData });
   }
 }
 

@@ -36,13 +36,19 @@
           </div>
           <div class="chat-thread__all">
             <button
-              class="chat-thread__hamburger"
+              id="chat-avatar-change"
+              class="chat-thread__avatar-change-btn"
               type="button"
-              aria-label="Все чаты"
+              aria-label="Изменить аватар чата"
             >
-              ☰
-              <span class="chat-thread__hamburger-text">Все чаты</span>
+              ✎
             </button>
+            <input
+              id="chat-avatar-input"
+              type="file"
+              accept="image/*"
+              hidden
+            />
           </div>
         </div>
 
@@ -65,7 +71,6 @@
             >
               ⋮
             </button>
-
             <div id="chat-menu" class="chat-thread__menu-dropdown">
               <button
                 class="chat-thread__menu-item"
@@ -81,40 +86,40 @@
               >
                 Удалить пользователя
               </button>
-
-              {{!-- <form id="chat-add-user-form" class="chat-thread__user-form">
-                <input
-                  name="userId"
-                  type="number"
-                  placeholder="ID пользователя"
-                  class="form__input"
-                />
-                <button class="btn btn--ghost" type="submit">
-                  Добавить в чат
-                </button>
-              </form>
-
-              <form
-                id="chat-remove-user-form"
-                class="chat-thread__user-form"
+              <button
+                class="chat-thread__menu-item"
+                type="button"
+                data-chat-action="change-avatar"
               >
-                <input
-                  name="userId"
-                  type="number"
-                  placeholder="ID пользователя"
-                  class="form__input"
-                />
-                <button class="btn btn--ghost" type="submit">
-                  Удалить из чата
-                </button>
-              </form> --}}
+                Изменить аватар чата
+              </button>
+              <button
+                class="chat-thread__menu-item"
+                type="button"
+                data-chat-action="leave-chat"
+              >
+                Покинуть чат
+              </button>
+              <button
+                class="chat-thread__menu-item"
+                type="button"
+                data-chat-action="delete-chat"
+              >
+                Удалить чат
+              </button>
             </div>
           </div>
+          <input
+            id="chat-avatar-input"
+            type="file"
+            accept="image/*"
+            hidden
+          />
         </div>
       </header>
 
       <div class="chat-thread__messages" data-chat-messages>
-        {{!-- сюда рисуем сообщения из JS --}}
+        {{!-- сюда рисуем сообщения --}}
       </div>
 
       <form class="chat-input" id="chat-message-form">

@@ -9,6 +9,7 @@ import type { ChatDTO, ChatUserDTO } from '@/types/response-data';
 import { chatSocket } from '@/api/chat-socket';
 import FilesAPI from '@/api/files-api';
 import UsersSearchAPI from '@/api/users-search-api';
+import { FILES_BASE } from '@/utils/constants';
 
 type ChatsPageProps = {
   chats: ChatDTO[];
@@ -76,7 +77,16 @@ export class ChatsPage extends Block<ChatsPageProps> {
           const chat = chats.find((c) => c.id === id);
           if (titleEl) titleEl.textContent = chat?.title ?? 'Чат';
           if (avatarEl) {
-            avatarEl.textContent = (chat?.title ?? '?').charAt(0).toUpperCase();
+            if (chat?.avatar) {
+              avatarEl.textContent = '';
+              avatarEl.setAttribute(
+                'style',
+                `background-image: url("${FILES_BASE}${chat.avatar}");`,
+              );
+            } else {
+              avatarEl.style.backgroundImage = '';
+              avatarEl.textContent = (chat?.title ?? '?').charAt(0).toUpperCase();
+            }
           }
 
           if (messagesEl) {
@@ -135,6 +145,12 @@ export class ChatsPage extends Block<ChatsPageProps> {
       const chats = await ChatsAPI.getChats({ limit: 50 });
       store.setState({ chats });
       this.updateChatsList(chats);
+      const chatAvatar = root.querySelector<HTMLElement>('[data-chat-avatar]');
+      if (chatAvatar) {
+        this.addDOMListener(chatAvatar, 'click', () => {
+          this.handleChatAvatarChange(root);
+        });
+      }
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('ChatsPage: не удалось загрузить чаты', error);
@@ -228,6 +244,55 @@ export class ChatsPage extends Block<ChatsPageProps> {
       });
     }
 
+    const avatarChangeBtn = root.querySelector<HTMLButtonElement>('#chat-avatar-change');
+    const avatarInput = root.querySelector<HTMLInputElement>('#chat-avatar-input');
+
+    if (avatarChangeBtn && avatarInput) {
+      this.addDOMListener(avatarChangeBtn, 'click', () => {
+        avatarInput.click();
+      });
+
+      this.addDOMListener(avatarInput, 'change', async () => {
+        const file = avatarInput.files?.[0];
+        if (!file) return;
+
+        const stateNow = store.getState();
+        const chatId = stateNow.activeChatId;
+        if (!chatId || chatId === -1) {
+          // eslint-disable-next-line no-console
+          console.warn('[ChatsPage] Нет выбранного чата для смены аватара');
+          return;
+        }
+
+        try {
+          const updatedChat = await ChatsAPI.updateChatAvatar(chatId, file);
+
+          // обновляем список чатов в сторе
+          const chats = (stateNow.chats ?? [])
+            .map((c) => (c.id === updatedChat.id ? updatedChat : c));
+          store.setState({ chats });
+          this.updateChatsList(chats);
+
+          // обновляем аватар в шапке
+          const avatarEl = root.querySelector<HTMLElement>('[data-chat-avatar]');
+          if (avatarEl) {
+            if (updatedChat.avatar) {
+              avatarEl.innerHTML = '';
+              avatarEl.style.backgroundImage = `url("${FILES_BASE}${updatedChat.avatar}")`;
+            } else {
+              avatarEl.style.backgroundImage = '';
+              avatarEl.textContent = updatedChat.title.charAt(0).toUpperCase();
+            }
+          }
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          console.error('[ChatsPage] updateChatAvatar failed', err);
+        } finally {
+          avatarInput.value = '';
+        }
+      });
+    }
+
     // Добавление пользователя в активный чат
     const addUserForm = root.querySelector<HTMLFormElement>('#chat-add-user-form');
     if (addUserForm) {
@@ -299,9 +364,6 @@ export class ChatsPage extends Block<ChatsPageProps> {
       const usersByChat = chatUsers ?? {};
       const chatUsersForActive = activeChatId ? usersByChat[activeChatId] ?? [] : [];
 
-      // const { activeChatId } = stateNow;
-      // const chatUsers = (stateNow.chatUsers ?? {})[activeChatId as number] ?? [];
-
       const author = chatUsersForActive.find((u: ChatUserDTO) => u.id === message.user_id);
       const displayName = author?.display_name
         || author?.first_name
@@ -310,28 +372,13 @@ export class ChatsPage extends Block<ChatsPageProps> {
 
       const initial = displayName.charAt(0).toUpperCase();
 
-      const filesBase = 'https://ya-praktikum.tech/api/v2/resources';
       let contentHtml = '';
-      const avatarUrl = author?.avatar ? `${filesBase}${author.avatar}` : '';
-
-      // const fileHtml = message.file && message.file.path ? `<div class="chat-message__file">
-      //         <a href="${filesBase}${message.file.path}" target="_blank" rel="noopener noreferrer">
-      //           ${message.file.content_type?.startsWith('image/') ? `
-      //             <img src="${filesBase}${message.file.path}" alt="${message.file.filename}"
-      //               class="chat-message__image" />` : message.file.filename || 'Файл'}
-      //         </a>
-      //       </div>` : '';
-
-      // const textHtml = message.content ? `<div>${message.content}</div>` : '';
-
-      // const filesBase = 'https://ya-praktikum.tech/api/v2/resources';
-
-      // let contentHtml = '';
+      const avatarUrl = author?.avatar ? `${FILES_BASE}${author.avatar}` : '';
 
       if (message.type === 'file') {
         // контент = path до файла
         const path = message.content;
-        const url = `${filesBase}${path}`;
+        const url = `${FILES_BASE}${path}`;
 
         const isImage = path.endsWith('.png')
           || path.endsWith('.jpg')
@@ -360,23 +407,6 @@ export class ChatsPage extends Block<ChatsPageProps> {
         ? `<img src="${avatarUrl}" alt="${displayName}" class="chat-message__avatar-image" />`
         : `<span class="chat-message__avatar-initial">${initial}</span>`;
 
-      // eslint-disable-next-line no-console
-      console.log('[ChatsPage] message raw =', message);
-
-      // eslint-disable-next-line no-console
-      console.log(
-        '[ChatsPage] content / file',
-        {
-          content: message.content,
-          file: message.file,
-          filePath: message.file?.path,
-          fileContentType: message.file?.content_type,
-        },
-      );
-
-      // eslint-disable-next-line no-console
-      console.log('[ChatsPage] contentHtml =', contentHtml);
-
       messagesEl.insertAdjacentHTML(
         'beforeend',
         `
@@ -399,7 +429,6 @@ export class ChatsPage extends Block<ChatsPageProps> {
 
       messagesEl.scrollTop = messagesEl.scrollHeight;
     });
-
     this.setupMenus(root);
   }
 
@@ -429,6 +458,28 @@ export class ChatsPage extends Block<ChatsPageProps> {
         if (!item) return;
 
         const action = item.dataset.modalOpen;
+        const { chatAction } = item.dataset;
+        const changeAvatar = item.dataset.chatAction === 'change-avatar';
+
+        if (changeAvatar) {
+          this.handleChatAvatarChange(root);
+          chatMenu.classList.remove('chat-thread__menu-dropdown--open');
+          return;
+        }
+
+        if (chatAction === 'leave-chat') {
+          this.handleLeaveChat();
+          chatMenu.classList.remove('chat-thread__menu-dropdown--open');
+          return;
+        }
+
+        if (chatAction === 'delete-chat') {
+          this.handleDeleteChat();
+          chatMenu.classList.remove('chat-thread__menu-dropdown--open');
+          return;
+        }
+
+        if (!action) return;
         const modalId = action === 'add-user' ? '#user-modal-add' : '#user-modal-remove';
         const modal = root.querySelector<HTMLDivElement>(modalId);
         const backdrop = root.querySelector<HTMLDivElement>('#user-modal-backdrop');
@@ -570,6 +621,167 @@ export class ChatsPage extends Block<ChatsPageProps> {
         attachMenu.classList.remove('chat-input__attach-menu--open');
         this.openAttachModal(type, root); // ← вот этот вызов должен быть
       });
+    }
+  }
+
+  private handleChatAvatarChange(root: HTMLElement): void {
+    const fileInput = root.querySelector<HTMLInputElement>('#chat-avatar-input');
+    if (!fileInput) return;
+
+    fileInput.value = '';
+
+    this.addDOMListener(fileInput, 'change', async () => {
+      const file = fileInput.files?.[0];
+      if (!file) return;
+
+      const stateNow = store.getState();
+      const chatId = stateNow.activeChatId;
+      if (!chatId || chatId === -1) {
+        // eslint-disable-next-line no-console
+        console.warn('[ChatsPage] Нет выбранного чата для смены аватара');
+        return;
+      }
+
+      try {
+        const updatedChat = await ChatsAPI.updateChatAvatar(chatId, file);
+
+        const filesBase = 'https://ya-praktikum.tech/api/v2/resources';
+
+        // обновляем список чатов в сторе
+        const chats = (stateNow.chats ?? []).map((c) => (c.id === updatedChat.id ? updatedChat : c));
+        store.setState({ chats });
+        this.updateChatsList(chats);
+
+        // обновляем аватар в шапке
+        const avatarEl = root.querySelector<HTMLElement>('[data-chat-avatar]');
+        if (avatarEl) {
+          if (updatedChat.avatar) {
+            avatarEl.textContent = '';
+            avatarEl.style.backgroundImage = `url("${filesBase}${updatedChat.avatar}")`;
+            avatarEl.style.backgroundSize = 'cover';
+            avatarEl.style.backgroundPosition = 'center';
+          } else {
+            avatarEl.style.backgroundImage = '';
+            avatarEl.textContent = updatedChat.title.charAt(0).toUpperCase();
+          }
+        }
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error('[ChatsPage] updateChatAvatar failed', err);
+      } finally {
+        fileInput.value = '';
+      }
+    });
+
+    // запускаем выбор файла
+    fileInput.click();
+  }
+
+  private async handleDeleteChat(): Promise<void> {
+    const stateNow = store.getState();
+    const chatId = stateNow.activeChatId;
+    const chats = stateNow.chats ?? [];
+    const currentUserId = stateNow.user?.id;
+
+    if (!chatId || chatId === -1) {
+      // eslint-disable-next-line no-console
+      console.warn('[ChatsPage] Нет выбранного чата для удаления');
+      return;
+    }
+
+    const chat = chats.find((c) => c.id === chatId);
+    if (!chat) return;
+
+    // только создатель чата может удалять
+    if (chat.created_by !== currentUserId) {
+      // eslint-disable-next-line no-console
+      console.warn('[ChatsPage] Только создатель чата может его удалить');
+      return;
+    }
+
+    const confirmDelete = window.confirm('Удалить этот чат? Его нельзя будет восстановить.');
+    if (!confirmDelete) return;
+
+    try {
+      await ChatsAPI.deleteChat(chatId);
+
+      const updatedChats = chats.filter((c) => c.id !== chatId);
+      store.setState({
+        chats: updatedChats,
+        activeChatId: undefined,
+      });
+
+      const root = this.getContent();
+      if (root) {
+        const titleEl = root.querySelector<HTMLElement>('[data-chat-title]');
+        const avatarEl = root.querySelector<HTMLElement>('[data-chat-avatar]');
+        const messagesEl = root.querySelector<HTMLElement>('[data-chat-messages]');
+
+        if (titleEl) titleEl.textContent = 'Выберите чат';
+        if (avatarEl) {
+          avatarEl.textContent = '?';
+          avatarEl.style.backgroundImage = '';
+        }
+        if (messagesEl) {
+          messagesEl.innerHTML = '<p class="chat-thread__placeholder">Сообщения появятся здесь, после выбора чата</p>';
+        }
+      }
+
+      this.updateChatsList(updatedChats);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('[ChatsPage] deleteChat failed', err);
+    }
+  }
+
+  private async handleLeaveChat(): Promise<void> {
+    const stateNow = store.getState();
+    const chatId = stateNow.activeChatId;
+    const chats = stateNow.chats ?? [];
+    const currentUserId = stateNow.user?.id;
+
+    if (!chatId || chatId === -1 || !currentUserId) {
+      // eslint-disable-next-line no-console
+      console.warn('[ChatsPage] Нет выбранного чата или пользователя для выхода');
+      return;
+    }
+
+    const confirmLeave = window.confirm('Покинуть этот чат?');
+    if (!confirmLeave) return;
+
+    try {
+      await ChatsAPI.deleteUsersFromChat({
+        users: [currentUserId],
+        chatId,
+      });
+
+      // логично убрать чат из списка для текущего пользователя
+      const updatedChats = chats.filter((c) => c.id !== chatId);
+      store.setState({
+        chats: updatedChats,
+        activeChatId: undefined,
+      });
+
+      const root = this.getContent();
+      if (root) {
+        const titleEl = root.querySelector<HTMLElement>('[data-chat-title]');
+        const avatarEl = root.querySelector<HTMLElement>('[data-chat-avatar]');
+        const messagesEl = root.querySelector<HTMLElement>('[data-chat-messages]');
+
+        if (titleEl) titleEl.textContent = 'Выберите чат';
+        if (avatarEl) {
+          avatarEl.textContent = '?';
+          avatarEl.style.backgroundImage = '';
+        }
+        if (messagesEl) {
+          messagesEl.innerHTML = '<p class="chat-thread__placeholder">Сообщения появятся здесь, после выбора чата</p>';
+        }
+      }
+
+      this.updateChatsList(updatedChats);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('[ChatsPage] leaveChat failed', err);
     }
   }
 
