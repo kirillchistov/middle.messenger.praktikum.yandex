@@ -310,7 +310,45 @@ export class ChatsPage extends Block<ChatsPageProps> {
       const initial = displayName.charAt(0).toUpperCase();
 
       const filesBase = 'https://ya-praktikum.tech/api/v2/resources';
+      let contentHtml = '';
       const avatarUrl = author?.avatar ? `${filesBase}${author.avatar}` : '';
+
+      // const fileHtml = message.file && message.file.path ? `<div class="chat-message__file">
+      //         <a href="${filesBase}${message.file.path}" target="_blank" rel="noopener noreferrer">
+      //           ${message.file.content_type?.startsWith('image/') ? `
+      //             <img src="${filesBase}${message.file.path}" alt="${message.file.filename}"
+      //               class="chat-message__image" />` : message.file.filename || 'Файл'}
+      //         </a>
+      //       </div>` : '';
+
+      // const textHtml = message.content ? `<div>${message.content}</div>` : '';
+
+      // const filesBase = 'https://ya-praktikum.tech/api/v2/resources';
+
+      // let contentHtml = '';
+
+      if (message.type === 'file') {
+        // контент = path до файла
+        const path = message.content;
+        const url = `${filesBase}${path}`;
+
+        const isImage = path.endsWith('.png')
+          || path.endsWith('.jpg')
+          || path.endsWith('.jpeg')
+          || path.endsWith('.webp')
+          || path.endsWith('.gif');
+
+        contentHtml = `
+          <div>
+            <a href="${url}" target="_blank" rel="noopener noreferrer">
+              ${isImage ? `<img src="${url}" alt="file" class="chat-message__image" />` : 'Файл'}
+            </a>
+          </div>
+        `;
+      } else {
+        // обычное текстовое сообщение
+        contentHtml = `<div>${message.content}</div>`;
+      }
 
       const time = new Date(message.time).toLocaleTimeString('ru-RU', {
         hour: '2-digit',
@@ -321,7 +359,22 @@ export class ChatsPage extends Block<ChatsPageProps> {
         ? `<img src="${avatarUrl}" alt="${displayName}" class="chat-message__avatar-image" />`
         : `<span class="chat-message__avatar-initial">${initial}</span>`;
 
-      const contentHtml = `<div>${message.content}</div>`;
+      // eslint-disable-next-line no-console
+      console.log('[ChatsPage] message raw =', message);
+
+      // eslint-disable-next-line no-console
+      console.log(
+        '[ChatsPage] content / file',
+        {
+          content: message.content,
+          file: message.file,
+          filePath: message.file?.path,
+          fileContentType: message.file?.content_type,
+        },
+      );
+
+      // eslint-disable-next-line no-console
+      console.log('[ChatsPage] contentHtml =', contentHtml);
 
       messagesEl.insertAdjacentHTML(
         'beforeend',

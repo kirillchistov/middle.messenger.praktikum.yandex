@@ -25,9 +25,7 @@ export class ProfileViewPage extends Block<ProfileViewProps> {
   constructor(props?: Partial<ProfileViewProps>) {
     const state = store.getState();
     const user = state.user as UserDTO | null;
-    const userAvatar: string = state.user.avatar;
-    console.log(userAvatar);
-    console.log(buildAvatarUrl(userAvatar));
+    const userAvatar = user?.avatar ?? null;
 
     const defaults: ProfileViewProps = {
       email: user?.email ?? 'ivan@example.com',
