@@ -18,8 +18,6 @@ export class RegisterPage extends Block<RegisterProps> {
 
     const form = root.querySelector<HTMLFormElement>('#register-form');
     if (!form) {
-      // eslint-disable-next-line no-console
-      console.warn('RegisterPage: form not found');
       return;
     }
 

@@ -92,16 +92,16 @@ class ChatsAPIClass {
     return http.get<ChatUserDTO[]>(`/${chatId}/users`);
   }
 
-  // PUT /chats/users
-  addUsersToChat(data: AddUsersToChatRequest): Promise<void> {
-    return http.put<void>('/users', { data });
-  }
-
   // POST /user/search — поиск пользователя по логину
   findUsersByLogin(login: string): Promise<ChatUserDTO[]> {
     const payload: FindUsersByLoginRequest = { login };
 
-    return http.post<ChatUserDTO[]>('/users/search', { data: payload });
+    return http.post<ChatUserDTO[]>('/user/search', { data: payload });
+  }
+
+  // PUT /chats/users
+  addUsersToChat(data: AddUsersToChatRequest): Promise<void> {
+    return http.put<void>('/users', { data });
   }
 
   // DELETE /chats/users

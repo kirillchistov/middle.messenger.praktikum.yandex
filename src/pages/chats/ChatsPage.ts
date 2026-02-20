@@ -8,6 +8,7 @@ import template from './chats.hbs?raw';
 import type { ChatDTO, ChatUserDTO } from '@/types/response-data';
 import { chatSocket } from '@/api/chat-socket';
 import FilesAPI from '@/api/files-api';
+import UsersSearchAPI from '@/api/users-search-api';
 
 type ChatsPageProps = {
   chats: ChatDTO[];
@@ -512,8 +513,9 @@ export class ChatsPage extends Block<ChatsPageProps> {
 
         try {
           // ищем пользователя по логину
-          const users = await ChatsAPI.findUsersByLogin(login);
+          const users = await UsersSearchAPI.findUsersByLogin(login);
           const user = users[0];
+
           if (!user) {
             if (addErrorEl) addErrorEl.textContent = 'Пользователь не найден';
             return;
