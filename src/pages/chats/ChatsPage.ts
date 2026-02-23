@@ -90,7 +90,7 @@ export class ChatsPage extends Block<ChatsPageProps> {
               avatarEl.textContent = '';
               avatarEl.setAttribute(
                 'style',
-                `background-image: url("${FILES_BASE}${chat.avatar}");`,
+                `background-image: url('${FILES_BASE}${chat.avatar}');`,
               );
             } else {
               avatarEl.style.backgroundImage = '';

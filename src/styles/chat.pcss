@@ -330,13 +330,17 @@
 .chat-thread__avatar {
   width: 36px;
   height: 36px;
-  border-radius: 999px;
+  border-radius: 50%;
   background-color: var(--color-bg-elevated-soft);
   border: 1px solid var(--color-border-subtle);
-  display: flex;
+  overflow: hidden;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   font-size: var(--font-size-sm);
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
 .chat-thread__right {
