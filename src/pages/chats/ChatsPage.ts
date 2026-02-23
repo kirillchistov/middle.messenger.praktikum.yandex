@@ -11,6 +11,7 @@ import { chatSocket } from '@/api/chat-socket';
 import FilesAPI from '@/api/files-api';
 import UsersSearchAPI from '@/api/users-search-api';
 import { FILES_BASE } from '@/utils/constants';
+import { showToast } from '@/utils/toast';
 
 type ChatsPageProps = {
   chats: ChatDTO[];
@@ -320,10 +321,12 @@ export class ChatsPage extends Block<ChatsPageProps> {
           // eslint-disable-next-line no-console
           console.log('[ChatsPage:addUser] chatId=', chatId, 'userId=', userId);
           await ChatsAPI.addUsersToChat({ users: [userId], chatId });
+          showToast('Пользователь добавлен в чат', 'success');
           addUserForm.reset();
         } catch (error) {
           // eslint-disable-next-line no-console
           console.error('ChatsPage: не удалось добавить пользователя', error);
+          showToast('Не удалось добавить пользователя', 'error');
         }
       });
     }
@@ -346,10 +349,12 @@ export class ChatsPage extends Block<ChatsPageProps> {
         try {
           console.log('[ChatsPage:removeUser] chatId=', chatId, 'userId=', userId);
           await ChatsAPI.deleteUsersFromChat({ users: [userId], chatId });
+          showToast('Пользователь удалён из чата', 'success');
           removeUserForm.reset();
         } catch (error) {
           // eslint-disable-next-line no-console
           console.error('ChatsPage: не удалось удалить пользователя', error);
+          showToast('Не удалось удалить пользователя', 'error');
         }
       });
     }
@@ -602,14 +607,17 @@ export class ChatsPage extends Block<ChatsPageProps> {
 
           await ChatsAPI.addUsersToChat({ users: [user.id], chatId });
           addLoginInput.value = '';
+          showToast('Пользователь добавлен в чат', 'success');
           closeAll();
         } catch (err: unknown) {
           // eslint-disable-next-line no-console
           if (err && typeof err === 'object' && 'reason' in err) {
             const { reason } = err as { reason: string };
             console.error('[ChatsPage] пользователи не добавлены', reason);
+            showToast(reason, 'error');
           } else {
             console.error('[ChatsPage] пользователи не добавлены', err);
+            showToast('Не удалось добавить пользователя', 'error');
           }
         }
       });
@@ -698,6 +706,7 @@ export class ChatsPage extends Block<ChatsPageProps> {
       } catch (err) {
         // eslint-disable-next-line no-console
         console.error('[ChatsPage] updateChatAvatar failed', err);
+        showToast('Не удалось обновить аватар', 'error');
       } finally {
         fileInput.value = '';
       }
@@ -734,7 +743,7 @@ export class ChatsPage extends Block<ChatsPageProps> {
 
     try {
       await ChatsAPI.deleteChat(chatId);
-
+      showToast('Чат удалён', 'success');
       const updatedChats = chats.filter((c) => c.id !== chatId);
       store.setState({
         chats: updatedChats,
@@ -761,6 +770,7 @@ export class ChatsPage extends Block<ChatsPageProps> {
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error('[ChatsPage] чат не удален', err);
+      showToast('Не удалось удалить чат', 'error');
     }
   }
 
@@ -784,8 +794,9 @@ export class ChatsPage extends Block<ChatsPageProps> {
         users: [currentUserId],
         chatId,
       });
+      showToast('Вы покинули чат', 'success');
 
-      // логично убрать чат из списка для текущего пользователя
+      // убрать чат из списка для текущего пользователя
       const updatedChats = chats.filter((c) => c.id !== chatId);
       store.setState({
         chats: updatedChats,
@@ -812,6 +823,7 @@ export class ChatsPage extends Block<ChatsPageProps> {
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error('[ChatsPage] Не удалось выйти из чата', err);
+      showToast('Не удалось покинуть чат', 'error');
     }
   }
 
@@ -864,13 +876,16 @@ export class ChatsPage extends Block<ChatsPageProps> {
           try {
             await ChatsAPI.deleteUsersFromChat({ users: [userId], chatId });
             li.remove();
+            showToast('Пользователь удалён из чата', 'success');
           } catch (err: unknown) {
             // eslint-disable-next-line no-console
             if (err && typeof err === 'object' && 'reason' in err) {
               const { reason } = err as { reason: string };
               console.error('[ChatsPage] пользователь не удален', reason);
+              showToast(reason, 'error');
             } else {
               console.error('[ChatsPage] пользователь не удален', err);
+              showToast('Не удалось удалить пользователя', 'error');
             }
           }
         });
@@ -932,10 +947,12 @@ export class ChatsPage extends Block<ChatsPageProps> {
         const uploaded = await FilesAPI.uploadFile(file);
         // отправляем путь в сокет
         chatSocket.sendFile(uploaded.path);
+        showToast('Файл отправлен', 'success');
         closeUpload();
       } catch (err) {
         // eslint-disable-next-line no-console
         console.error('[ChatsPage] upload file failed', err);
+        showToast('Не удалось загрузить файл', 'error');
       } finally {
         // чтобы повторно можно было выбрать тот же файл
         fileInput.value = '';

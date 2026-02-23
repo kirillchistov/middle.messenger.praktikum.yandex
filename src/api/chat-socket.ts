@@ -136,7 +136,7 @@ export class ChatSocket {
             - new Date((b as ChatMessage).time).getTime(),
         ) as ChatMessage[];
 
-        // CHANGED: удаляем дубли по id внутри истории
+        // удаляем дубли по id внутри истории
         const uniqueById = messages.filter(
           (msg, index, arr) => arr.findIndex((m) => m.id === msg.id) === index,
         );

@@ -6,6 +6,7 @@ import { UsersAPI } from '@/api/users-api';
 import template from './ProfilePassword.hbs?raw';
 import { ApiError } from '@/api/auth-api';
 import type { BlockProps } from '@/types/block-props';
+import { showToast } from '@/utils/toast';
 
 // type ProfilePasswordProps = Record<string, never>;
 
@@ -56,6 +57,7 @@ export default class ProfilePasswordPage extends Block {
       await UsersAPI.updatePassword({ oldPassword, newPassword });
       // eslint-disable-next-line no-console
       console.log('[ProfilePasswordPage] пароль обновлён');
+      showToast('Пароль успешно изменён', 'success');
       if (errorEl) errorEl.textContent = 'Пароль успешно изменён';
     } catch (error: unknown) {
       const apiError = (error && typeof error === 'object' && 'reason' in error)
@@ -66,8 +68,10 @@ export default class ProfilePasswordPage extends Block {
 
       // eslint-disable-next-line no-console
       console.error('[ProfilePasswordPage] ошибка смены пароля', error);
+      showToast(reason || 'Не удалось сменить пароль. Попробуйте ещё раз.', 'error');
       if (errorEl) {
         errorEl.textContent = reason || 'Не удалось сменить пароль. Попробуйте ещё раз.';
+        showToast(reason || 'Не удалось сменить пароль. Попробуйте ещё раз.', 'error');
       }
     }
   }

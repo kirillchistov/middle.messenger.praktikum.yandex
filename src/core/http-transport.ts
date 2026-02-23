@@ -70,7 +70,7 @@ export class HTTPTransport {
         fullUrl = `${fullUrl}?${query}`;
       }
 
-      // CHANGED: сначала open, потом withCreds, потом вешаем обработчики
+      // Сначала open, потом withCreds, потом вешаем обработчики
       xhr.open(method, fullUrl);
       xhr.withCredentials = true;
       xhr.timeout = timeout;

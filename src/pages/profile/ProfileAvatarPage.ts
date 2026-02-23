@@ -7,6 +7,7 @@ import type { ApiError, UserDTO } from '@/api/auth-api';
 import { UsersAPI } from '@/api/users-api';
 import { FILES_BASE } from '@/utils/constants';
 import template from './ProfileAvatar.hbs?raw';
+import { showToast } from '@/utils/toast';
 
 type ProfileAvatarProps = {
   avatar: string;
@@ -65,6 +66,7 @@ export default class ProfileAvatarPage extends Block {
         if (avatarEl) {
           avatarEl.style.backgroundImage = `url("${avatarUrl}")`;
         }
+        showToast('Аватар обновлён', 'success');
         router.go('/profile');
       } catch (error: unknown) {
         const apiError = (error && typeof error === 'object' && 'reason' in error)
@@ -75,8 +77,10 @@ export default class ProfileAvatarPage extends Block {
 
         // eslint-disable-next-line no-console
         console.error('[ProfileAvatarPage] ошибка загрузки аватара', error);
+        showToast(reason || 'Не удалось загрузить аватар.', 'error');
         if (errorEl) {
           errorEl.textContent = reason || 'Не удалось загрузить аватар.';
+          showToast(reason || 'Не удалось загрузить аватар.', 'error');
         }
       }
     });

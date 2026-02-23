@@ -8,6 +8,7 @@ import type { ApiError, UserDTO } from '@/api/auth-api';
 import { UsersAPI } from '@/api/users-api';
 import { FILES_BASE } from '@/utils/constants';
 import template from './ProfileEdit.hbs?raw';
+import { showToast } from '@/utils/toast';
 
 type ProfileEditProps = {
   email: string;
@@ -109,6 +110,7 @@ export default class ProfileEditPage extends Block {
         store.setState({ user: updatedUser as UserDTO });
         // eslint-disable-next-line no-console
         console.log('[ProfileEditPage] профиль обновлён');
+        showToast('Профиль обновлён', 'success');
         router.go('/profile');
       } catch (error: unknown) {
         const apiError = (error && typeof error === 'object' && 'reason' in error)
@@ -120,6 +122,7 @@ export default class ProfileEditPage extends Block {
         // eslint-disable-next-line no-console
         console.error('[ProfileEditPage] ошибка обновления профиля', error);
         if (errorEl) {
+          showToast(reason || 'Не удалось обновить профиль.', 'error');
           errorEl.textContent = reason || 'Не удалось обновить профиль.';
         }
       }
