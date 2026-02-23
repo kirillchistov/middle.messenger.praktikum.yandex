@@ -437,7 +437,27 @@ export class ChatsPage extends Block<ChatsPageProps> {
 
       messagesEl.scrollTop = messagesEl.scrollHeight;
     });
+    this.setupSearch(root);
     this.setupMenus(root);
+  }
+
+  // Логика поиска по чатам (фильтр по ключевому слову)
+  private setupSearch(root: HTMLElement): void {
+    const input = root.querySelector<HTMLInputElement>('[data-chats-search]');
+    if (!input) return;
+
+    this.addDOMListener(input, 'input', () => {
+      const query = input.value.trim().toLowerCase();
+
+      const state = store.getState();
+      const allChats = state.chats ?? [];
+
+      const filtered = query
+        ? allChats.filter((chat) => chat.title.toLowerCase()
+          .includes(query)) : allChats;
+
+      this.updateChatsList(filtered);
+    });
   }
 
   private setupMenus(root: HTMLElement): void {

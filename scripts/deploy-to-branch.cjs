@@ -49,6 +49,8 @@ function main() {
 
     // копируем новый dist
     run(`cp -R ${distPath}/. ${worktreePath}/`);
+    // GitHub Pages SPA fallback
+    run(`cp ${worktreePath}/index.html ${worktreePath}/404.html`);
 
     // коммит и пуш
     run(`cd ${WORKTREE_DIR} && git add .`);
