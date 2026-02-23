@@ -4,13 +4,16 @@ import { createFormValidation } from '@utils/formValidation';
 import { renderTemplate } from '@utils/renderTemplate';
 import { UsersAPI } from '@/api/users-api';
 import template from './ProfilePassword.hbs?raw';
+import { ApiError } from '@/api/auth-api';
+import type { BlockProps } from '@/types/block-props';
 
-type ProfilePasswordProps = Record<string, never>;
+// type ProfilePasswordProps = Record<string, never>;
 
-export class ProfilePasswordPage extends Block<ProfilePasswordProps> {
+// export class ProfilePasswordPage extends Block<ProfilePasswordProps> {
+export default class ProfilePasswordPage extends Block {
   private handleSubmit: (event: Event) => void;
 
-  constructor(props: ProfilePasswordProps = {}) {
+  constructor(props: BlockProps = {}) {
     super('div', props);
 
     this.handleSubmit = (event: Event) => {
@@ -54,11 +57,17 @@ export class ProfilePasswordPage extends Block<ProfilePasswordProps> {
       // eslint-disable-next-line no-console
       console.log('[ProfilePasswordPage] пароль обновлён');
       if (errorEl) errorEl.textContent = 'Пароль успешно изменён';
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const apiError = (error && typeof error === 'object' && 'reason' in error)
+        ? (error as ApiError)
+        : null;
+
+      const reason = apiError?.reason;
+
       // eslint-disable-next-line no-console
       console.error('[ProfilePasswordPage] ошибка смены пароля', error);
       if (errorEl) {
-        errorEl.textContent = error?.reason || 'Не удалось сменить пароль. Попробуйте ещё раз.';
+        errorEl.textContent = reason || 'Не удалось сменить пароль. Попробуйте ещё раз.';
       }
     }
   }

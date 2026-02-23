@@ -3,7 +3,10 @@ import { BLOCK_EVENTS } from '../types/block-events';
 import type { BlockEventMap } from '../types/block-event-map';
 import type { BlockProps } from '../types/block-props';
 
+// export type BlockProps = Record<string, unknown>;
+
 export abstract class Block<P extends BlockProps = BlockProps> {
+  protected props: P;
   static EVENTS = BLOCK_EVENTS;
 
   private eventBus: EventBus<BlockEventMap>;
@@ -11,8 +14,6 @@ export abstract class Block<P extends BlockProps = BlockProps> {
   private _element: HTMLElement | null = null;
 
   private _meta: { tagName: keyof HTMLElementTagNameMap; props: P };
-
-  protected props: P;
 
   // Для отписки от слушателей + EventTarget
   // локальные слушатели (на элементах самого блока)

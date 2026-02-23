@@ -2,43 +2,46 @@
 import { store } from '@/core/store';
 import ChatsAPI from '@/api/chats-api';
 import type { UserDTO } from '@/api/auth-api';
+import type { ChatMessage } from '@/types/chat-message';
 
-export type ChatMessageUser = {
-  author: string | undefined;
-  first_name?: string;
-  second_name?: string;
-  display_name?: string;
-  login?: string;
-  avatar?: string | null;
-};
+// export type ChatMessageUser = {
+//   author: string | undefined;
+//   first_name?: string;
+//   second_name?: string;
+//   display_name?: string;
+//   login?: string;
+//   avatar?: string | null;
+// };
 
-export type ChatMessageFile = {
-  id: number;
-  user_id: number;
-  path: string;
-  filename: string;
-  content_type: string;
-  content_size: number;
-  upload_date: string;
-};
+// export type ChatMessageFile = {
+//   id: number;
+//   user_id: number;
+//   path: string;
+//   filename: string;
+//   content_type: string;
+//   content_size: number;
+//   upload_date: string;
+// };
 
-export type ChatMessage = {
-  id: number;
-  user_id: number;
-  chat_id: number;
-  content: string;
-  time: string;
-  is_read?: boolean;
-  type?: 'message' | 'file' | 'sticker' | 'ping' | 'get old';
-  user?: ChatMessageUser;
-  file?: ChatMessageFile;
-};
+// export type ChatMessage = {
+//   id: number;
+//   user_id: number;
+//   chat_id: number;
+//   content: string;
+//   time: string;
+//   is_read?: boolean;
+//   type?: 'message' | 'file' | 'sticker' | 'ping' | 'get old';
+//   user?: ChatMessageUser;
+//   file?: ChatMessageFile;
+// };
 
 type SocketStatus = 'idle' | 'connecting' | 'open' | 'closed';
 
+export type RawMessage = ChatMessage | ChatMessage[] | { type: string } | unknown;
+
 type ChatSocketListener = (message: ChatMessage) => void;
 
-class ChatSocket {
+export class ChatSocket {
   private socket: WebSocket | null = null;
 
   private status: SocketStatus = 'idle';
@@ -115,26 +118,38 @@ class ChatSocket {
     });
 
     this.socket.addEventListener('message', (event) => {
-      const parsed = JSON.parse(event.data) as unknown;
+      // const parsed = JSON.parse(event.data) as unknown;
+      if (!event.data) return;
+      let parsed: RawMessage;
+      try {
+        parsed = JSON.parse(event.data as string);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error('[ChatSocket] Не вышло спарсить сообщение', err, event.data);
+        return;
+      }
 
-      // история сообщений — массив
+      // история сообщений — массив, фильтруем по id
       if (Array.isArray(parsed)) {
         const messages = [...parsed].sort(
-          (a: any, b: any) => new Date(a.time).getTime() - new Date(b.time).getTime(),
+          (a, b) => new Date((a as ChatMessage).time).getTime()
+            - new Date((b as ChatMessage).time).getTime(),
         ) as ChatMessage[];
 
-        const stateNow = store.getState();
-        const current = stateNow.messages?.[chatId] ?? [];
-        const merged = [...current, ...messages];
+        // CHANGED: удаляем дубли по id внутри истории
+        const uniqueById = messages.filter(
+          (msg, index, arr) => arr.findIndex((m) => m.id === msg.id) === index,
+        );
 
+        const stateNow = store.getState();
         store.setState({
           messages: {
-            ...stateNow.messages,
-            [chatId]: merged,
+            ...(stateNow.messages ?? {}),
+            [chatId]: uniqueById,
           },
         });
 
-        merged.forEach((msg) => this.notify(msg));
+        uniqueById.forEach((msg) => this.notify(msg));
         return;
       }
 
@@ -143,11 +158,17 @@ class ChatSocket {
       if (data.type === 'message' || data.type === 'file') {
         const stateNow = store.getState();
         const current = stateNow.messages?.[chatId] ?? [];
-        const updated = [...current, data];
+
+        // убираем возможный дубль по id
+        const withoutDuplicate = current.filter((msg) => msg.id !== data.id);
+
+        const updated = [...withoutDuplicate, data].sort(
+          (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
+        );
 
         store.setState({
           messages: {
-            ...stateNow.messages,
+            ...(stateNow.messages ?? {}),
             [chatId]: updated,
           },
         });

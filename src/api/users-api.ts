@@ -30,7 +30,7 @@ class UsersAPIClass {
   updateAvatar(file: File): Promise<UserDTO> {
     const formData = new FormData();
     formData.append('avatar', file);
-    return http.put<UserDTO>('/profile/avatar', { data: formData as any });
+    return http.put<UserDTO>('/profile/avatar', { data: formData });
   }
 }
 

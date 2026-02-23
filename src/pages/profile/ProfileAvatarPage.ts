@@ -3,8 +3,9 @@ import { renderTemplate } from '@utils/renderTemplate';
 import { Block } from '@/core/block';
 import { store } from '@/core/store';
 import { router } from '@/core/router';
-import type { UserDTO } from '@/api/auth-api';
+import type { ApiError, UserDTO } from '@/api/auth-api';
 import { UsersAPI } from '@/api/users-api';
+import { FILES_BASE } from '@/utils/constants';
 import template from './ProfileAvatar.hbs?raw';
 
 type ProfileAvatarProps = {
@@ -13,12 +14,13 @@ type ProfileAvatarProps = {
 
 const buildAvatarUrl = (path: string | null | undefined): string => {
   if (path) {
-    return `https://ya-praktikum.tech/api/v2/resources${path}`;
+    return `${FILES_BASE}${path}`;
   }
   return '/assets/avatar-transp.png';
 };
 
-export class ProfileAvatarPage extends Block<ProfileAvatarProps> {
+// export class ProfileAvatarPage extends Block<ProfileAvatarProps> {
+export default class ProfileAvatarPage extends Block {
   constructor(props?: Partial<ProfileAvatarProps>) {
     const state = store.getState();
     const user = state.user as UserDTO | null;
@@ -64,11 +66,17 @@ export class ProfileAvatarPage extends Block<ProfileAvatarProps> {
           avatarEl.style.backgroundImage = `url("${avatarUrl}")`;
         }
         router.go('/profile');
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const apiError = (error && typeof error === 'object' && 'reason' in error)
+          ? (error as ApiError)
+          : null;
+
+        const reason = apiError?.reason;
+
         // eslint-disable-next-line no-console
         console.error('[ProfileAvatarPage] ошибка загрузки аватара', error);
         if (errorEl) {
-          errorEl.textContent = error?.reason || 'Не удалось загрузить аватар.';
+          errorEl.textContent = reason || 'Не удалось загрузить аватар.';
         }
       }
     });

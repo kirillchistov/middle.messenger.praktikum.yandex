@@ -6,6 +6,7 @@ import { Block } from '@/core/block';
 import { renderTemplate } from '@/utils/renderTemplate';
 import template from './login.hbs?raw';
 import { AuthAPI } from '@/api/auth-api';
+import type { ApiError } from '@/api/auth-api';
 
 type LoginProps = Record<string, never>;
 
@@ -64,23 +65,28 @@ export class LoginPage extends Block<LoginProps> {
         const user = await AuthAPI.getUser(); // 2) getUser
         store.setState({ user });
         router.go('/messenger'); // 3) redirect
-      } catch (error: any) {
-        const reason = error?.reason;
+      } catch (error: unknown) {
+        const apiError = (error && typeof error === 'object' && 'reason' in error)
+          ? (error as ApiError)
+          : null;
+
+        const reason = apiError?.reason;
+
         if (reason === 'User already in system') {
-        // пользователь уже авторизован — считаем это успехом
+        // пользователь уже авторизован — редиректим в чаты
           try {
             const user = await AuthAPI.getUser();
             store.setState({ user });
             router.go('/messenger');
             return;
-          } catch (e) {
+          } catch (e: unknown) {
             // eslint-disable-next-line no-console
             console.error('LoginPage getUser пользователь уже авторизован', e);
           }
         }
         console.error('LoginPage signIn error', error);
         if (errorEl) {
-          errorEl.textContent = error?.reason || 'Не удалось войти. Проверьте логин и пароль.';
+          errorEl.textContent = reason || 'Не удалось войти. Проверьте логин и пароль.';
         }
       }
     });

@@ -3,6 +3,7 @@ import { renderTemplate } from '@utils/renderTemplate';
 import { store } from '@/core/store';
 import type { UserDTO } from '@/api/auth-api';
 import { Block } from '@/core/block';
+import { FILES_BASE } from '@/utils/constants';
 import template from './ProfileView.hbs?raw';
 
 type ProfileViewProps = {
@@ -17,11 +18,12 @@ type ProfileViewProps = {
 
 const buildAvatarUrl = (path: string | null | undefined): string => {
   if (path) {
-    return `https://ya-praktikum.tech/api/v2/resources${path}`;
+    return `${FILES_BASE}${path}`;
   }
   return '/assets/avatar-transp.png';
 };
-export class ProfileViewPage extends Block<ProfileViewProps> {
+// export class ProfileViewPage extends Block<ProfileViewProps> {
+export default class ProfileViewPage extends Block {
   constructor(props?: Partial<ProfileViewProps>) {
     const state = store.getState();
     const user = state.user as UserDTO | null;

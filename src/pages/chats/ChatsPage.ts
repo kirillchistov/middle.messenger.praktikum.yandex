@@ -5,6 +5,7 @@ import { store } from '@/core/store';
 import { Block } from '@/core/block';
 import { router } from '@/core/router';
 import template from './chats.hbs?raw';
+// import chatListTemplate from '../../components/chat-list/chat-list.hbs?raw';
 import type { ChatDTO, ChatUserDTO } from '@/types/response-data';
 import { chatSocket } from '@/api/chat-socket';
 import FilesAPI from '@/api/files-api';
@@ -39,16 +40,24 @@ export class ChatsPage extends Block<ChatsPageProps> {
           ? new Date(chat.last_message.time).toLocaleTimeString('ru-RU', {
             hour: '2-digit',
             minute: '2-digit',
-          }) : '';
+          })
+          : '';
         const unread = chat.unread_count;
+
+        const initials = chat.title.charAt(0).toUpperCase();
+        const avatarContent = chat.avatar
+          ? `<div class="chat-sidebar__item-avatar chat-sidebar__item-avatar--image"
+              style="background-image: url('${FILES_BASE}${chat.avatar}');">
+            </div>`
+          : `<div class="chat-sidebar__item-avatar">
+              ${initials}
+            </div>`;
 
         return `
           <li class="chat-list__item" data-chat-id="${chat.id}">
             <button class="chat-sidebar__item" type="button">
               <div class="chat-sidebar__item-top">
-                <div class="chat-sidebar__item-avatar">
-                  ${chat.title.charAt(0).toUpperCase()}
-                </div>
+                ${avatarContent}
                 <span class="chat-sidebar__item-title">${chat.title}</span>
                 <span class="chat-sidebar__item-time">${time}</span>
               </div>
@@ -102,7 +111,6 @@ export class ChatsPage extends Block<ChatsPageProps> {
 
         try {
           await chatSocket.connect(id);
-          // подгружаем участников чата и кладём в store
           const users = await ChatsAPI.getChatUsers(id);
           const stateNow = store.getState();
           store.setState({
@@ -111,7 +119,7 @@ export class ChatsPage extends Block<ChatsPageProps> {
               [id]: users,
             },
           });
-        } catch (e) {
+        } catch (e: unknown) {
           // eslint-disable-next-line no-console
           console.error('Не удалось подключить сокет чатов', e);
         }
@@ -575,11 +583,13 @@ export class ChatsPage extends Block<ChatsPageProps> {
           await ChatsAPI.addUsersToChat({ users: [user.id], chatId });
           addLoginInput.value = '';
           closeAll();
-        } catch (err: any) {
+        } catch (err: unknown) {
           // eslint-disable-next-line no-console
-          console.error('[ChatsPage] add user failed', err);
-          if (addErrorEl) {
-            addErrorEl.textContent = err?.reason || 'Не удалось добавить пользователя';
+          if (err && typeof err === 'object' && 'reason' in err) {
+            const { reason } = err as { reason: string };
+            console.error('[ChatsPage] пользователи не добавлены', reason);
+          } else {
+            console.error('[ChatsPage] пользователи не добавлены', err);
           }
         }
       });
@@ -645,7 +655,7 @@ export class ChatsPage extends Block<ChatsPageProps> {
       try {
         const updatedChat = await ChatsAPI.updateChatAvatar(chatId, file);
 
-        const filesBase = 'https://ya-praktikum.tech/api/v2/resources';
+        // const filesBase = FILES_BASE;
 
         // обновляем список чатов в сторе
         const chats = (stateNow.chats ?? []).map((c) => (c.id === updatedChat.id ? updatedChat : c));
@@ -657,7 +667,7 @@ export class ChatsPage extends Block<ChatsPageProps> {
         if (avatarEl) {
           if (updatedChat.avatar) {
             avatarEl.textContent = '';
-            avatarEl.style.backgroundImage = `url("${filesBase}${updatedChat.avatar}")`;
+            avatarEl.style.backgroundImage = `url("${FILES_BASE}${updatedChat.avatar}")`;
             avatarEl.style.backgroundSize = 'cover';
             avatarEl.style.backgroundPosition = 'center';
           } else {
@@ -730,7 +740,7 @@ export class ChatsPage extends Block<ChatsPageProps> {
       this.updateChatsList(updatedChats);
     } catch (err) {
       // eslint-disable-next-line no-console
-      console.error('[ChatsPage] deleteChat failed', err);
+      console.error('[ChatsPage] чат не удален', err);
     }
   }
 
@@ -781,7 +791,7 @@ export class ChatsPage extends Block<ChatsPageProps> {
       this.updateChatsList(updatedChats);
     } catch (err) {
       // eslint-disable-next-line no-console
-      console.error('[ChatsPage] leaveChat failed', err);
+      console.error('[ChatsPage] Не удалось выйти из чата', err);
     }
   }
 
@@ -834,20 +844,24 @@ export class ChatsPage extends Block<ChatsPageProps> {
           try {
             await ChatsAPI.deleteUsersFromChat({ users: [userId], chatId });
             li.remove();
-          } catch (err: any) {
+          } catch (err: unknown) {
             // eslint-disable-next-line no-console
-            console.error('[ChatsPage] remove user failed', err);
-            if (errorEl) {
-              errorEl.textContent = err?.reason || 'Не удалось удалить пользователя';
+            if (err && typeof err === 'object' && 'reason' in err) {
+              const { reason } = err as { reason: string };
+              console.error('[ChatsPage] пользователь не удален', reason);
+            } else {
+              console.error('[ChatsPage] пользователь не удален', err);
             }
           }
         });
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       // eslint-disable-next-line no-console
-      console.error('[ChatsPage] getChatUsers failed', err);
-      if (errorEl) {
-        errorEl.textContent = err?.reason || 'Не удалось загрузить участников';
+      if (err && typeof err === 'object' && 'reason' in err) {
+        const { reason } = err as { reason: string };
+        console.error('[ChatsPage] список участников не получен', reason);
+      } else {
+        console.error('[ChatsPage] список участников не получен', err);
       }
     }
   }

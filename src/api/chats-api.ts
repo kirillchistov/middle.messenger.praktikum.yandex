@@ -26,7 +26,7 @@ class ChatsAPIClass {
     const chats = await http.get<ChatDTO[]>('', { data: params });
 
     if (!chats || chats.length === 0) {
-      // демо‑чат, совместимый с ChatDTO
+      // демо‑чат
       const demoChat: ChatDTO = {
         id: -1,
         title: 'Демо-чат с камерой',

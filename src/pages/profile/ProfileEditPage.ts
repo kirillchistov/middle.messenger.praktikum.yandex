@@ -4,8 +4,9 @@ import { Block } from '@/core/block';
 import { createFormValidation } from '@/utils/formValidation';
 import { store } from '@/core/store';
 import { router } from '@/core/router';
-import type { UserDTO } from '@/api/auth-api';
+import type { ApiError, UserDTO } from '@/api/auth-api';
 import { UsersAPI } from '@/api/users-api';
+import { FILES_BASE } from '@/utils/constants';
 import template from './ProfileEdit.hbs?raw';
 
 type ProfileEditProps = {
@@ -15,9 +16,17 @@ type ProfileEditProps = {
   second_name: string;
   display_name: string;
   phone: string;
+  avatar: string;
 };
 
-export class ProfileEditPage extends Block<ProfileEditProps> {
+const buildAvatarUrl = (path: string | null | undefined): string => {
+  if (path) {
+    return `${FILES_BASE}${path}`;
+  }
+  return '/assets/avatar-transp.png';
+};
+// export class ProfileEditPage extends Block<ProfileEditProps> {
+export default class ProfileEditPage extends Block {
   constructor(props?: Partial<ProfileEditProps>) {
     const state = store.getState();
     console.log('[ProfileEditPage] state.user =', state.user);
@@ -30,6 +39,7 @@ export class ProfileEditPage extends Block<ProfileEditProps> {
       second_name: user?.second_name ?? '',
       display_name: user?.display_name ?? user?.first_name ?? '',
       phone: user?.phone ?? '',
+      avatar: buildAvatarUrl(user?.avatar),
     };
 
     super('div', { ...defaults, ...props } as ProfileEditProps);
@@ -100,11 +110,17 @@ export class ProfileEditPage extends Block<ProfileEditProps> {
         // eslint-disable-next-line no-console
         console.log('[ProfileEditPage] профиль обновлён');
         router.go('/profile');
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const apiError = (error && typeof error === 'object' && 'reason' in error)
+          ? (error as ApiError)
+          : null;
+
+        const reason = apiError?.reason;
+
         // eslint-disable-next-line no-console
         console.error('[ProfileEditPage] ошибка обновления профиля', error);
         if (errorEl) {
-          errorEl.textContent = error?.reason || 'Не удалось обновить профиль.';
+          errorEl.textContent = reason || 'Не удалось обновить профиль.';
         }
       }
     });

@@ -3,7 +3,7 @@ import { Block } from '@core/block';
 import { renderTemplate } from '@utils/renderTemplate';
 import { createFormValidation } from '@utils/formValidation';
 import template from './register.hbs?raw';
-import { AuthAPI, SignUpData } from '@/api/auth-api';
+import { ApiError, AuthAPI, SignUpData } from '@/api/auth-api';
 import { store } from '@/core/store';
 import { router } from '@/core/router';
 
@@ -90,11 +90,17 @@ export class RegisterPage extends Block<RegisterProps> {
 
         store.setState({ user });
         router.go('/messenger');
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const apiError = (error && typeof error === 'object' && 'reason' in error)
+          ? (error as ApiError)
+          : null;
+
+        const reason = apiError?.reason;
+
         // eslint-disable-next-line no-console
         console.error('RegisterPage signUp error', error);
         if (errorEl) {
-          errorEl.textContent = error?.reason || 'Не удалось зарегистрироваться. Проверьте данные и попробуйте ещё раз.';
+          errorEl.textContent = reason || 'Не удалось зарегистрироваться. Проверьте данные и попробуйте ещё раз.';
         }
       }
     });

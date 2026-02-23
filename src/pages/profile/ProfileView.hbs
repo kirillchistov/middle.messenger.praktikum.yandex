@@ -1,6 +1,6 @@
 <section class="profile-layout">
   <aside class="profile-sidebar">
-    <a href="/chats" class="profile-sidebar__back">←</a>
+    <a href="/chats" class="profile-sidebar__back" data-link-chats>←</a>
   </aside>
 
   <div class="profile-card">
@@ -13,7 +13,7 @@
       <div class="profile-card__name">
         {{display_name}}
       </div>
-      <a href="/profile/avatar" class="profile-link">
+      <a href="/profile/avatar" class="profile-link" data-link data-link-profile-avatar>
         Поменять аватар
       </a>
     </div>
@@ -46,8 +46,9 @@
     </dl>
 
     <div class="profile-card__actions">
-      <a href="/profile/edit" class="profile-link">Изменить данные</a>
-      <a href="/profile/password" class="profile-link">Изменить пароль</a>
+      <a href="/profile/edit" class="profile-link" data-link-profile-edit>Изменить данные</a>
+      <a href="/profile/password" class="profile-link" data-link-profile-password>Изменить пароль</a>
+      <a href="/profile/avatar" class="profile-link" data-link-profile-avatar>Изменить аватар</a>
       <button class="profile-link profile-link--danger" type="button" data-logout data-link-logout>
         Выйти
       </button>

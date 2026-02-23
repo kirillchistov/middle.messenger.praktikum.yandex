@@ -6,6 +6,8 @@
 }
 
 .app-shell {
+  /* height: 100vh;
+  display: flex; */
   max-width: 1120px;
   margin: 0 auto;
   padding: var(--space-6) var(--space-4);
@@ -282,15 +284,20 @@
 .profile-avatar {
   width: 120px;
   height: 120px;
-  border-radius: 999px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background-color: var(--color-text-primary);
 }
 
 .profile-avatar--button {
   border: none;
   background-color: var(--color-text-secondary);
-
-  /* убрал background-image */
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
   color: var(--color-bg-elevated);
   font-size: var(--font-size-sm);
   text-align: center;

@@ -57,17 +57,28 @@ npm run dev
 ## ⚡ Спринты
 
 ### 3. Спринт 3
-- [x] [PR2 Merge to main](https://github.com/kirillchistov/middle.messenger.praktikum.yandex/pull/2)
-- [x] Создать ветку sprint_3 (local + remote)
-- [x] Реализовать роутинг: /, /sign-up, /settings, /messenger
-- [x] Внедрить [HTTP API чатов](https://ya-praktikum.tech/api/v2/swagger/#/), авторизации и пользователей
-- [x] Реализовать авторизацию (регистрация, вход, выход, данные профиля)
-- [x] Реализовать CRUD чатов пользователя (список чатов, новый чат, добавить/удалить пользователя)
-- [x] Реализовать функционал меню (создание чатов, добавление юзеров, профиль)
-- [x] Добавить в роутер проверку авторизации пользователя (!auth -> login)
+- [x] [PR2 Merge to main](https://github.com/kirillchistov/middle.messenger.praktikum.yandex/pull/2).
+- [x] Создать ветку sprint_3 (local + remote).
+- [x] Реализовать роутинг: /, /sign-up, /settings, /messenger.
+- [x] Внедрить [HTTP API чатов](https://ya-praktikum.tech/api/v2/swagger/#/), авторизации и пользователей.
+- [x] Реализовать авторизацию (регистрация, вход, выход, данные профиля).
+- [x] Реализовать CRUD чатов пользователя (список чатов, новый чат, добавить/удалить пользователя).
+- [x] Реализовать функционал меню (создание чатов, добавление юзеров, профиль).
+- [x] Добавить в роутер проверку авторизации пользователя (!auth -> login).
 - [x] Подключить WebSocket для работы с real-time сообщениями.
-- [] Проверить себя по [чек-листу](https://code.s3.yandex.net/web-developer/checklists-pdf/middle_frontend/pr3.pdf).
-- [] Починить [Деплой на Netlify](https://christoff-middlefront.netlify.app/)
+- [x] Проверить себя по [чек-листу](https://code.s3.yandex.net/web-developer/checklists-pdf/middle_frontend/pr3.pdf).
+- [x] Восстановить [Деплой на Netlify](https://christoff-middlefront.netlify.app/)
+- [x] Починить главный блок с веткой чата ([скроллить только сообщения в блоке](https://disk.yandex.ru/i/)).
+- [x] При клике на поменять аватар и др., страница не должна перезагружаться
+ https://disk.yandex.ru/i/Crwn4b1bIvoZOQ . 
+- [x] Настроить [редиректы на Нетлифай](https://docs.netlify.com/routing/redirects/).
+- [x] При обновлении страницы с определённым URL должна отображаться та же самая страница. 
+- [x] Использовать константу FILES_BASE везде вместо прямого URL.
+- [x] JSON.parse обернуть в блок try/catch для отлова возможной ошибки.
+- [x] Типизировать метод (функцию), не дублировать типизацию аргументов. 
+- [x] Заменить any на unknown, лучше [дженерики](https://habr.com/ru/companies/tbank/articles/588655/).
+- [x] Подставлять аватар чата [в списке чатов](https://disk.yandex.ru/i/IsQAAMYil1_OoA).
+- [x] Центрировать [картинку в аватаре](https://disk.yandex.ru/i/x0gKtUzGymdDzw).
 - [x] PR3 to main [“Sprint 3”](https://github.com/kirillchistov/middle.messenger.praktikum.yandex/pull/3).
 
 

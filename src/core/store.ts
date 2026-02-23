@@ -3,7 +3,7 @@ import type {
   UserDTO, ChatDTO, ChatMessage, ChatUserDTO,
 } from '@/types/response-data';
 
-type Indexed<T = any> = {
+type Indexed<T = unknown> = {
   [key: string]: T;
 };
 
@@ -17,7 +17,7 @@ function setValue(object: Indexed, path: string, value: unknown): Indexed {
 
   keys.forEach((key, index) => {
     if (index === keys.length - 1) {
-      current[key] = value as any;
+      current[key] = value as unknown;
     } else {
       if (!isIndexed(current[key])) {
         current[key] = {};

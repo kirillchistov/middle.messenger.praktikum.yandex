@@ -26,6 +26,10 @@ export type UserDTO = {
   avatar: string | null;
 };
 
+export type ApiError = {
+  reason: string;
+};
+
 const http = new HTTPTransport('/auth');
 
 class AuthAPIClass {

@@ -1,19 +1,20 @@
 <section class="profile-layout">
   <aside class="profile-sidebar">
-    <a href="/profile" class="profile-sidebar__back">←</a>
+    <a href="/profile" class="profile-sidebar__back" data-link-profile>←</a>
   </aside>
 
   <div class="profile-card">
     <h1 class="settings-card__title">Изменить данные</h1>
     <div class="profile-card__avatar-block">
-      <div class="profile-avatar profile-avatar--button">
-      </div>
+      <div
+        class="profile-avatar profile-avatar--button"
+        style="background-image: url('{{avatar}}');"
+      >
       <div class="profile-card__name">
-        {{display_name}}
+        <a href="/profile/avatar" title="Поменять аватар" class="profile-link" data-link data-link-profile-avatar>
+          {{display_name}}
+        </a>
       </div>
-      <a href="/profile/avatar" class="profile-link">
-        Поменять аватар
-      </a>
     </div>
 
     <form class="profile-form" id="profile-edit-form">
