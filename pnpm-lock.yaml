@@ -33,6 +33,9 @@ importers:
       '@eslint/js':
         specifier: ^9.39.1
         version: 9.39.2
+      '@jest/globals':
+        specifier: ^30.2.0
+        version: 30.2.0
       '@types/cookie-parser':
         specifier: ^1.4.10
         version: 1.4.10(@types/express@5.0.6)
@@ -120,6 +123,9 @@ importers:
       prettier-plugin-handlebars:
         specifier: ^0.0.1
         version: 0.0.1
+      sinon:
+        specifier: ^21.0.1
+        version: 21.0.1
       stylelint:
         specifier: ^16.25.0
         version: 16.26.1(typescript@5.9.3)
@@ -1066,6 +1072,12 @@ packages:
   '@sinonjs/fake-timers@13.0.5':
     resolution: {integrity: sha512-36/hTbH2uaWuGVERyC6da9YwGWnzUZXuPro/F2LfsdOsLnCojz/iSH8MxUt/FD2S5XBSVPhmArFUXcpCQ2Hkiw==}
 
+  '@sinonjs/fake-timers@15.1.0':
+    resolution: {integrity: sha512-cqfapCxwTGsrR80FEgOoPsTonoefMBY7dnUEbQ+GRcved0jvkJLzvX6F4WtN+HBqbPX/SiFsIRUp+IrCW/2I2w==}
+
+  '@sinonjs/samsam@8.0.3':
+    resolution: {integrity: sha512-hw6HbX+GyVZzmaYNh82Ecj1vdGZrqVIn/keDTg63IgAwiQPO+xCz99uG6Woqgb4tM0mUiFENKZ4cqd7IX94AXQ==}
+
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
 
@@ -1822,6 +1834,10 @@ packages:
   detect-newline@3.1.0:
     resolution: {integrity: sha512-TLz+x/vEXm/Y7P7wn1EJFNLxYpUD4TgMosxY6fAVJUnJMbupHBOncxyWUG9OpTaH9EBD7uFI5LfEgmMOc54DsA==}
     engines: {node: '>=8'}
+
+  diff@8.0.3:
+    resolution: {integrity: sha512-qejHi7bcSD4hQAZE0tNAawRK1ZtafHDmMTMkrrIGgSLl7hTnQHmKCeB45xAcbfTqK2zowkM3j3bHt/4b/ARbYQ==}
+    engines: {node: '>=0.3.1'}
 
   dir-glob@3.0.1:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
@@ -3263,6 +3279,9 @@ packages:
   simple-html-tokenizer@0.5.11:
     resolution: {integrity: sha512-C2WEK/Z3HoSFbYq8tI7ni3eOo/NneSPRoPpcM7WdLjFOArFuyXEjAoCdOC3DgMfRyziZQ1hCNR4mrNdWEvD0og==}
 
+  sinon@21.0.1:
+    resolution: {integrity: sha512-Z0NVCW45W8Mg5oC/27/+fCqIHFnW8kpkFOq0j9XJIev4Ld0mKmERaZv5DMLAb9fGCevjKwaEeIQz5+MBXfZcDw==}
+
   sirv@3.0.2:
     resolution: {integrity: sha512-2wcC/oGxHis/BoHkkPwldgiPSYcpZK3JU28WoMVv55yHJgcZ8rlXvuG9iZggz+sU1d4bRgIGASwyWqjxu3FM0g==}
     engines: {node: '>=18'}
@@ -3505,6 +3524,10 @@ packages:
 
   type-detect@4.0.8:
     resolution: {integrity: sha512-0fr/mIH1dlO+x7TlcMy+bIDqKPsw/70tVyeHW787goQjhmqaZe10uwLujubK9q9Lg6Fiho1KUKDYz0Z7k7g5/g==}
+    engines: {node: '>=4'}
+
+  type-detect@4.1.0:
+    resolution: {integrity: sha512-Acylog8/luQ8L7il+geoSxhEkazvkslg7PSNKOX59mbB9cOveP5aq9h74Y7YU8yDpJwetzQQrfIwtf4Wp4LKcw==}
     engines: {node: '>=4'}
 
   type-fest@0.20.2:
@@ -4662,6 +4685,15 @@ snapshots:
     dependencies:
       '@sinonjs/commons': 3.0.1
 
+  '@sinonjs/fake-timers@15.1.0':
+    dependencies:
+      '@sinonjs/commons': 3.0.1
+
+  '@sinonjs/samsam@8.0.3':
+    dependencies:
+      '@sinonjs/commons': 3.0.1
+      type-detect: 4.1.0
+
   '@standard-schema/spec@1.1.0': {}
 
   '@tybys/wasm-util@0.10.1':
@@ -5515,6 +5547,8 @@ snapshots:
   depd@2.0.0: {}
 
   detect-newline@3.1.0: {}
+
+  diff@8.0.3: {}
 
   dir-glob@3.0.1:
     dependencies:
@@ -7341,6 +7375,14 @@ snapshots:
 
   simple-html-tokenizer@0.5.11: {}
 
+  sinon@21.0.1:
+    dependencies:
+      '@sinonjs/commons': 3.0.1
+      '@sinonjs/fake-timers': 15.1.0
+      '@sinonjs/samsam': 8.0.3
+      diff: 8.0.3
+      supports-color: 7.2.0
+
   sirv@3.0.2:
     dependencies:
       '@polka/url': 1.0.0-next.29
@@ -7608,6 +7650,8 @@ snapshots:
       prelude-ls: 1.2.1
 
   type-detect@4.0.8: {}
+
+  type-detect@4.1.0: {}
 
   type-fest@0.20.2: {}
 

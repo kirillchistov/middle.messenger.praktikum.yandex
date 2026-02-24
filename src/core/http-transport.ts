@@ -22,22 +22,6 @@ export class HTTPTransport {
     this.baseUrl = `${API_BASE_URL}${basePath}`;
   }
 
-  // get<T = unknown>(url: string, options: RequestOptions = {}): Promise<T> {
-  //   return this.request<T>(url, 'GET', options);
-  // }
-
-  // post<T = unknown>(url: string, options: RequestOptions = {}): Promise<T> {
-  //   return this.request<T>(url, 'POST', options);
-  // }
-
-  // put<T = unknown>(url: string, options: RequestOptions = {}): Promise<T> {
-  //   return this.request<T>(url, 'PUT', options);
-  // }
-
-  // delete<T = unknown>(url: string, options: RequestOptions = {}): Promise<T> {
-  //   return this.request<T>(url, 'DELETE', options);
-  // }
-
   // используем тип и удаляем дублирование в аргументах
   get: HTTPMethod = (url, options = {}) => (
     this.request(url, METHODS.GET, options)

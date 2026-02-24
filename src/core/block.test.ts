@@ -2,7 +2,6 @@
 import {
   describe,
   it, expect,
-  // vi,
 } from 'vitest';
 import { Block } from './block';
 import type { BlockProps } from '@/types/block-props';
