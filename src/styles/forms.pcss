@@ -1,13 +1,28 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-3);
 }
 
+/* уменьшаем gap внутри поля */
 .form__field {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
+}
+
+/* ошибки более компактны */
+.form__error {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #e53935;
+  min-height: 6px;
+}
+
+/* Глобальная ошибка формы чуть отступает от полей */
+.form__error--global {
+  margin-top: 8px;
 }
 
 .form__label {
@@ -38,14 +53,6 @@
 .form__input--file {
   padding: var(--space-2) 0;
   background: transparent;
-}
-
-.form__error {
-  margin-top: 4px;
-  font-size: 12px;
-  line-height: 1.4;
-  color: #e53935;
-  min-height: 6px;
 }
 
 .btn {

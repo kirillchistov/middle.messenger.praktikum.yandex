@@ -3,7 +3,10 @@ import { BLOCK_EVENTS } from '../types/block-events';
 import type { BlockEventMap } from '../types/block-event-map';
 import type { BlockProps } from '../types/block-props';
 
+// export type BlockProps = Record<string, unknown>;
+
 export abstract class Block<P extends BlockProps = BlockProps> {
+  protected props: P;
   static EVENTS = BLOCK_EVENTS;
 
   private eventBus: EventBus<BlockEventMap>;
@@ -11,8 +14,6 @@ export abstract class Block<P extends BlockProps = BlockProps> {
   private _element: HTMLElement | null = null;
 
   private _meta: { tagName: keyof HTMLElementTagNameMap; props: P };
-
-  protected props: P;
 
   // Для отписки от слушателей + EventTarget
   // локальные слушатели (на элементах самого блока)
@@ -45,19 +46,6 @@ export abstract class Block<P extends BlockProps = BlockProps> {
       target.removeEventListener(type, handler as EventListener);
     });
   }
-
-  // private _unsubscribeListeners: Array<() => void> = [];
-
-  // protected addDOMListener(
-  //   target: EventTarget,
-  //   type: string,
-  //   handler: (event: Event) => void,
-  // ): void {
-  //   target.addEventListener(type, handler as EventListener);
-  //   this._unsubscribeListeners.push(() => {
-  //     target.removeEventListener(type, handler as EventListener);
-  //   });
-  // }
 
   constructor(tagName: keyof HTMLElementTagNameMap = 'div', props = {} as P) {
     this.eventBus = new EventBus<BlockEventMap>();
@@ -172,13 +160,13 @@ export abstract class Block<P extends BlockProps = BlockProps> {
     if (!this._element) return;
 
     // До удаления считаю число слушателей
-    this.logLocalListeners('listeners before remove');
+    // this.logLocalListeners('listeners before remove');
 
     // снимаю локальные слушатели
-    this.removeLocalDOMListeners();
+    // this.removeLocalDOMListeners();
 
     // После удаления считаю число слушателей
-    this.logLocalListeners('listeners after remove');
+    // this.logLocalListeners('listeners after remove');
 
     // безопасно создаю DOM из строки во временном контейнере
     const tpl = document.createElement('template');
@@ -242,13 +230,13 @@ export abstract class Block<P extends BlockProps = BlockProps> {
     this._unsubscribeGlobalListeners = [];
   }
 
-  protected logLocalListeners(tag: string): void {
-    // eslint-disable-next-line no-console
-    console.log(`[Block:${this.constructor.name}] ${tag}`, {
-      count: this._unsubscribeLocalListeners.length,
-      handlers: this._unsubscribeLocalListeners,
-    });
-  }
+  // protected logLocalListeners(tag: string): void {
+  // eslint-disable-next-line no-console
+  // console.log(`[Block:${this.constructor.name}] ${tag}`, {
+  //   count: this._unsubscribeLocalListeners.length,
+  //   handlers: this._unsubscribeLocalListeners,
+  // });
+  // }
 
   public destroy(): void {
     this.removeLocalDOMListeners();

@@ -10,105 +10,42 @@
     <input
       type="text"
       class="chat-sidebar__search-input"
-      placeholder="Поиск"
+      placeholder="Поиск по чатам"
       aria-label="Поиск по чатам"
+      data-chats-search
     />
+  </div>
+  <div class="chat-sidebar__create-wrapper">
+    <button
+      id="open-create-chat"
+      class="chat-sidebar__create-btn"
+      type="button"
+    >
+      + Новый чат
+    </button>
   </div>
 
   <div class="chat-sidebar__body">
-    <button class="btn btn--ghost btn--full chat-sidebar__new-chat">
-      + Новый чат
-    </button>
+    <div
+      id="create-chat-panel"
+      class="chat-sidebar__create-panel"
+    >
+      <form id="create-chat-form" class="chat-sidebar__create-form">
+        <input
+          name="title"
+          type="text"
+          class="chat-sidebar__create-input"
+          placeholder="Название чата"
+        />
+        <button class="btn btn--primary chat-sidebar__create-submit" type="submit">
+          Создать чат
+        </button>
+      </form>
+    </div>
 
     <nav class="chat-sidebar__list">
-
-      <button class="chat-sidebar__item">
-        <div class="chat-sidebar__item-top">
-          <div class="chat-sidebar__item-avatar">А</div>
-          <span class="chat-sidebar__item-title">Андрей</span>
-          <span class="chat-sidebar__item-time">15:49</span>
-        </div>
-        <div class="chat-sidebar__item-bottom">
-          <span class="chat-sidebar__item-subtitle">Изображение</span>
-          <span class="chat-sidebar__badge">2</span>
-        </div>
-      </button>
-
-      <button class="chat-sidebar__item chat-sidebar__item--active">
-        <div class="chat-sidebar__item-top">
-          <div class="chat-sidebar__item-avatar">Т</div>
-          <span class="chat-sidebar__item-title">тет-а-теты</span>
-          <span class="chat-sidebar__item-time">12:12</span>
-        </div>
-        <div class="chat-sidebar__item-bottom">
-          <span class="chat-sidebar__item-subtitle">Вы: Круто!</span>
-          <span class="chat-sidebar__badge">4</span>
-        </div>
-      </button>
-
-      <button class="chat-sidebar__item">
-        <div class="chat-sidebar__item-top">
-          <div class="chat-sidebar__item-avatar">К</div>
-          <span class="chat-sidebar__item-title">Киноклуб</span>
-          <span class="chat-sidebar__item-time">12:00</span>
-        </div>
-        <div class="chat-sidebar__item-bottom">
-          <span class="chat-sidebar__item-subtitle">
-            Миллионы россиян ежедневно проводят десятки часов…
-          </span>
-          <span class="chat-sidebar__badge">2</span>
-        </div>
-      </button>
-
-      <button class="chat-sidebar__item">
-        <div class="chat-sidebar__item-top">
-          <div class="chat-sidebar__item-avatar">D</div>
-          <span class="chat-sidebar__item-title">Day</span>
-          <span class="chat-sidebar__item-time">Пт</span>
-        </div>
-        <div class="chat-sidebar__item-bottom">
-          <span class="chat-sidebar__item-subtitle">
-            Так увлёкся работой по курсу, что совсем забыл его анонсир…
-          </span>
-        </div>
-      </button>
-
-      <button class="chat-sidebar__item">
-        <div class="chat-sidebar__item-top">
-          <div class="chat-sidebar__item-avatar">D</div>
-          <span class="chat-sidebar__item-title">Design Destroyer</span>
-          <span class="chat-sidebar__item-time">Чт</span>
-        </div>
-        <div class="chat-sidebar__item-bottom">
-          <span class="chat-sidebar__item-subtitle">
-            И Human Interface Guidelines и Material Design рекомендуют…
-          </span>
-        </div>
-      </button>
-
-      <button class="chat-sidebar__item">
-        <div class="chat-sidebar__item-top">
-          <div class="chat-sidebar__item-avatar">К</div>
-          <span class="chat-sidebar__item-title">Киноклуб</span>
-          <span class="chat-sidebar__item-time">Ср</span>
-        </div>
-        <div class="chat-sidebar__item-bottom">
-          <span class="chat-sidebar__item-subtitle">Вы: стикер</span>
-          <span class="chat-sidebar__badge">1</span>
-        </div>
-      </button>
-
-      <button class="chat-sidebar__item">
-        <div class="chat-sidebar__item-top">
-          <div class="chat-sidebar__item-avatar">С</div>
-          <span class="chat-sidebar__item-title">Стас Рогозин</span>
-          <span class="chat-sidebar__item-time">Вт</span>
-        </div>
-        <div class="chat-sidebar__item-bottom">
-          <span class="chat-sidebar__item-subtitle">Можно или сегодня или завтра вечером.</span>
-          {{!-- <span class="chat-sidebar__badge">1</span> --}}
-        </div>
-      </button>
+      {{!-- Cписок чатов заполняется из JS в [data-chats-list] --}}
+      <ul class="chat-list" data-chats-list></ul>
     </nav>
   </div>
 </aside>

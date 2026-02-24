@@ -6,9 +6,24 @@
 }
 
 .app-shell {
+  /* height: 100vh;
+  display: flex; */
   max-width: 1120px;
   margin: 0 auto;
   padding: var(--space-6) var(--space-4);
+}
+
+.app-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 24px;
+}
+
+.app-header nav {
+  display: flex;
+  gap: 12px;
+  align-items: center;
 }
 
 .theme-toggle {
@@ -269,14 +284,20 @@
 .profile-avatar {
   width: 120px;
   height: 120px;
-  border-radius: 999px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background-color: var(--color-text-primary);
 }
 
 .profile-avatar--button {
   border: none;
   background-color: var(--color-text-secondary);
-  background-image: url("/assets/avatar-transp.png");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
   color: var(--color-bg-elevated);
   font-size: var(--font-size-sm);
   text-align: center;
@@ -595,3 +616,39 @@ html[data-theme="dark"] .landing-hero__badge {
   }
 }
 
+.toast-root {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.toast {
+  min-width: 240px;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background-color: #1f2933;
+  color: #fff;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.toast--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast--success {
+  background-color: #059669;
+}
+
+.toast--error {
+  background-color: #dc2626;
+}

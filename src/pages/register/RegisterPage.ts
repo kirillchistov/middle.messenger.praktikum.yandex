@@ -1,16 +1,16 @@
 /* eslint-disable import/extensions */
 import { Block } from '@core/block';
-import { createFormValidation } from '@utils/formValidation';
 import { renderTemplate } from '@utils/renderTemplate';
-// import { renderTemplateToFragment } from '@/utils/renderTemplate';
+import { createFormValidation } from '@utils/formValidation';
 import template from './register.hbs?raw';
+import { ApiError, AuthAPI, SignUpData } from '@/api/auth-api';
+import { store } from '@/core/store';
+import { router } from '@/core/router';
 
 type RegisterProps = Record<string, never>;
 
 export class RegisterPage extends Block<RegisterProps> {
-  constructor(props: RegisterProps = {}) {
-    super('div', props);
-  }
+  // используем базовый конструктор Block
 
   protected componentDidMount(): void {
     const root = this.getContent();
@@ -18,56 +18,95 @@ export class RegisterPage extends Block<RegisterProps> {
 
     const form = root.querySelector<HTMLFormElement>('#register-form');
     if (!form) {
-      // eslint-disable-next-line no-console
-      console.warn('[RegisterPage] форма потерялась');
       return;
     }
 
+    const errorEl = root.querySelector<HTMLElement>('[data-form-error]');
+
     const { validateField, validateForm } = createFormValidation(form, {
-      logOnSuccess: true,
+      logOnSuccess: false,
     });
 
     const inputs = Array.from(
-      form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input, textarea'),
+      form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
+        'input, textarea',
+      ),
     );
 
     inputs.forEach((input) => {
-      this.addDOMListener(input, 'blur', (event) => {
-        const e = event as FocusEvent;
-        const { target } = e;
+      this.addDOMListener(input, 'blur', (event: FocusEvent) => {
+        const { target } = event;
         if (
-          target instanceof HTMLInputElement
-          || target instanceof HTMLTextAreaElement
+          target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement
         ) {
           validateField(target);
         }
       });
     });
 
-    this.addDOMListener(form, 'submit', (event) => {
-      const e = event as SubmitEvent;
-      e.preventDefault();
+    this.addDOMListener(form, 'submit', async (event: SubmitEvent) => {
+      event.preventDefault();
 
-      const result = validateForm();
-      console.log('[RegisterPage] validateForm result', result);
+      if (errorEl) {
+        errorEl.textContent = '';
+      }
 
-      const { valid } = result;
+      const valid = validateForm();
       if (!valid) {
         // eslint-disable-next-line no-console
-        console.warn('[RegisterPage] форма невалидна — отправка отменена');
+        console.warn('RegisterPage: form is not valid');
         return;
       }
 
-      // eslint-disable-next-line no-console
-      console.log('[RegisterPage] форма успешно отправлена');
+      const formData = new FormData(form);
+
+      const password = String(formData.get('password') ?? '');
+      const passwordConfirm = String(formData.get('password_confirm') ?? '');
+
+      if (password !== passwordConfirm) {
+        if (errorEl) {
+          errorEl.textContent = 'Пароли не совпадают';
+        }
+        return;
+      }
+
+      const payload: SignUpData = {
+        email: String(formData.get('email') ?? ''),
+        login: String(formData.get('login') ?? ''),
+        first_name: String(formData.get('first_name') ?? ''),
+        second_name: String(formData.get('second_name') ?? ''),
+        phone: String(formData.get('phone') ?? ''),
+        password,
+      };
+
+      try {
+        // Последовательное выполнение: sign-up, sign-in, get-user
+        await AuthAPI.signUp(payload);
+        await AuthAPI.signIn({
+          login: payload.login,
+          password: payload.password,
+        });
+        const user = await AuthAPI.getUser();
+
+        store.setState({ user });
+        router.go('/messenger');
+      } catch (error: unknown) {
+        const apiError = (error && typeof error === 'object' && 'reason' in error)
+          ? (error as ApiError)
+          : null;
+
+        const reason = apiError?.reason;
+
+        // eslint-disable-next-line no-console
+        console.error('RegisterPage signUp error', error);
+        if (errorEl) {
+          errorEl.textContent = reason || 'Не удалось зарегистрироваться. Проверьте данные и попробуйте ещё раз.';
+        }
+      }
     });
   }
 
   protected render(): string {
     return renderTemplate(template, this.props);
   }
-
-  // protected render(): DocumentFragment {
-  //   return renderTemplateToFragment(template, this.props);
-  // }
 }

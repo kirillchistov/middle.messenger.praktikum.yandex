@@ -1,17 +1,5 @@
 // import Handlebars from 'handlebars';
 
-// export const renderTemplateToFragment = (
-//   template: string,
-//   context: Record<string, unknown>,
-// ): DocumentFragment => {
-//   const html = Handlebars.compile(template)(context);
-
-//   const tpl = document.createElement('template');
-//   tpl.innerHTML = html;
-
-//   return tpl.content;
-// };
-
 export function renderTemplate<TContext extends object>(
   template: string,
   context: TContext,

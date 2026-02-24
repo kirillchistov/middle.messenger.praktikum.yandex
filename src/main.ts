@@ -1,9 +1,19 @@
+/* eslint-disable import/extensions */
+// Импортируем store и API авторизации
+// Меняем роутинг по ссылкам на роутинг по путям
 import Handlebars from 'handlebars';
 import { registerHandlebarsPartials } from './utils/registerPartials';
-import { Block } from './core/block';
+import { registerHandlebarsHelpers } from './utils/handlebars-helpers';
+// import { Block } from './core/block';
+import { router } from './core/router';
+import { store } from './core/store';
+import { AuthAPI } from './api/auth-api';
+
+import { withLayout } from '@/hoc/withLayout';
 
 import { RegisterPage } from './pages/register';
 import { LoginPage } from './pages/login';
+import { LogoutPage } from './pages/logout';
 import { ChatsPage } from './pages/chats';
 import { Error404Page } from './pages/error-404';
 import { Error5xxPage } from './pages/error-5xx';
@@ -26,6 +36,35 @@ import './styles/components/button.pcss';
 // ---------- Общий UI (тема, меню, модалки) ----------
 
 window.Handlebars = Handlebars;
+
+const protectedPaths = ['/messenger', '/chats', '/chat', '/settings'];
+
+const isProtectedPath = (path: string): boolean => protectedPaths.includes(path)
+  || path.startsWith('/profile');
+
+const navigate = (path: string): void => {
+  const state = store.getState();
+
+  // авторизованный пользователь не должен на /login /register /sign-up
+  if ((path === '/login' || path === '/register' || path === '/sign-up') && state.user) {
+    router.go('/messenger');
+    return;
+  }
+
+  // лендинг '/' доступен всем
+  if (path === '/') {
+    router.go('/');
+    return;
+  }
+
+  // защита приватных путей
+  if (!state.user && isProtectedPath(path)) {
+    router.go('/login');
+    return;
+  }
+
+  router.go(path);
+};
 
 const setupThemeToggle = (): void => {
   const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
@@ -51,58 +90,21 @@ const setupNavToggle = (): void => {
   });
 };
 
-// const setupModals = (): void => {
-//   // user-модалки
-//   const addModal = document.getElementById('user-modal-add');
-//   const removeModal = document.getElementById('user-modal-remove');
-//   const userBackdrop = document.getElementById('user-modal-backdrop');
+const setupLinkInterception = (): void => {
+  document.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement | null;
+    if (!target) return;
 
-//   if (addModal && removeModal && userBackdrop) {
-//     const closeAllUsers = () => {
-//       addModal.classList.remove('chat-user-modal--open');
-//       removeModal.classList.remove('chat-user-modal--open');
-//       userBackdrop.classList.remove('chat-user-backdrop--open');
-//     };
+    const link = target.closest<HTMLElement>('[data-link]');
+    if (!link) return;
 
-//     userBackdrop.addEventListener('click', closeAllUsers);
+    const path = link.getAttribute('data-link') || link.getAttribute('href');
+    if (!path) return;
 
-//     addModal.addEventListener('click', (e) => {
-//       if (!(e.target instanceof HTMLElement)) return;
-//       if (!e.target.closest('.modal')) closeAllUsers();
-//     });
-
-//     removeModal.addEventListener('click', (e) => {
-//       if (!(e.target instanceof HTMLElement)) return;
-//       if (!e.target.closest('.modal')) closeAllUsers();
-//     });
-
-//     document.addEventListener('keydown', (e) => {
-//       if (e.key === 'Escape') closeAllUsers();
-//     });
-//   }
-
-//   // upload-модалка
-//   const uploadModal = document.getElementById('upload-modal');
-//   const uploadBackdrop = document.getElementById('upload-backdrop');
-//   const uploadClose = document.getElementById('upload-close');
-
-//   if (uploadModal && uploadBackdrop) {
-//     const closeUpload = () => {
-//       uploadModal.classList.remove('chat-upload-modal--open');
-//       uploadBackdrop.classList.remove('chat-upload-backdrop--open');
-//     };
-
-//     uploadClose?.addEventListener('click', closeUpload);
-//     uploadBackdrop.addEventListener('click', closeUpload);
-//     uploadModal.addEventListener('click', (e) => {
-//       if (!(e.target instanceof HTMLElement)) return;
-//       if (!e.target.closest('.modal')) closeUpload();
-//     });
-//     document.addEventListener('keydown', (e) => {
-//       if (e.key === 'Escape') closeUpload();
-//     });
-//   }
-// };
+    event.preventDefault();
+    navigate(path);
+  });
+};
 
 const setupCommonUI = (): void => {
   if (
@@ -114,61 +116,77 @@ const setupCommonUI = (): void => {
 
   setupThemeToggle();
   setupNavToggle();
+  setupLinkInterception();
 };
 
 // ---------- Инициализация страницы по pathname ----------
 
-const initApp = (): void => {
+const initApp = async (): Promise<void> => {
   registerHandlebarsPartials();
+  registerHandlebarsHelpers();
   setupCommonUI();
 
-  const rootSelector = '#app';
-  const root = document.querySelector(rootSelector);
-  if (!root) return;
+  // регистрируем роуты
+  router
+    .use('/', LandingPage) // будет перевод на /login
+    .use('/sign-up', RegisterPage) // дубль на всякий
+    .use('/register', RegisterPage)
+    .use('/login', LoginPage)
+    .use('/sign-in', LoginPage) // дубль на всякий
+    .use('/logout', LogoutPage)
+    .use('/messenger', ChatsPage)
+    .use('/chat', ChatsPage) // дубль на всякий
+    .use('/chats', ChatsPage) // дубль на всякий
+    .use('/profile', withLayout(ProfileViewPage))
+    .use('/profile/edit', withLayout(ProfileEditPage))
+    .use('/profile/avatar', withLayout(ProfileAvatarPage))
+    .use('/profile/password', withLayout(ProfilePasswordPage))
+    .use('/settings', withLayout(ProfileViewPage))
+    .use('/404', Error404Page)
+    .use('/5xx', Error5xxPage)
+    .use('/500', Error5xxPage); // дубль на всякий
 
-  const path = window.location.pathname;
+  try {
+    const user = await AuthAPI.getUser();
 
-  let pageInstance: Block;
-  // | LandingPage
-  // | RegisterPage
-  // | LoginPage
-  // | ChatsPage
-  // | ProfileViewPage
-  // | ProfileEditPage
-  // | ProfileAvatarPage
-  // | ProfilePasswordPage
-  // | Error404Page
-  // | Error5xxPage;
+    if (user) {
+      store.setState({ user });
+      const path = window.location.pathname;
 
-  if (path === '/' || path === '/index.html') {
-    pageInstance = new LandingPage();
-  } else if (path.startsWith('/chats')) {
-    pageInstance = new ChatsPage();
-  } else if (path === '/register' || path === '/register.html') {
-    pageInstance = new RegisterPage();
-  } else if (path === '/login' || path === '/login.html') {
-    pageInstance = new LoginPage();
-  } else if (path === '/profile' || path === '/profile-view.html') {
-    pageInstance = new ProfileViewPage();
-  } else if (path === '/profile/edit' || path === '/profile-edit.html') {
-    pageInstance = new ProfileEditPage();
-  } else if (path === '/profile/avatar' || path === '/profile-avatar.html') {
-    pageInstance = new ProfileAvatarPage();
-  } else if (path === '/profile/password' || path === '/profile-password.html') {
-    pageInstance = new ProfilePasswordPage();
-  } else if (path === '/error-404' || path === '/error-404.html') {
-    pageInstance = new Error404Page();
-  } else if (path === '/error-5xx' || path === '/error-5xx.html') {
-    pageInstance = new Error5xxPage();
-  } else {
-    pageInstance = new ChatsPage();
+      // авторизованный пользователь не должен сидеть на /login, /register, /sign-up
+      if (path === '/login'
+        || path === '/sign-in'
+        || path === '/register'
+        || path === '/sign-up') {
+        router.go('/messenger');
+        return;
+      }
+      // лендинг '/' доступен всем — не трогаем
+    } else {
+      store.setState({ user: null });
+      const path = window.location.pathname;
+
+      // гость не может на защищённые роуты
+      if (isProtectedPath(path)) {
+        router.go('/login');
+        return;
+      }
+    }
+  } catch {
+    store.setState({ user: null });
+    const path = window.location.pathname;
+    if (isProtectedPath(path)) {
+      router.go('/login');
+      return;
+    }
   }
 
-  // root.innerHTML = '';
-  while (root.firstChild) {
-    root.removeChild(root.firstChild);
-  }
-  pageInstance.mount(rootSelector);
+  router.start();
 };
 
-document.addEventListener('DOMContentLoaded', initApp);
+document.addEventListener('DOMContentLoaded', () => {
+  initApp().catch((error) => {
+    // eslint-disable-next-line no-console
+    console.error('[initApp] unhandled error', error);
+  });
+});

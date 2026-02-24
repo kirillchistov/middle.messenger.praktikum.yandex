@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "deploy:branch": "npm run build && node ./scripts/deploy-to-branch.cjs",
     "typecheck": "tsc -b",
     "lint": "eslint \"src/**/*.{ts,tsx,js,jsx}\"",
     "preview": "vite preview",
@@ -16,6 +17,9 @@
     "node": ">=18.x"
   },
   "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
     "handlebars": "^4.7.8",
     "nanoid": "^5.1.6",
     "react": "^19.2.0",
@@ -23,10 +27,14 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
     "@types/handlebars": "^4.1.0",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
+    "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "7",
     "@typescript-eslint/parser": "7",
     "@vitejs/plugin-react": "^5.1.1",

@@ -1,5 +1,3 @@
-// Реализация EventBus cо строгой типизацией
-
 export type EventMap = Record<string, unknown[]>;
 
 type Listener<Args extends unknown[]> = (...args: Args) => void;

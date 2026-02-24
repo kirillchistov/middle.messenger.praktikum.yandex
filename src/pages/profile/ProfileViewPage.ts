@@ -1,8 +1,10 @@
 /* eslint-disable import/extensions */
 import { renderTemplate } from '@utils/renderTemplate';
+import { store } from '@/core/store';
+import type { UserDTO } from '@/api/auth-api';
 import { Block } from '@/core/block';
+import { FILES_BASE } from '@/utils/constants';
 import template from './ProfileView.hbs?raw';
-// import { renderTemplateToFragment } from '@/utils/renderTemplate';
 
 type ProfileViewProps = {
   email: string;
@@ -14,16 +16,27 @@ type ProfileViewProps = {
   avatar: string;
 };
 
-export class ProfileViewPage extends Block<ProfileViewProps> {
+const buildAvatarUrl = (path: string | null | undefined): string => {
+  if (path) {
+    return `${FILES_BASE}${path}`;
+  }
+  return '/assets/avatar-transp.png';
+};
+// export class ProfileViewPage extends Block<ProfileViewProps> {
+export default class ProfileViewPage extends Block {
   constructor(props?: Partial<ProfileViewProps>) {
+    const state = store.getState();
+    const user = state.user as UserDTO | null;
+    const userAvatar = user?.avatar ?? null;
+
     const defaults: ProfileViewProps = {
-      email: 'ivan@example.com',
-      login: 'ivanivanov',
-      first_name: 'Иван',
-      second_name: 'Иванов',
-      display_name: 'Иван',
-      phone: '+79991234567',
-      avatar: '/images/avatar-placeholder.png',
+      email: user?.email ?? 'ivan@example.com',
+      login: user?.login ?? 'ivanivanov',
+      first_name: user?.first_name ?? 'Иван',
+      second_name: user?.second_name ?? 'Иванов',
+      display_name: user?.display_name ?? user?.first_name ?? '',
+      phone: user?.phone ?? '+79991234567',
+      avatar: buildAvatarUrl(userAvatar),
     };
 
     super('div', { ...defaults, ...props } as ProfileViewProps);

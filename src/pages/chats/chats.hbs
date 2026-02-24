@@ -3,21 +3,20 @@
     <div class="landing-nav__inner">
       <div class="landing-nav__brand">
         <span class="landing-nav__dot"></span>
-        <a href="/" class="landing-nav__link">
+        <a href="/" class="landing-nav__link" data-link data-link-home>
           <span>Chat App</span>
         </a>
       </div>
       <nav class="landing-nav__links" id="nav-links">
-           <a href="/profile" class="landing-nav__link landing-nav__link--primary">Профиль</a>
-          <a href="/login" class="landing-nav__link">Выход</a>
-        {{!-- <button
-          class="theme-toggle"
-          type="button"
-          data-theme-toggle
-          id="nav-theme-toggle"
+        <a
+          href="/settings"
+          class="landing-nav__link landing-nav__link--primary"
+          data-link
+          data-link-profile
         >
-          Тема
-        </button> --}}
+          Профиль
+        </a>
+        <a href="/logout" class="landing-nav__link" data-link-logout data-logout>Выход</a>
       </nav>
     </div>
   </header>
@@ -25,128 +24,207 @@
   <section class="chat-layout">
     {{> chat-sidebar}}
 
-        <div class="chat-main">
-            {{!-- Хедер открытого чата "тет-а-теты" --}}
-            <header class="chat-thread__header">
-              <div class="chat-thread__left">
-                <div class="chat-thread__avatar">Г</div>
-                <div>
-                  <h2 class="chat-thread__title">тет-а-теты</h2>
-                  <p class="chat-thread__subtitle">Групповой чат с мега‑экспертами</p>
-                </div>
-                <div class="chat-thread__all">
-                  <button
-                    class="chat-thread__hamburger"
-                    type="button"
-                    aria-label="Все чаты"
-                  >
-                    ☰
-                    <span class="chat-thread__hamburger-text">Все чаты</span>
-                  </button>
-                </div>
-
-              </div>
-
-              <div class="chat-thread__right">
-                <a href="/profile" class="link">ivanivanov</a>
-
-                <div class="chat-thread__menu">
-                  <button
-                      id="chat-menu-toggle"
-                      class="chat-thread__menu-btn"
-                      type="button"
-                  >
-                      ⋮
-                  </button>
-
-                  <div id="chat-menu" class="chat-thread__menu-dropdown">
-                    <button
-                        class="chat-thread__menu-item"
-                        type="button"
-                        data-modal-open="add-user"
-                    >
-                        Добавить пользователя
-                    </button>
-                    <button
-                        class="chat-thread__menu-item"
-                        type="button"
-                        data-modal-open="remove-user"
-                    >
-                        Удалить пользователя
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </header>
-
-            <div class="chat-thread__messages">
-                {{> chat-messages}}
-            </div>
-
-            <form class="chat-input" id="chat-message-form">
-              <div class="chat-input__inner">
-                  <div class="chat-input__attach-wrapper">
-                      <button
-                          id="attach-toggle"
-                          class="chat-input__icon-btn"
-                          type="button"
-                      >
-                        📎
-                      </button>
-
-                      <div id="attach-menu" class="chat-input__attach-menu">
-                          <button class="chat-input__attach-item" type="button">
-                              Фото или видео
-                          </button>
-                          <button class="chat-input__attach-item" type="button">
-                              Файл
-                          </button>
-                          <button class="chat-input__attach-item" type="button">
-                              Локация
-                          </button>
-                      </div>
-                  </div>
-
-                  <textarea
-                      class="chat-input__textarea"
-                      name="message"
-                      placeholder="Задайте вопрос про учебу, работу или отношения…"
-                  ></textarea>
-
-                  <button class="btn btn--primary chat-input__send" type="submit">
-                      Отправить
-                  </button>
-              </div>
-            </form>
+    <div class="chat-main">
+      <header class="chat-thread__header">
+        <div class="chat-thread__left">
+          <div class="chat-thread__avatar" data-chat-avatar>?</div>
+          <div>
+            <h2 class="chat-thread__title" data-chat-title>Выберите чат</h2>
+            <p class="chat-thread__subtitle" data-chat-subtitle>
+              {{!-- Сообщения появятся здесь, после выбора чата --}}
+            </p>
+          </div>
+          <div class="chat-thread__all">
+            <button
+              id="chat-avatar-change"
+              class="chat-thread__avatar-change-btn"
+              type="button"
+              aria-label="Изменить аватар чата"
+            >
+              ✎
+            </button>
+            <input
+              id="chat-avatar-input"
+              type="file"
+              accept="image/*"
+              hidden
+            />
+          </div>
         </div>
-    </section>
+
+        <div class="chat-thread__right">
+          <a
+            href="/settings"
+            class="link"
+            data-link
+            data-link-profile
+            data-chat-username
+          >
+            <!-- имя подставляется из store -->
+          </a>
+
+          <div class="chat-thread__menu">
+            <button
+              id="chat-menu-toggle"
+              class="chat-thread__menu-btn"
+              type="button"
+            >
+              ⋮
+            </button>
+            <div id="chat-menu" class="chat-thread__menu-dropdown">
+              <button
+                class="chat-thread__menu-item"
+                type="button"
+                data-modal-open="add-user"
+              >
+                Добавить пользователя
+              </button>
+              <button
+                class="chat-thread__menu-item"
+                type="button"
+                data-modal-open="remove-user"
+              >
+                Удалить пользователя
+              </button>
+              <button
+                class="chat-thread__menu-item"
+                type="button"
+                data-chat-action="change-avatar"
+              >
+                Изменить аватар чата
+              </button>
+              <button
+                class="chat-thread__menu-item"
+                type="button"
+                data-chat-action="leave-chat"
+              >
+                Покинуть чат
+              </button>
+              <button
+                class="chat-thread__menu-item"
+                type="button"
+                data-chat-action="delete-chat"
+              >
+                Удалить чат
+              </button>
+            </div>
+          </div>
+          <input
+            id="chat-avatar-input"
+            type="file"
+            accept="image/*"
+            hidden
+          />
+        </div>
+      </header>
+
+      <div class="chat-thread__messages" data-chat-messages>
+        {{!-- сюда рисуем сообщения --}}
+      </div>
+
+      <form class="chat-input" id="chat-message-form">
+        <div class="chat-input__inner">
+          <div class="chat-input__attach-wrapper">
+            <button
+              id="attach-toggle"
+              class="chat-input__icon-btn"
+              type="button"
+            >
+              📎
+            </button>
+
+            <div id="attach-menu" class="chat-input__attach-menu">
+              <button
+                class="chat-input__attach-item"
+                type="button"
+                data-type="photo"
+              >
+                Фото или видео
+              </button>
+              <button
+                class="chat-input__attach-item"
+                type="button"
+                data-type="file"
+              >
+                Файл
+              </button>
+              <button
+                class="chat-input__attach-item"
+                type="button"
+                data-type="location"
+              >
+                Локация
+              </button>
+            </div>
+          </div>
+
+          <textarea
+            class="chat-input__textarea"
+            name="message"
+            placeholder="Напишите сообщение…"
+          ></textarea>
+
+          <button class="btn btn--primary chat-input__send" type="submit">
+            Отправить
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
 
   <div class="chat-sidebar-backdrop" data-chat-sidebar-backdrop></div>
 
-  {{!-- Модалки добавления и удаления пользователя из чата --}}
+  {{!-- модалка добавления пользователя --}}
   <div id="user-modal-add" class="chat-user-modal">
     <div class="modal">
       <h2 class="modal__title">Добавить пользователя</h2>
+
       <div class="chat-user-modal__field">
-        <label class="form__label" for="add-login">Логин</label>
+        <label class="form__label" for="add-login">Логин пользователя</label>
         <input id="add-login" class="form__input" type="text" />
       </div>
+
       <div class="modal__actions">
-        <button class="btn btn--primary" type="button">Добавить в чат</button>
+        <button
+          id="user-modal-add-submit"
+          class="btn btn--primary"
+          type="button"
+        >
+          Добавить в чат
+        </button>
+        <button
+          id="user-modal-add-close"
+          class="btn btn--ghost"
+          type="button"
+        >
+          Закрыть
+        </button>
       </div>
+
+      <p class="chat-user-modal__error" data-user-modal-add-error></p>
     </div>
   </div>
 
+  {{!-- модалка удаления пользователя --}}
   <div id="user-modal-remove" class="chat-user-modal">
     <div class="modal">
-      <h2 class="modal__title">Удалить пользователя</h2>
-      <div class="chat-user-modal__field">
-        <label class="form__label" for="remove-login">Логин</label>
-        <input id="remove-login" class="form__input" type="text" />
-      </div>
+      <h2 class="modal__title">Участники чата</h2>
+
+      <ul class="chat-user-modal__list" data-chat-users>
+        {{!-- сюда подставим список через JS --}}
+      </ul>
+
       <div class="modal__actions">
-        <button class="btn btn--primary" type="button">Удалить из чата</button>
+        <button
+          id="user-modal-remove-close"
+          class="btn btn--ghost"
+          type="button"
+        >
+          Закрыть
+        </button>
       </div>
+
+      <p class="chat-user-modal__error" data-user-modal-remove-error></p>
     </div>
   </div>
 
@@ -155,14 +233,12 @@
   <div id="upload-modal" class="chat-upload-modal" data-modal="attach">
     <div class="modal">
       <h2 class="modal__title" data-modal-title>Загрузка файла</h2>
-        <input
-            id="upload-file"
-            name="avatar"
-            class="profile-form__input"
-            type="file"
-            accept="image/*"
-        />
-      {{!-- <p class="modal__text">Выберите файл.</p> --}}
+      <input
+        id="upload-file"
+        name="file"
+        class="profile-form__input"
+        type="file"
+      />
       <div class="modal__actions">
         <button id="upload-close" class="btn btn--primary" type="button">
           Закрыть
@@ -172,6 +248,4 @@
   </div>
 
   <div id="upload-backdrop" class="chat-upload-backdrop"></div>
-
 </div>
-
