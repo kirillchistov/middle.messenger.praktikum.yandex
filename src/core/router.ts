@@ -1,4 +1,3 @@
-// import { Block } from './block';
 import { BlockPageClass, Route } from './route';
 
 export class Router {
