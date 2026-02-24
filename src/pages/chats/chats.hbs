@@ -132,6 +132,7 @@
             >
               📎
             </button>
+            <input type="file" id="chat-file-input" hidden />
 
             <div id="attach-menu" class="chat-input__attach-menu">
               <button
@@ -166,6 +167,16 @@
 
           <button class="btn btn--primary chat-input__send" type="submit">
             Отправить
+          </button>
+        </div>
+        <div class="chat-thread__attachment" data-chat-attachment hidden>
+          <span class="chat-thread__attachment-name" data-chat-attachment-name></span>
+          <button
+            type="button"
+            class="chat-thread__attachment-remove"
+            data-chat-attachment-remove
+          >
+            ✕
           </button>
         </div>
       </form>

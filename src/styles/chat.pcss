@@ -966,3 +966,29 @@ html[data-theme="light"] .chat-input__textarea::placeholder {
 .chat-message--outgoing .chat-message__content {
   text-align: right;
 }
+
+.chat-thread__attachment {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: #f3f4f6;
+  font-size: 12px;
+}
+
+.chat-thread__attachment-name {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chat-thread__attachment-remove {
+  flex: 0 0 auto;
+  margin-left: 4px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+}

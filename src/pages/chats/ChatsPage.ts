@@ -446,6 +446,90 @@ export class ChatsPage extends Block<ChatsPageProps> {
     this.setupMenus(root);
   }
 
+  private setupSendMessage(root: HTMLElement): void {
+    const form = root.querySelector<HTMLFormElement>('#chat-message-form');
+    const textarea = root.querySelector<HTMLTextAreaElement>('#chat-message-input');
+    const attachBtn = root.querySelector<HTMLButtonElement>('[data-chat-attach]');
+    const fileInput = root.querySelector<HTMLInputElement>('#chat-file-input');
+    const attachmentEl = root.querySelector<HTMLElement>('[data-chat-attachment]');
+    const attachmentNameEl = root.querySelector<HTMLElement>('[data-chat-attachment-name]');
+    const attachmentRemoveBtn = root.querySelector<HTMLButtonElement>('[data-chat-attachment-remove]');
+
+    if (!form || !textarea || !attachBtn || !fileInput || !attachmentEl || !attachmentNameEl || !attachmentRemoveBtn) {
+      return;
+    }
+
+    let attachedFile: File | null = null;
+
+    // выбор файла
+    this.addDOMListener(attachBtn, 'click', () => {
+      fileInput.click();
+    });
+
+    this.addDOMListener(fileInput, 'change', () => {
+      const file = fileInput.files?.[0] ?? null;
+      attachedFile = file;
+
+      if (file) {
+        const { name } = file;
+        const short = name.length > 20 ? `${name.slice(0, 17)}…` : name;
+
+        attachmentNameEl.textContent = short;
+        attachmentEl.hidden = false;
+      } else {
+        attachmentNameEl.textContent = '';
+        attachmentEl.hidden = true;
+      }
+    });
+
+    // удаление вложения
+    this.addDOMListener(attachmentRemoveBtn, 'click', () => {
+      attachedFile = null;
+      fileInput.value = '';
+      attachmentNameEl.textContent = '';
+      attachmentEl.hidden = true;
+    });
+
+    // отправка сообщения
+    this.addDOMListener(form, 'submit', async (event) => {
+      event.preventDefault();
+
+      const text = textarea.value.trim();
+      if (!text && !attachedFile) return;
+
+      const chatId = store.getState().activeChatId;
+      if (!chatId || chatId === -1) return;
+
+      try {
+        if (attachedFile) {
+          // 1) отправляем файл на /resources
+          const fileFormData = new FormData();
+          fileFormData.append('resource', attachedFile);
+
+          const uploaded = await ChatsAPI.uploadFile(fileFormData);
+          // uploaded.file.path — путь до файла, зависит от твоего API
+          const filePath = uploaded?.file?.path ?? '';
+
+          if (filePath) {
+            chatSocket.sendFile(filePath);
+          }
+        }
+
+        if (text) {
+          chatSocket.sendMessage(text);
+        }
+
+        textarea.value = '';
+        attachedFile = null;
+        fileInput.value = '';
+        attachmentNameEl.textContent = '';
+        attachmentEl.hidden = true;
+      } catch (err: unknown) {
+        // eslint-disable-next-line no-console
+        console.error('[ChatsPage] send message/file failed', err);
+      }
+    });
+  }
   // Логика поиска по чатам (фильтр по ключевому слову)
   private setupSearch(root: HTMLElement): void {
     const input = root.querySelector<HTMLInputElement>('[data-chats-search]');
