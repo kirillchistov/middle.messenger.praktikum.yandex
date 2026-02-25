@@ -23,6 +23,10 @@
     "test:ui": "vitest --ui",
     "test:watch": "vitest --watch"
   },
+  "lint-staged": {
+  "src/**/*.{ts,tsx,js,jsx}": "eslint",
+  "src/**/*.{css,pcss,scss}": "stylelint"
+  },
   "engines": {
     "node": ">=18.x"
   },
