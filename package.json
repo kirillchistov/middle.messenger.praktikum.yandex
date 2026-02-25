@@ -12,6 +12,7 @@
     "lint:style": "stylelint \"src/**/*.{css,pcss,scss}\"",
     "typecheck": "tsc --noEmit",
     "lint:all": "npm run lint:ts && npm run lint:style && npm run typecheck && npm test",
+    "precommit": "npx lint-staged && npm run typecheck && npm test",
     "prepare:husky": "husky",
     "prepare": "node scripts/install-pre-commit.cjs",
     "preview": "vite preview",
