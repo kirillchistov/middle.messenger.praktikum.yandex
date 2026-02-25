@@ -49,7 +49,6 @@ describe('HTTPTransport (Jest)', () => {
   const OriginalXHR = global.XMLHttpRequest;
 
   beforeEach(() => {
-    // @ts-ignore
     (global as any).XMLHttpRequest = XHRMock as any;
   });
 
