@@ -64,8 +64,8 @@ npm run dev
 - [x] Написать тесты для компонента Block.
 - [x] Написать тесты для модуля отправки запросов (HTTPTransport). 
 - [x] Файлы с тестами хранить рядом с тестируемыми элементами.
-- [x] Настроить precommit на проект.
-- [x] Провести аудит пакетов, обновить их и привести в актуальное и безопасное состояние.
+- [x] Настроить pre-commit на проект (.husky).
+- [x] pnpm audit, обновить их и привести в актуальное и безопасное состояние.
 - [x] Обновить README.md проекта. 
 - [x] Проверить себя по [чек-листу](https://code.s3.yandex.net/web-developer/checklists-pdf/middle_frontend/pr4.pdf).
 - [x] PR4 to main [“Sprint 4”](https://github.com/kirillchistov/middle.messenger.praktikum.yandex/pull/4).

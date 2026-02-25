@@ -77,7 +77,8 @@ export class HTTPTransport {
         if (status >= 200 && status < 300) {
           resolve(response as R);
         } else {
-          reject({ status, ...(response || {}) });
+          // reject({ status, ...(response || {}) });
+          reject(new Error(`HTTP error: ${status}`));
         }
       };
 

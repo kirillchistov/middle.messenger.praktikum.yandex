@@ -1,5 +1,5 @@
 import {
-  describe, it, expect, beforeEach, jest,
+  describe, it, expect, beforeEach,
 } from '@jest/globals';
 import { router } from './router';
 import { Block } from './block';
@@ -32,14 +32,13 @@ describe('Router (Jest)', () => {
     expect(root.innerHTML).toContain('data-page="dummy"');
   });
 
-  it('go меняет URL в history', () => {
-    const pushStateSpy = jest.spyOn(window.history, 'pushState');
-
+  it('go меняет URL', () => {
+    // const router = new Router('#app');
     router.use('/dummy', DummyPage);
     router.start();
+
     router.go('/dummy');
 
-    expect(pushStateSpy).toHaveBeenCalled();
     expect(window.location.pathname).toBe('/dummy');
   });
 

@@ -7,7 +7,7 @@ export abstract class BaseAPI {
     this.http = new HTTPTransport(endpoint);
   }
 
-  // На случай, если забудете переопределить метод и используете его, — выстрелит ошибка
+  // Если не переопределить метод и использовать его, - ошибка
   create() { throw new Error('Not implemented'); }
 
   request() { throw new Error('Not implemented'); }

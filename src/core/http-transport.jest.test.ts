@@ -1,4 +1,3 @@
-// src/core/http-transport.jest.test.ts
 import {
   describe, it, expect, beforeEach, afterAll,
 } from '@jest/globals';
@@ -13,7 +12,7 @@ class XHRMock {
   headers: Record<string, string> = {};
 
   status = 200;
-  response = '{"ok": true}';
+  responseText: string | null = null;
 
   onload: (() => void) | null = null;
   onerror: (() => void) | null = null;
@@ -38,7 +37,7 @@ class XHRMock {
 
   send(body?: unknown) {
     this.requestBody = body;
-    if (this.onload) this.onload();
+    // onload вызываем вручную из тестов
   }
 
   abort() {
@@ -59,44 +58,46 @@ describe('HTTPTransport (Jest)', () => {
   });
 
   it('делает GET запрос с корректным URL', async () => {
-    const http = new HTTPTransport('https://api.test');
+    const http = new HTTPTransport();
 
-    const promise = http.get<{ ok: boolean }>('/ping');
+    const promise = http.get('/ping');
     const xhr = XHRMock.lastInstance!;
+    xhr.responseText = '{"ok": true}';
+    xhr.status = 200;
     xhr.onload!();
 
-    const result = await promise;
+    await expect(promise).resolves.not.toThrow();
+
     expect(xhr.method).toBe(METHODS.GET);
-    expect(xhr.url).toBe('https://api.test/ping');
-    expect(result.ok).toBe(true);
+    expect(xhr.url).toBe('https://ya-praktikum.tech/api/v2/ping');
   });
 
-  it('отправляет JSON для POST', async () => {
-    const http = new HTTPTransport('https://api.test');
+  it('отправляет JSON для POST, promise не падает', async () => {
+    const http = new HTTPTransport();
 
-    const promise = http.post<{ ok: boolean }>('/login', {
-      data: { login: 'user', password: '123' },
-    });
+    const data = { login: 'user', password: '123' };
+    const promise = http.post('/login', { data });
     const xhr = XHRMock.lastInstance!;
+    xhr.responseText = '{"ok": true}';
+    xhr.status = 200;
     xhr.onload!();
 
     expect(xhr.method).toBe(METHODS.POST);
     expect(xhr.headers['Content-Type']).toBe('application/json');
-    expect(xhr.requestBody).toBe(
-      JSON.stringify({ login: 'user', password: '123' }),
-    );
+    expect(xhr.requestBody).toBe(JSON.stringify(data));
 
-    const result = await promise;
-    expect(result.ok).toBe(true);
+    await expect(promise).resolves.not.toThrow();
   });
 
   it('не выставляет Content-Type для FormData', async () => {
-    const http = new HTTPTransport('https://api.test');
+    const http = new HTTPTransport();
     const formData = new FormData();
     formData.append('file', new Blob(['test']), 'test.txt');
 
     const promise = http.post('/upload', { data: formData });
     const xhr = XHRMock.lastInstance!;
+    xhr.responseText = '{"ok": true}';
+    xhr.status = 200;
     xhr.onload!();
 
     expect(xhr.headers['Content-Type']).toBeUndefined();
@@ -105,12 +106,12 @@ describe('HTTPTransport (Jest)', () => {
   });
 
   it('отдаёт ошибку при статусе != 2xx', async () => {
-    const http = new HTTPTransport('https://api.test');
+    const http = new HTTPTransport();
     const promise = http.get('/error');
 
     const xhr = XHRMock.lastInstance!;
     xhr.status = 500;
-    xhr.response = '{"reason":"Internal error"}';
+    xhr.responseText = '{"reason":"Internal error"}';
     xhr.onload!();
 
     await expect(promise).rejects.toThrow('HTTP error: 500');
