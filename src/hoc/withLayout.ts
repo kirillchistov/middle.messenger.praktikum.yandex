@@ -13,9 +13,6 @@ export function withLayout(Page: BlockPageClass) {
 
     constructor(props?: BlockProps) {
       super('div', props);
-      // this.pageInstance = new Page({});
-      // // @ts-expect-error: children есть в базовом Block
-      // this.children.page = this.pageInstance;
     }
 
     protected async componentDidMount(): Promise<void> {
