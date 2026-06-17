@@ -8,6 +8,8 @@ import { registerHandlebarsHelpers } from './utils/handlebars-helpers';
 import { router } from './core/router';
 import { store } from './core/store';
 import { AuthAPI } from './api/auth-api';
+import { normalizeAppPath } from './utils/app-path';
+import { LocalAuth } from './utils/local-auth';
 
 import { withLayout } from '@/hoc/withLayout';
 
@@ -150,8 +152,9 @@ const initApp = async (): Promise<void> => {
     const user = await AuthAPI.getUser();
 
     if (user) {
+      LocalAuth.clear();
       store.setState({ user });
-      const path = window.location.pathname;
+      const path = normalizeAppPath(window.location.pathname);
 
       // авторизованный пользователь не должен сидеть на /login, /register, /sign-up
       if (path === '/login'
@@ -164,7 +167,7 @@ const initApp = async (): Promise<void> => {
       // лендинг '/' доступен всем — не трогаем
     } else {
       store.setState({ user: null });
-      const path = window.location.pathname;
+      const path = normalizeAppPath(window.location.pathname);
 
       // гость не может на защищённые роуты
       if (isProtectedPath(path)) {
@@ -173,10 +176,25 @@ const initApp = async (): Promise<void> => {
       }
     }
   } catch {
-    store.setState({ user: null });
-    const path = window.location.pathname;
+    const localUser = LocalAuth.getUser();
+
+    store.setState({ user: localUser });
+    const path = normalizeAppPath(window.location.pathname);
+
+    if (localUser && (
+      path === '/login'
+      || path === '/sign-in'
+      || path === '/register'
+      || path === '/sign-up'
+    )) {
+      router.go('/messenger');
+      return;
+    }
+
     if (isProtectedPath(path)) {
-      router.go('/login');
+      if (!localUser) {
+        router.go('/login');
+      }
       return;
     }
   }

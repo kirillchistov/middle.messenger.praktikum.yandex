@@ -1,4 +1,5 @@
 import Handlebars from 'handlebars';
+import { publicAssetUrl } from './app-path';
 
 const escapeHtml = (value: unknown): string => {
   if (value == null) return '';
@@ -13,4 +14,5 @@ const escapeHtml = (value: unknown): string => {
 
 export const registerHandlebarsHelpers = (): void => {
   Handlebars.registerHelper('safeText', (value) => escapeHtml(value));
+  Handlebars.registerHelper('publicAsset', (path) => publicAssetUrl(String(path)));
 };

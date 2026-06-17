@@ -4,6 +4,7 @@ import { BlockProps } from '@/types/block-props';
 import { store } from '@/core/store';
 import { AuthAPI } from '@/api/auth-api';
 import { router } from '@/core/router';
+import { LocalAuth } from '@/utils/local-auth';
 
 export type BlockPageClass = new (props?: BlockProps) => Block<BlockProps>;
 
@@ -21,11 +22,18 @@ export function withLayout(Page: BlockPageClass) {
       if (!state.user) {
         try {
           const user = await AuthAPI.getUser();
+          LocalAuth.clear();
           store.setState({ user });
         } catch (e: unknown) {
-          store.setState({ user: null });
-          router.go('/login');
-          return;
+          const localUser = LocalAuth.getUser();
+
+          if (!localUser) {
+            store.setState({ user: null });
+            router.go('/login');
+            return;
+          }
+
+          store.setState({ user: localUser });
         }
       }
 

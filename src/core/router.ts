@@ -1,4 +1,6 @@
+/* eslint-disable import/extensions */
 import { BlockPageClass, Route } from './route';
+import { normalizeAppPath, toBrowserPath } from '@/utils/app-path';
 
 export class Router {
   private static __instance: Router | null = null;
@@ -35,16 +37,16 @@ export class Router {
 
   public start(): void {
     window.onpopstate = () => {
-      this._onRoute(window.location.pathname);
+      this._onRoute(normalizeAppPath(window.location.pathname));
     };
 
-    this._onRoute(window.location.pathname);
+    this._onRoute(normalizeAppPath(window.location.pathname));
   }
 
   public go(pathname: string): void {
-    if (window.location.pathname === pathname) return;
+    if (normalizeAppPath(window.location.pathname) === pathname) return;
 
-    window.history.pushState({}, '', pathname);
+    window.history.pushState({}, '', toBrowserPath(pathname));
     this._onRoute(pathname);
   }
 
