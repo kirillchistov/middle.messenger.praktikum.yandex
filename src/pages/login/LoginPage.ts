@@ -7,6 +7,7 @@ import { renderTemplate } from '@/utils/renderTemplate';
 import template from './login.hbs?raw';
 import { AuthAPI } from '@/api/auth-api';
 import type { ApiError } from '@/api/auth-api';
+import { LocalAuth } from '@/utils/local-auth';
 
 type LoginProps = Record<string, never>;
 
@@ -62,7 +63,17 @@ export class LoginPage extends Block<LoginProps> {
 
       try {
         await AuthAPI.signIn({ login, password }); // 1) login
-        const user = await AuthAPI.getUser(); // 2) getUser
+        let user;
+
+        try {
+          user = await AuthAPI.getUser(); // 2) getUser
+          LocalAuth.clear();
+        } catch (userError) {
+          user = LocalAuth.saveFromSignIn({ login, password });
+          // eslint-disable-next-line no-console
+          console.warn('Cookie auth is unavailable, using local auth fallback', userError);
+        }
+
         store.setState({ user });
         router.go('/messenger'); // 3) redirect
       } catch (error: unknown) {

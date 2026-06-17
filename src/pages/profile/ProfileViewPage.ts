@@ -4,6 +4,7 @@ import { store } from '@/core/store';
 import type { UserDTO } from '@/api/auth-api';
 import { Block } from '@/core/block';
 import { FILES_BASE } from '@/utils/constants';
+import { publicAssetUrl } from '@/utils/app-path';
 import template from './ProfileView.hbs?raw';
 
 type ProfileViewProps = {
@@ -20,7 +21,7 @@ const buildAvatarUrl = (path: string | null | undefined): string => {
   if (path) {
     return `${FILES_BASE}${path}`;
   }
-  return '/assets/avatar-transp.png';
+  return publicAssetUrl('assets/avatar-transp.png');
 };
 // export class ProfileViewPage extends Block<ProfileViewProps> {
 export default class ProfileViewPage extends Block {

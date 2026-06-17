@@ -1,5 +1,7 @@
 /* eslint-disable import/extensions */
 import { HTTPTransport } from '@/core/http-transport';
+import type { HTTPError } from '@/core/http-transport';
+import { LocalAuth } from '@/utils/local-auth';
 import type {
   ChatDTO,
   ChatUserDTO,
@@ -15,6 +17,15 @@ export type UpdateChatAvatarResponse = ChatDTO;
 
 const http = new HTTPTransport('/chats');
 
+const demoChat: ChatDTO = {
+  id: -1,
+  title: 'Демо-чат с камерой',
+  avatar: null,
+  unread_count: 0,
+  created_by: 0,
+  last_message: null,
+};
+
 export type FindUsersRequest = {
   login: string;
 };
@@ -23,18 +34,21 @@ export type FindUsersResponse = ChatUserDTO[];
 class ChatsAPIClass {
   // GET /chats
   async getChats(params: GetChatsParams = {}): Promise<ChatDTO[]> {
-    const chats = await http.get<ChatDTO[]>('', { data: params });
+    let chats: ChatDTO[];
+
+    try {
+      chats = await http.get<ChatDTO[]>('', { data: params });
+    } catch (error) {
+      const { status } = error as HTTPError;
+
+      if (status === 401 && LocalAuth.hasUser()) {
+        return [demoChat];
+      }
+
+      throw error;
+    }
 
     if (!chats || chats.length === 0) {
-      // демо‑чат
-      const demoChat: ChatDTO = {
-        id: -1,
-        title: 'Демо-чат с камерой',
-        avatar: null,
-        unread_count: 0,
-        created_by: 0,
-        last_message: null,
-      };
       return [demoChat];
     }
 

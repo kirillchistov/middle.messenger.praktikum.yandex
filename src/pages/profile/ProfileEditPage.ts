@@ -7,6 +7,7 @@ import { router } from '@/core/router';
 import type { ApiError, UserDTO } from '@/api/auth-api';
 import { UsersAPI } from '@/api/users-api';
 import { FILES_BASE } from '@/utils/constants';
+import { publicAssetUrl } from '@/utils/app-path';
 import template from './ProfileEdit.hbs?raw';
 import { showToast } from '@/utils/toast';
 
@@ -24,7 +25,7 @@ const buildAvatarUrl = (path: string | null | undefined): string => {
   if (path) {
     return `${FILES_BASE}${path}`;
   }
-  return '/assets/avatar-transp.png';
+  return publicAssetUrl('assets/avatar-transp.png');
 };
 // export class ProfileEditPage extends Block<ProfileEditProps> {
 export default class ProfileEditPage extends Block {

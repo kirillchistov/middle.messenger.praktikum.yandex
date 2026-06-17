@@ -6,6 +6,7 @@ import template from './register.hbs?raw';
 import { ApiError, AuthAPI, SignUpData } from '@/api/auth-api';
 import { store } from '@/core/store';
 import { router } from '@/core/router';
+import { LocalAuth } from '@/utils/local-auth';
 
 type RegisterProps = Record<string, never>;
 
@@ -86,7 +87,16 @@ export class RegisterPage extends Block<RegisterProps> {
           login: payload.login,
           password: payload.password,
         });
-        const user = await AuthAPI.getUser();
+        let user;
+
+        try {
+          user = await AuthAPI.getUser();
+          LocalAuth.clear();
+        } catch (userError) {
+          user = LocalAuth.saveFromSignUp(payload);
+          // eslint-disable-next-line no-console
+          console.warn('Cookie auth is unavailable, using local auth fallback', userError);
+        }
 
         store.setState({ user });
         router.go('/messenger');

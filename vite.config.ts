@@ -3,6 +3,8 @@ import { resolve } from 'path';
 import handlebars from 'vite-plugin-handlebars';
 import { handlebarsPartialsDirectories } from './src/types/vite-plugin-handlebars';
 
+const githubPagesBase = '/middle.messenger.praktikum.yandex/';
+
 export default defineConfig({
   server: {
     port: 3000,
@@ -21,7 +23,7 @@ export default defineConfig({
     strictPort: true,
   },
 
-  base: '/',
+  base: process.env.GITHUB_ACTIONS ? githubPagesBase : '/',
   // root: 'src',
   build: {
     outDir: 'dist',

@@ -3,6 +3,7 @@ import { Block } from '@/core/block';
 import { router } from '@/core/router';
 import { store } from '@/core/store';
 import { AuthAPI } from '@/api/auth-api';
+import { LocalAuth } from '@/utils/local-auth';
 
 type LogoutProps = Record<string, never>;
 
@@ -18,6 +19,7 @@ export class LogoutPage extends Block<LogoutProps> {
       // eslint-disable-next-line no-console
       console.error('[LogoutPage] logout error', error);
     } finally {
+      LocalAuth.clear();
       store.setState({ user: null });
       router.go('/login');
     }

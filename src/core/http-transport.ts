@@ -15,6 +15,13 @@ type RequestOptions = {
 };
 
 type HTTPMethod = <R=unknown>(url: string, options?: RequestOptions) => Promise<R>;
+
+export type HTTPError = Error & {
+  status: number;
+  reason?: string;
+  response?: unknown;
+};
+
 export class HTTPTransport {
   private readonly baseUrl: string;
 
@@ -77,8 +84,16 @@ export class HTTPTransport {
         if (status >= 200 && status < 300) {
           resolve(response as R);
         } else {
-          // reject({ status, ...(response || {}) });
-          reject(new Error(`HTTP error: ${status}`));
+          const reason = response && typeof response === 'object' && 'reason' in response
+            ? String((response as { reason: unknown }).reason)
+            : undefined;
+          const error = Object.assign(new Error(`HTTP error: ${status}`), {
+            status,
+            reason,
+            response,
+          }) as HTTPError;
+
+          reject(error);
         }
       };
 
