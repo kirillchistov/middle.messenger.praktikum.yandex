@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "deploy:branch": "npm run build && node ./scripts/deploy-to-branch.cjs",
+    "deploy:branch": "DEPLOY_TARGET=github-pages npm run build && node ./scripts/deploy-to-branch.cjs",
     "lint": "eslint \"src/**/*.{ts,tsx,js,jsx}\"",
     "lint:ts": "eslint \"src/**/*.{ts,tsx,js,jsx}\"",
     "lint:style": "stylelint \"src/**/*.{css,pcss,scss}\"",
